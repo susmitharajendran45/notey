@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "identifier": "com.notepad.widget",
   "build": {
-    "frontendDist": "../"
+ "build": {
+  "frontendDist": "../dist"
   },
   "app": {
     "windows": [
