@@ -2,8 +2,11 @@ name: Release Desktop Widget
 
 on:
   push:
+    branches:
+      - main       # Runs automatically whenever you edit or commit any code to main!
     tags:
-      - 'v*'
+      - 'v*'       # Still creates the public release when you make a tag!
+  workflow_dispatch: # Adds a manual "Run workflow" button in the Actions tab!
 
 jobs:
   release:
