@@ -27,9 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate Default Icons
-        run: npx @tauri-apps/cli icon dist/index.html || npx --yes tauri icon dist/index.html || true
-        continue-on-error: true
+      - name: Generate All Icon Formats
+        run: npx @tauri-apps/cli icon src-tauri/icons/icon.png
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
