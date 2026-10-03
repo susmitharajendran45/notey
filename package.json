@@ -1,6 +1,7 @@
 {
   "name": "tearoff-notepad",
   "version": "1.0.0",
+  "author": "Susmitha Rajendran",
   "private": true,
   "scripts": {
     "build": "echo 'Frontend ready'",
