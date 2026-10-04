@@ -1,18 +1,20 @@
-name: Test Desktop Widget
+name: Release Desktop Widget
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    tags:
+      - 'v*'
 
 jobs:
-  build:
+  release:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: 'windows-latest'
+          - platform: 'macos-latest'
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
@@ -32,10 +34,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build Tauri App
-        run: npm run tauri build
-
-      - name: Upload Test Executable
-        uses: actions/upload-artifact@v4
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: TearOffNotepad-Windows-Test
-          path: src-tauri/target/release/bundle/nsis/*.exe
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Tear-Off Notepad ${{ github.ref_name }}'
+          releaseBody: 'Installable desktop widget for Windows and macOS!'
+          releaseDraft: false
+          prerelease: false
