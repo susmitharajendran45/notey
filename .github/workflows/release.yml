@@ -1,23 +1,18 @@
-name: Release Desktop Widget
+name: Test Desktop Widget
 
 on:
   push:
     branches:
-      - main       # Runs automatically whenever you edit or commit any code to main!
-    tags:
-      - 'v*'       # Still creates the public release when you make a tag!
-  workflow_dispatch: # Adds a manual "Run workflow" button in the Actions tab!
+      - main
+  workflow_dispatch:
 
 jobs:
-  release:
-    permissions:
-      contents: write
+  build:
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: 'windows-latest'
-          - platform: 'macos-latest'
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
@@ -37,12 +32,10 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build Tauri App
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run tauri build
+
+      - name: Upload Test Executable
+        uses: actions/upload-artifact@v4
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'Tear-Off Notepad ${{ github.ref_name }}'
-          releaseBody: 'Installable desktop widget for Windows and macOS!'
-          releaseDraft: false
-          prerelease: false
+          name: TearOffNotepad-Windows-Test
+          path: src-tauri/target/release/bundle/nsis/*.exe
