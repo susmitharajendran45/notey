@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tear-Off Spiral Notepad Widget</title>
+  <title>Tear-Off Notepad</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,32 +15,28 @@
       --ink-color: #2D241E;
       --binding-wood: #784724;
       --binding-shadow: rgba(0,0,0,0.18);
-      --line-height-grid: 36px;
+      --line-height-grid: 34px;
       --table-border-color: #8C532B;
       --box-warm-brown: #3D2616;
       --box-inner-bg: #FAF5EE;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    /* Make the OS background completely transparent and kill grey scrollbars */
+
+    /* Clean transparent base that adapts to window resizing */
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: transparent !important;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 10px 14px 20px 14px;
       color: #332B25;
       user-select: none;
     }
 
     .icon {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
@@ -50,139 +46,118 @@
       vertical-align: middle;
     }
 
+    /* Outer Container stretches with native window resizing */
     .notepad-container {
       width: 100%;
-      max-width: 580px;
-      position: relative;
-      filter: drop-shadow(0 16px 28px rgba(60, 45, 30, 0.22)) drop-shadow(0 4px 10px rgba(0,0,0,0.12));
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
-    }
-
-    .notepad-container.folded {
-      transform: scale(0.85) translateY(120px);
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    .desk-unfold-tab {
-      position: fixed;
-      bottom: 18px;
-      right: 18px;
-      background: var(--box-warm-brown);
-      color: #F8F4EE;
-      padding: 10px 18px;
-      border-radius: 999px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.15);
-      z-index: 100;
-      transform: translateY(100px);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      flex-direction: column;
+      padding: 6px 8px 10px 8px;
+      filter: drop-shadow(0 10px 20px rgba(60, 45, 30, 0.2));
     }
-    .desk-unfold-tab.visible { transform: translateY(0); }
-    .desk-unfold-tab:hover { background: #54351F; }
 
-    /* Top Wooden Twin-Wire Rings - DRAGGABLE */
+    /* Top Spiral Ring Header - Primary Drag Area */
     .spiral-binding-header {
-      height: 38px;
+      height: 32px;
+      min-height: 32px;
       position: relative;
       z-index: 30;
       display: flex;
       justify-content: space-evenly;
-      padding: 0 28px;
+      padding: 0 16px;
       cursor: grab;
+      -webkit-app-region: drag;
     }
     .spiral-binding-header:active {
       cursor: grabbing;
     }
 
     .ring-pair {
-      width: 14px;
-      height: 48px;
+      width: 12px;
+      height: 40px;
       position: relative;
-      top: -5px;
+      top: -4px;
       pointer-events: none;
     }
 
     .ring-wire {
       position: absolute;
-      width: 6px;
+      width: 5px;
       height: 100%;
       border-radius: 6px;
       background: linear-gradient(135deg, #B5845C 0%, #6E3F1E 45%, #3B200F 85%, #8C532B 100%);
-      box-shadow: 2px 3px 5px var(--binding-shadow), inset 1px 1px 2px rgba(255,255,255,0.4);
+      box-shadow: 1px 2px 4px var(--binding-shadow), inset 1px 1px 1px rgba(255,255,255,0.4);
     }
     .ring-wire.left { left: 0px; }
-    .ring-wire.right { left: 7px; }
+    .ring-wire.right { left: 6px; }
 
     .punch-hole {
       position: absolute;
-      bottom: -6px;
+      bottom: -4px;
       left: 1px;
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       background: #4A3A2F;
       border-radius: 50%;
-      box-shadow: inset 1px 2px 4px #000, 0 1px 1px rgba(255,255,255,0.6);
+      box-shadow: inset 1px 1px 3px #000;
       z-index: -1;
     }
 
     /* Paper Pad Sheet */
     .notepad-sheet {
+      flex: 1;
       background: var(--bg-page);
-      border-radius: 14px 14px 22px 22px;
+      border-radius: 12px 12px 16px 16px;
       position: relative;
-      box-shadow: 
-        0 1px 3px rgba(0,0,0,0.04),
-        0 10px 24px -4px rgba(70,50,30,0.12),
-        inset 0 0 45px rgba(180, 140, 90, 0.05);
-      overflow: visible;
-      transition: background-color 0.25s ease;
-      min-height: 560px;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      box-shadow: 
+        0 1px 3px rgba(0,0,0,0.04),
+        0 6px 16px -2px rgba(70,50,30,0.12),
+        inset 0 0 35px rgba(180, 140, 90, 0.04);
+      transition: background-color 0.2s ease;
     }
 
-    /* Top Action Bar - DRAGGABLE */
+    /* Top Action Bar */
     .pad-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 18px 4px 18px;
-      font-size: 12px;
+      padding: 8px 12px 4px 12px;
+      font-size: 11px;
       color: #7B6F64;
       position: relative;
       z-index: 20;
       cursor: grab;
+      -webkit-app-region: drag;
     }
     .pad-topbar:active {
       cursor: grabbing;
     }
+
     .top-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       cursor: default;
+      -webkit-app-region: no-drag;
     }
 
     .warm-pill-btn {
       background: rgba(61, 38, 22, 0.08);
       border: 1px solid rgba(61, 38, 22, 0.16);
       color: #4A3222;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      transition: all 0.18s ease;
+      gap: 4px;
+      transition: all 0.15s ease;
+      -webkit-app-region: no-drag;
     }
     .warm-pill-btn:hover {
       background: #3D2616;
@@ -196,50 +171,46 @@
     }
 
     .btn-close-app {
-      background: rgba(201, 59, 43, 0.1);
+      background: rgba(201, 59, 43, 0.12);
       color: #C93B2B;
-      border-color: rgba(201, 59, 43, 0.3);
-      padding: 4px 8px;
+      border-color: rgba(201, 59, 43, 0.25);
+      padding: 2px 7px;
+      font-weight: bold;
     }
     .btn-close-app:hover {
       background: #C93B2B !important;
       color: #FFF !important;
-      border-color: #C93B2B !important;
     }
 
     .date-stamp-badge {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       color: #84532B;
       background: rgba(255,255,255,0.75);
       border: 1px dashed rgba(132, 83, 43, 0.35);
       border-radius: 999px;
-      padding: 3px 10px;
+      padding: 2px 8px;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-    .date-stamp-badge:hover {
-      background: rgba(255,255,255,0.95);
-      border-color: #84532B;
+      -webkit-app-region: no-drag;
     }
 
     /* Perforated Crease */
     .perforation-strip {
       position: relative;
-      height: 18px;
-      cursor: ew-resize;
+      height: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 4px 18px 4px 18px;
+      margin: 2px 14px;
+      -webkit-app-region: no-drag;
     }
     .perforation-dots {
       width: 100%;
-      height: 2px;
-      border-bottom: 2px dashed rgba(110, 85, 60, 0.35);
+      height: 1px;
+      border-bottom: 2px dashed rgba(110, 85, 60, 0.3);
     }
     .tear-indicator {
       position: absolute;
@@ -249,48 +220,36 @@
       background: #84532B;
       color: #FFF;
       border-radius: 999px;
-      padding: 2px 10px;
-      font-size: 11px;
+      padding: 2px 8px;
+      font-size: 10px;
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 5px;
-      opacity: 0.9;
+      gap: 4px;
       cursor: pointer;
-      pointer-events: auto;
-      transition: opacity 0.2s, transform 0.15s;
     }
-    .tear-indicator:hover { transform: translateY(-50%) scale(1.04); }
-    .tear-drag-fill {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      height: 3px;
-      background: #B87333;
-      transform: translateY(-50%);
-      width: 0%;
-      pointer-events: none;
-    }
+    .tear-indicator:hover { transform: translateY(-50%) scale(1.05); }
 
+    /* Paper Body */
     .paper-body-wrapper {
       position: relative;
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: visible;
+      overflow: hidden;
+      -webkit-app-region: no-drag;
     }
 
-    /* Natural Typing Writing Canvas */
     .paper-canvas {
       flex: 1;
-      min-height: 450px;
-      max-height: 450px;
+      width: 100%;
+      height: 100%;
       overflow-y: auto;
-      padding: 8px 32px 30px 32px;
+      padding: 6px 18px 45px 18px;
       outline: none;
       line-height: var(--line-height-grid);
       font-family: 'Caveat', cursive;
-      font-size: 28px;
+      font-size: 24px;
       color: var(--ink-color);
       position: relative;
       background-image: repeating-linear-gradient(
@@ -303,134 +262,33 @@
       cursor: text;
       user-select: text;
     }
+    .paper-canvas::-webkit-scrollbar { width: 4px; }
+    .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
 
-    /* Clean invisible scrollbar for the writing area */
-    .paper-canvas::-webkit-scrollbar {
-      width: 4px;
-    }
-    .paper-canvas::-webkit-scrollbar-thumb {
-      background: rgba(132, 83, 43, 0.2);
-      border-radius: 4px;
-    }
-
-    .paper-canvas.strike-mode-on {
-      cursor: crosshair !important;
-    }
+    .paper-canvas.strike-mode-on { cursor: crosshair !important; }
 
     .paper-canvas:empty::before {
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
       position: absolute;
-      left: 32px;
-      top: 8px;
+      left: 18px;
+      top: 6px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
-      font-size: 28px;
-      line-height: var(--line-height-grid);
+      font-size: 24px;
     }
 
     .paper-canvas p, .paper-canvas div {
       min-height: var(--line-height-grid);
-      margin: 0;
       line-height: var(--line-height-grid);
-    }
-
-    .paper-title {
-      font-size: 35px !important;
-      line-height: calc(var(--line-height-grid) * 2) !important;
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 6px;
       margin: 0;
     }
-    .paper-subtitle {
-      font-size: 30px !important;
-      line-height: var(--line-height-grid) !important;
-      font-weight: 600;
-      margin: 0;
-    }
-    .paper-body {
-      font-size: 28px !important;
-      line-height: var(--line-height-grid) !important;
-      font-weight: 500;
-      margin: 0;
-    }
-    .paper-quote {
-      font-size: 28px !important;
-      line-height: var(--line-height-grid) !important;
-      font-style: italic;
-      background: rgba(140, 83, 43, 0.08);
-      border-radius: 12px;
-      padding: 0 16px;
-      margin: 4px 0;
-      display: block;
-      border-left: 4px solid #84532B;
-    }
-    .paper-quote::before { content: "“ "; font-weight: bold; }
-    .paper-quote::after { content: " ”"; font-weight: bold; }
 
-    .paper-canvas ul { list-style-type: disc; padding-left: 28px; margin: 0; }
-    .paper-canvas ol { list-style-type: decimal; padding-left: 28px; margin: 0; }
-    .paper-canvas li { font-size: 28px; line-height: var(--line-height-grid); font-family: inherit; }
-
-    .notepad-task-item {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px;
-      min-height: var(--line-height-grid);
-      line-height: var(--line-height-grid);
-      width: 100%;
-      margin: 2px 0;
-    }
-    .notepad-task-item input[type="checkbox"] {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #84532B;
-      border-radius: 5px;
-      cursor: pointer;
-      background: transparent;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .notepad-task-item input[type="checkbox"]:checked { background: #84532B; }
-    .notepad-task-item input[type="checkbox"]:checked::after {
-      content: "";
-      position: absolute;
-      left: 5px;
-      top: 1px;
-      width: 4px;
-      height: 9px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-    }
-    .task-label { outline: none; flex: 1; font-size: 28px; font-family: inherit; color: inherit; }
-    .task-label:empty::before { content: "Task item..."; color: rgba(140, 120, 100, 0.35); }
-    .task-label.checked { text-decoration: line-through; opacity: 0.55; }
-
-    .strike-svg-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 15;
-    }
-    .strike-svg-layer.active-strike-mode { pointer-events: auto; }
-    .strike-line {
-      stroke: #C93B2B;
-      stroke-width: 3.5;
-      stroke-linecap: round;
-      opacity: 0.88;
-      pointer-events: auto;
-      cursor: pointer;
-      transition: stroke-width 0.15s, stroke 0.15s;
-    }
-    .strike-line:hover { stroke-width: 6; stroke: #8E150D; }
-
+    /* Isolated, non-bleeding table */
     .notepad-table-wrapper {
-      margin: 14px 0;
+      margin: 8px 0;
       position: relative;
-      padding: 24px 34px 32px 0;
+      padding: 18px 24px 22px 0;
       display: block;
       width: 100%;
     }
@@ -439,193 +297,103 @@
       border-collapse: separate;
       border-spacing: 0;
       background: rgba(255, 255, 255, 0.88);
-      border-radius: 14px;
-      border: 2.5px solid var(--table-border-color);
+      border-radius: 10px;
+      border: 2px solid var(--table-border-color);
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(140, 83, 43, 0.08);
     }
     .notepad-table td {
-      border: 1.5px solid rgba(140, 83, 43, 0.35);
-      padding: 6px 12px;
+      border: 1px solid rgba(140, 83, 43, 0.35);
+      padding: 4px 8px;
       min-height: var(--line-height-grid);
-      height: var(--line-height-grid);
-      font-size: 22px;
+      font-size: 20px;
       font-family: 'Caveat', cursive;
       color: var(--ink-color);
-      position: relative;
       outline: none;
-      text-align: left;
-    }
-    .notepad-table td:empty::before {
-      content: "...";
-      color: rgba(140, 120, 100, 0.35);
-      pointer-events: none;
     }
 
     .table-controls-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
+      user-select: none;
     }
     .notepad-table-wrapper:hover .table-controls-overlay { pointer-events: auto; }
 
     .table-axis-btn {
       position: absolute;
       background: #FFF;
-      border: 1.5px solid var(--table-border-color);
+      border: 1px solid var(--table-border-color);
       color: #5A4739;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.15s ease, background 0.15s ease;
       opacity: 0;
-      pointer-events: none;
-      z-index: 12;
+      z-index: 10;
     }
-    .notepad-table-wrapper:hover .table-axis-btn { opacity: 1; pointer-events: auto; }
-    .table-axis-btn:hover { background: #84532B; color: #FFF; transform: scale(1.12); }
-    .btn-add-col { right: 8px; top: 38%; transform: translateY(-50%); }
-    .btn-del-col { right: 8px; top: 62%; transform: translateY(-50%); }
-    .btn-add-row { bottom: 4px; left: 45%; transform: translateX(-50%); }
-    .btn-del-row { bottom: 4px; left: 55%; transform: translateX(-50%); }
-    .btn-del-table { top: 0px; right: 8px; background: #FFF0F0; color: #A83232; border-color: #E29B9B; }
-    .btn-del-table:hover { background: #A83232; color: #FFF; }
+    .notepad-table-wrapper:hover .table-axis-btn { opacity: 1; }
+    .table-axis-btn:hover { background: #84532B; color: #FFF; }
+    .btn-add-col { right: 4px; top: 38%; transform: translateY(-50%); }
+    .btn-del-col { right: 4px; top: 62%; transform: translateY(-50%); }
+    .btn-add-row { bottom: 2px; left: 45%; transform: translateX(-50%); }
+    .btn-del-row { bottom: 2px; left: 55%; transform: translateX(-50%); }
+    .btn-del-table { top: 0; right: 4px; background: #FFF0F0; color: #A83232; border-color: #E29B9B; }
 
-    .selection-float-bar {
-      position: absolute;
-      display: none;
-      align-items: center;
-      gap: 3px;
-      background: #2C221B;
-      color: #FAF6F0;
-      padding: 5px 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 10px 28px rgba(35, 22, 12, 0.38), 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 150;
-      user-select: none;
-      width: max-content;
-      max-width: calc(100% - 20px);
-      flex-wrap: nowrap;
-      transition: opacity 0.15s ease;
-      opacity: 0;
-      pointer-events: none;
+    /* Task Checkbox */
+    .notepad-task-item {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px;
+      min-height: var(--line-height-grid);
+      line-height: var(--line-height-grid);
+      margin: 2px 0;
     }
-    .selection-float-bar.visible { opacity: 1; pointer-events: auto; }
-    .selection-float-bar.arrow-top::before {
-      content: "";
-      position: absolute;
-      top: -6px;
-      left: var(--arrow-x, 24px);
-      transform: translateX(-50%);
-      border-width: 0 6px 6px 6px;
-      border-style: solid;
-      border-color: transparent transparent #2C221B transparent;
-    }
-    .selection-float-bar.arrow-bottom::after {
-      content: "";
-      position: absolute;
-      bottom: -6px;
-      left: var(--arrow-x, 24px);
-      transform: translateX(-50%);
-      border-width: 6px 6px 0 6px;
-      border-style: solid;
-      border-color: #2C221B transparent transparent transparent;
-    }
-
-    .float-divider {
-      width: 1px;
-      height: 18px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 0 3px;
-    }
-
-    .float-btn {
-      background: transparent;
-      border: none;
-      color: #FAF6F0;
-      padding: 4px 6px;
-      border-radius: 6px;
+    .notepad-task-item input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #84532B;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 11px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 24px;
-      height: 24px;
-      transition: background 0.15s;
+      flex-shrink: 0;
     }
-    .float-btn:hover { background: rgba(255, 255, 255, 0.16); }
+    .notepad-task-item input[type="checkbox"]:checked { background: #84532B; }
+    .task-label { outline: none; flex: 1; font-size: 24px; font-family: inherit; color: inherit; }
+    .task-label.checked { text-decoration: line-through; opacity: 0.55; }
 
-    .float-select {
-      background: #3B2E25;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 6px;
-      color: #FAF6F0;
-      font-size: 11px;
-      padding: 2px 5px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .page-turn-handle {
+    /* Strike Pen SVG Layer - Strictly non-blocking by default */
+    .strike-svg-layer {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 14px 6px;
-      background: rgba(110, 85, 60, 0.08);
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 15;
+    }
+    .strike-svg-layer.active-strike-mode {
+      pointer-events: auto !important;
+    }
+    .strike-line {
+      stroke: #C93B2B;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      opacity: 0.88;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      transition: all 0.2s;
-      z-index: 25;
+      pointer-events: auto;
     }
-    .page-turn-handle.right { right: 0; border-radius: 10px 0 0 10px; }
-    .page-turn-handle.left { left: 0; border-radius: 0 10px 10px 0; }
-    .page-turn-handle:hover { background: rgba(110, 85, 60, 0.2); }
-    .turn-grip-line {
-      width: 3px;
-      height: 12px;
-      border-radius: 2px;
-      background: #84532B;
-      opacity: 0.75;
-    }
-    .turn-tip {
-      position: absolute;
-      background: #4A3A2F;
-      color: #FFF;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.2s;
-    }
-    .page-turn-handle.right .turn-tip { right: 28px; transform: translateX(6px); }
-    .page-turn-handle.right:hover .turn-tip { opacity: 1; transform: translateX(0); }
-    .page-turn-handle.left .turn-tip { left: 28px; transform: translateX(-6px); }
-    .page-turn-handle.left:hover .turn-tip { opacity: 1; transform: translateX(0); }
 
+    /* Bottom Info & Floating Dock */
     .pad-bottom-info {
-      padding: 6px 20px 10px 20px;
+      padding: 4px 14px 6px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       color: #9C8C7E;
-      letter-spacing: 0.5px;
       pointer-events: none;
     }
 
@@ -634,326 +402,119 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 52px;
+      height: 44px;
       z-index: 40;
       display: flex;
       justify-content: center;
       align-items: flex-end;
     }
     .floating-bottom-dock {
-      width: calc(100% - 24px);
+      width: calc(100% - 16px);
       background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(220, 210, 200, 0.85);
-      box-shadow: 0 8px 24px rgba(40, 30, 20, 0.12);
-      border-radius: 14px;
-      padding: 8px 14px;
-      margin-bottom: 8px;
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 4px;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      transform: translateY(115%);
-      transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+      transform: translateY(120%);
+      transition: transform 0.2s ease;
     }
     .bottom-dock-hitbox:hover .floating-bottom-dock,
     .floating-bottom-dock:focus-within {
       transform: translateY(0);
     }
 
-    .dock-group { display: flex; align-items: center; gap: 5px; }
+    .dock-group { display: flex; align-items: center; gap: 4px; }
     .dock-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
-      border-radius: 8px;
-      padding: 4px 8px;
-      font-size: 11px;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 10px;
       color: #4A3A2F;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition: background 0.15s;
+      gap: 3px;
     }
     .dock-btn:hover { background: #E8DFD5; }
 
-    .color-swatches { display: flex; gap: 5px; }
+    .color-swatches { display: flex; gap: 4px; }
     .swatch-dot {
-      width: 17px;
-      height: 17px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       cursor: pointer;
-      border: 1.5px solid rgba(0,0,0,0.12);
-      transition: transform 0.15s;
+      border: 1px solid rgba(0,0,0,0.12);
     }
-    .swatch-dot:hover { transform: scale(1.2); }
 
+    /* Popover Cards */
     .warm-brown-card {
       position: absolute;
+      top: 40px;
+      left: 10px;
+      width: calc(100% - 20px);
       background: var(--box-warm-brown);
       color: #FAF5EE;
-      border-radius: 18px;
-      box-shadow: 0 16px 36px rgba(40, 25, 12, 0.32), 0 2px 6px rgba(0,0,0,0.18);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(40, 25, 12, 0.35);
+      padding: 10px;
       z-index: 140;
       display: none;
     }
     .warm-brown-card.visible { display: block; }
     .card-inner-box {
       background: var(--box-inner-bg);
-      border-radius: 14px;
-      padding: 12px;
-      color: #332B25;
-    }
-    .card-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #FAF5EE;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    #calendarCard { top: 50px; left: 18px; width: 275px; }
-    .cal-selectors-bar { display: flex; gap: 6px; margin-bottom: 8px; }
-    .cal-brown-select {
-      background: #FFF;
-      border: 1px solid #D6CBC1;
       border-radius: 8px;
-      padding: 4px 6px;
-      font-size: 11px;
-      color: #4A3A2F;
-      outline: none;
-      cursor: pointer;
-      flex: 1;
-    }
-    .compact-cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      text-align: center;
-      font-size: 11px;
-    }
-    .compact-cal-head { font-weight: 600; color: #9C8C7E; padding: 2px 0; }
-    .compact-cal-day {
-      padding: 5px 0;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-    .compact-cal-day:hover { background: #E8E0D5; }
-    .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
-
-    #linksCard {
-      top: 50px;
-      left: 18px;
-      width: calc(100% - 36px);
-      max-height: 480px;
-      display: none;
-      flex-direction: column;
-    }
-    #linksCard.visible { display: flex; }
-
-    .bookmarks-list {
-      max-height: 250px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
-      padding-right: 4px;
-    }
-    .bookmark-card {
-      background: #FFF;
-      border: 1px solid #E2D9CF;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .bm-title { font-weight: 600; color: #2D241E; }
-    .bm-url {
-      color: #94613B;
-      text-decoration: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    @keyframes tearFlight {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      50% { transform: translateY(60px) rotate(3deg); opacity: 0.85; }
-      100% { transform: translateY(320px) rotate(12deg); opacity: 0; }
-    }
-    .tearing-page {
-      animation: tearFlight 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      padding: 8px;
+      color: #332B25;
     }
   </style>
 </head>
 <body>
 
-  <!-- Floating Minimized Desk Tab -->
-  <div class="desk-unfold-tab" id="unfoldTab" onclick="toggleFoldPad()">
-    <svg class="icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-    Open Notepad
-  </div>
-
-  <!-- Notepad Widget -->
   <div class="notepad-container" id="notepadWidget">
     
-    <!-- Top Wooden Twin-Wire Rings (Has data-tauri-drag-region for window dragging) -->
+    <!-- Top Wooden Spiral Binding (Direct Window Drag Area) -->
     <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
-    <!-- The Paper Pad Sheet -->
+    <!-- Paper Pad Sheet -->
     <div class="notepad-sheet" id="activeSheet">
       
-      <!-- Top Action Bar (Has data-tauri-drag-region for window dragging) -->
+      <!-- Top Action Bar -->
       <div class="pad-topbar" data-tauri-drag-region>
         <div class="top-actions">
-          <button class="warm-pill-btn" onclick="toggleCalendarCard(event)" title="Browse Calendar">
-            <svg class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Calendar
-          </button>
-          <button class="warm-pill-btn" onclick="toggleLinksCard(event)" title="Links Database">
-            <svg class="icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            Links (<span id="bmCount">1</span>)
-          </button>
-          <button class="warm-pill-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Toggle Mouse Strike Pen">
+          <button class="warm-pill-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Toggle Strike Pen">
             <svg class="icon"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
-            <span id="strikeBtnText">Strike Pen: Off</span>
+            <span id="strikeBtnText">Strike: Off</span>
           </button>
+          <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp date">
+            <span id="dateStampText">Today</span>
+          </div>
         </div>
 
         <div class="top-actions">
-          <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp today's date">
-            <svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span id="dateStampText">Oct 3, 2026</span>
-          </div>
-          <button class="warm-pill-btn" onclick="toggleFoldPad()" title="Fold / Minimize">
-            <svg class="icon"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline></svg>
-          </button>
-          <!-- Native Widget Exit Button -->
-          <button class="warm-pill-btn btn-close-app" onclick="closeDesktopApp()" title="Close App (Alt+F4)">
+          <button class="warm-pill-btn btn-close-app" onclick="closeDesktopApp()" title="Close Widget (Alt+F4)">
             ✕
           </button>
         </div>
       </div>
 
-      <!-- Calendar Popover -->
-      <div class="warm-brown-card" id="calendarCard">
-        <div class="card-head">
-          <div class="card-title">
-            <svg class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Desk Calendar
-          </div>
-          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeCalendarCard()">✕</button>
-        </div>
-        <div class="card-inner-box">
-          <div class="cal-selectors-bar">
-            <select class="cal-brown-select" id="calMonthSelect" onchange="onCalSelectChange()"></select>
-            <select class="cal-brown-select" id="calYearSelect" onchange="onCalSelectChange()"></select>
-          </div>
-          <div class="compact-cal-grid" id="compactCalGridHeader">
-            <div class="compact-cal-head">S</div><div class="compact-cal-head">M</div><div class="compact-cal-head">T</div>
-            <div class="compact-cal-head">W</div><div class="compact-cal-head">T</div><div class="compact-cal-head">F</div>
-            <div class="compact-cal-head">S</div>
-          </div>
-          <div class="compact-cal-grid" id="compactCalCells"></div>
-        </div>
-      </div>
-
-      <!-- Links Drawer -->
-      <div class="warm-brown-card" id="linksCard">
-        <div class="card-head">
-          <div class="card-title">
-            <svg class="icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            Bookmarks & Links
-          </div>
-          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeLinksCard()">✕</button>
-        </div>
-        <div class="card-inner-box">
-          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
-            <input type="text" id="bmTitleInput" placeholder="Title / Label" style="padding:6px;border:1px solid #D6CBC1;border-radius:8px;font-size:12px;">
-            <input type="text" id="bmUrlInput" placeholder="https://example.com" style="padding:6px;border:1px solid #D6CBC1;border-radius:8px;font-size:12px;">
-            <button class="dock-btn" style="justify-content:center;padding:6px;background:#84532B;color:#FFF;border:none;" onclick="saveBookmarkEntry()">Save Link</button>
-          </div>
-          <div class="bookmarks-list" id="bookmarksContainer"></div>
-        </div>
-      </div>
-
       <!-- Perforated Crease -->
-      <div class="perforation-strip" id="perforationCrease" title="Drag across or click scissors to tear page">
+      <div class="perforation-strip">
         <div class="perforation-dots"></div>
-        <div class="tear-drag-fill" id="tearFill"></div>
-        <div class="tear-indicator" id="scissorBtn" onclick="executeTear()">
-          <svg class="icon" style="width:12px;height:12px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
-          Tear Page
+        <div class="tear-indicator" onclick="executeTear()" title="Tear off current sheet">
+          <svg class="icon" style="width:10px;height:10px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+          Tear
         </div>
       </div>
 
       <!-- Paper Body Wrapper -->
       <div class="paper-body-wrapper" id="paperWrapper">
-
-        <!-- Google Docs-Style Floating Toolbar -->
-        <div class="selection-float-bar" id="selectionToolbar">
-          <button class="float-btn" onclick="formatBlockPreset('paper-title')" title="Title (35px + Underline)">Title</button>
-          <button class="float-btn" onclick="formatBlockPreset('paper-subtitle')" title="Subtitle (30px)">Sub</button>
-          <button class="float-btn" onclick="formatBlockPreset('paper-body')" title="Body (28px)">Body</button>
-          <button class="float-btn" onclick="toggleQuoteBlock()" title="Quote Caption (28px)">Quote</button>
-
-          <div class="float-divider"></div>
-
-          <button class="float-btn" onclick="setTextAlign('left')" title="Align Left">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
-          </button>
-          <button class="float-btn" onclick="setTextAlign('center')" title="Align Center">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="6" x2="3" y2="6"></line><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
-          </button>
-          <button class="float-btn" onclick="setTextAlign('right')" title="Align Right">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
-          </button>
-          <button class="float-btn" onclick="setTextAlign('justify')" title="Justify">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
-          </button>
-
-          <div class="float-divider"></div>
-
-          <select class="float-select" id="fontFamilySelect" onchange="handleFontFamilyChange(this.value)">
-            <option value="'Caveat', cursive">Caveat</option>
-            <option value="'Nanum Pen Script', cursive">Nanum Pen</option>
-            <option value="'Shadows Into Light', cursive">Casual Pen</option>
-            <option value="'Inter', sans-serif">Clean Sans</option>
-          </select>
-
-          <input type="color" id="inkColorPicker" value="#2D241E" onchange="setSelectionInk(this.value)" title="Ink Color" style="width:22px;height:22px;border:none;cursor:pointer;background:transparent;">
-        </div>
-
-        <!-- Left Page Turn Handle -->
-        <div class="page-turn-handle left" onclick="previousPage()" title="Previous Page">
-          <div class="turn-grip-line"></div>
-          <div class="turn-grip-line"></div>
-          <div class="turn-grip-line"></div>
-          <span class="turn-tip">← Prev Page</span>
-        </div>
-
-        <!-- Right Page Turn Handle -->
-        <div class="page-turn-handle right" onclick="advancePage()" title="Next Page">
-          <div class="turn-grip-line"></div>
-          <div class="turn-grip-line"></div>
-          <div class="turn-grip-line"></div>
-          <span class="turn-tip">Turn Page →</span>
-        </div>
 
         <!-- Ruled Writing Canvas -->
         <div 
@@ -964,45 +525,30 @@
           data-placeholder="Start typing your notes here..."
         ></div>
 
-        <!-- SVG Strikethrough Overlay Layer -->
+        <!-- Strike Overlay -->
         <svg class="strike-svg-layer" id="strikeLayer"></svg>
 
-        <!-- Page Counter & Word Count -->
+        <!-- Stats -->
         <div class="pad-bottom-info">
-          <span id="wordCharStats">0 words · 0 chars</span>
+          <span id="wordCharStats">0 words</span>
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Auto-Hiding Bottom Dock -->
+        <!-- Auto-Hiding Dock -->
         <div class="bottom-dock-hitbox">
-          <div class="floating-bottom-dock" id="bottomDock">
+          <div class="floating-bottom-dock">
             <div class="dock-group">
-              <button class="dock-btn" onclick="insertChecklist()" title="Insert Task Checkbox">
-                <svg class="icon"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                Task
-              </button>
-              <button class="dock-btn" onclick="insertBulletedList()" title="Bulleted List">
-                <svg class="icon"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1.5" fill="currentColor"></circle><circle cx="4" cy="12" r="1.5" fill="currentColor"></circle><circle cx="4" cy="18" r="1.5" fill="currentColor"></circle></svg>
-                • List
-              </button>
-              <button class="dock-btn" onclick="insertNumberedList()" title="Numbered List">
-                <svg class="icon"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 7V5h1"></path><path d="M3 13c.5-1 2-1 2 0s-2 2-2 2h2"></path></svg>
-                1. List
-              </button>
-              <button class="dock-btn" onclick="insertTable()" title="Curvy Bold Table">
-                <svg class="icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
-                Table
-              </button>
+              <button class="dock-btn" onclick="insertChecklist()">Task</button>
+              <button class="dock-btn" onclick="insertTable()">Table</button>
+              <button class="dock-btn" onclick="previousPage()">← Prev</button>
+              <button class="dock-btn" onclick="advancePage()">Next →</button>
             </div>
-
-            <!-- Light Pastel Swatches -->
             <div class="dock-group">
               <div class="color-swatches">
-                <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream Butter"></div>
-                <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Pale Sage"></div>
-                <div class="swatch-dot" style="background:#F0F5FA;" onclick="changePageColor('#F0F5FA')" title="Soft Sky"></div>
-                <div class="swatch-dot" style="background:#FAF1F1;" onclick="changePageColor('#FAF1F1')" title="Muted Blush"></div>
-                <div class="swatch-dot" style="background:#F6F2FA;" onclick="changePageColor('#F6F2FA')" title="Soft Lavender"></div>
+                <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream"></div>
+                <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Sage"></div>
+                <div class="swatch-dot" style="background:#F0F5FA;" onclick="changePageColor('#F0F5FA')" title="Sky"></div>
+                <div class="swatch-dot" style="background:#FAF1F1;" onclick="changePageColor('#FAF1F1')" title="Blush"></div>
               </div>
             </div>
           </div>
@@ -1014,21 +560,25 @@
   </div>
 
 <script>
-  let pages = [{
-    content: '',
-    color: '#FFFDF4',
-    dateStamp: 'Oct 3, 2026',
-    strikes: []
-  }];
+  let pages = [{ content: '', color: '#FFFDF4', dateStamp: null }];
   let currentPageIndex = 0;
-  let bookmarks = [
-    { id: 1, title: 'Inspiration Hub', url: 'https://designnotes.org' }
-  ];
-  let savedRange = null;
   let isStrikePenMode = false;
 
+  // Dedicated window dragging listener
+  function setupDragging() {
+    const dragElements = [document.getElementById('spiralHeader'), document.querySelector('.pad-topbar')];
+    dragElements.forEach(el => {
+      if (!el) return;
+      el.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button') || e.target.closest('.date-stamp-badge')) return;
+        if (window.__TAURI__ && window.__TAURI__.window) {
+          window.__TAURI__.window.getCurrentWindow().startDragging();
+        }
+      });
+    });
+  }
+
   function closeDesktopApp() {
-    // If running in Tauri
     if (window.__TAURI__ && window.__TAURI__.window) {
       window.__TAURI__.window.getCurrentWindow().close();
     } else {
@@ -1036,32 +586,10 @@
     }
   }
 
-  function playPaperRipSound() {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AudioCtx();
-      const bufferSize = ctx.sampleRate * 0.18;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.45));
-      }
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1350;
-      filter.Q.value = 2.0;
-      noise.connect(filter);
-      filter.connect(ctx.destination);
-      noise.start();
-    } catch(e) {}
-  }
-
   function initSpirals() {
     const header = document.getElementById('spiralHeader');
     header.innerHTML = '';
-    for(let i=0; i<12; i++) {
+    for(let i=0; i<8; i++) {
       const ring = document.createElement('div');
       ring.className = 'ring-pair';
       ring.innerHTML = `
@@ -1079,243 +607,9 @@
   function updateWordCharCount() {
     const text = editorContent.innerText.replace(/[\n\r]+/g, ' ').trim();
     const words = text ? text.split(/\s+/).length : 0;
-    const chars = text.length;
-    wordCharStats.innerText = `${words} words · ${chars} chars`;
+    wordCharStats.innerText = `${words} words`;
   }
-
-  editorContent.addEventListener('input', () => {
-    updateWordCharCount();
-  });
-
-  editorContent.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      setTimeout(() => {
-        updateWordCharCount();
-        updateToolbarPosition();
-      }, 0);
-    }
-  });
-
-  const selectionToolbar = document.getElementById('selectionToolbar');
-  const paperWrapper = document.getElementById('paperWrapper');
-
-  function preserveSelection() {
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      savedRange = sel.getRangeAt(0).cloneRange();
-    }
-  }
-
-  function restoreSelection() {
-    if (savedRange) {
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(savedRange);
-    }
-  }
-
-  selectionToolbar.addEventListener('mousedown', (e) => {
-    if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'INPUT') {
-      e.preventDefault();
-    } else {
-      preserveSelection();
-    }
-  });
-
-  function getCaretCoordinates() {
-    const sel = window.getSelection();
-    if (!sel || !sel.rangeCount || !editorContent.contains(sel.anchorNode)) {
-      return null;
-    }
-
-    const range = sel.getRangeAt(0);
-    let rect = range.getBoundingClientRect();
-
-    if (rect.width === 0 && rect.height === 0) {
-      const clone = range.cloneRange();
-      const marker = document.createElement('span');
-      marker.textContent = '\uFEFF';
-      try {
-        clone.insertNode(marker);
-        rect = marker.getBoundingClientRect();
-        marker.parentNode.removeChild(marker);
-      } catch (e) {
-        const node = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode;
-        rect = node.getBoundingClientRect();
-      }
-    }
-    return rect;
-  }
-
-  function updateToolbarPosition() {
-    if (isStrikePenMode) return;
-    const sel = window.getSelection();
-    if (!sel || !sel.rangeCount || !editorContent.contains(sel.anchorNode)) {
-      selectionToolbar.style.display = 'none';
-      selectionToolbar.classList.remove('visible');
-      return;
-    }
-
-    preserveSelection();
-    const rect = getCaretCoordinates();
-    if (!rect) {
-      selectionToolbar.style.display = 'none';
-      selectionToolbar.classList.remove('visible');
-      return;
-    }
-
-    const wrapperRect = paperWrapper.getBoundingClientRect();
-    const caretX = rect.left - wrapperRect.left + ((rect.width || 0) / 2);
-    const caretY = rect.top - wrapperRect.top;
-    const caretHeight = rect.height || 36;
-
-    selectionToolbar.style.display = 'flex';
-    selectionToolbar.style.visibility = 'hidden';
-    const toolbarWidth = selectionToolbar.offsetWidth || 340;
-    const toolbarHeight = selectionToolbar.offsetHeight || 38;
-    selectionToolbar.style.visibility = 'visible';
-
-    const padMargin = 12;
-    const idealLeft = caretX - (toolbarWidth / 2);
-    const maxLeft = wrapperRect.width - toolbarWidth - padMargin;
-    const clampedLeft = Math.max(padMargin, Math.min(idealLeft, maxLeft));
-
-    selectionToolbar.style.left = clampedLeft + 'px';
-
-    const arrowOffset = caretX - clampedLeft;
-    const safeArrowX = Math.max(14, Math.min(arrowOffset, toolbarWidth - 14));
-    selectionToolbar.style.setProperty('--arrow-x', safeArrowX + 'px');
-
-    const minTopRoom = 48;
-    if (caretY - toolbarHeight - 8 < minTopRoom) {
-      selectionToolbar.style.top = (caretY + caretHeight + 8) + 'px';
-      selectionToolbar.classList.remove('arrow-bottom');
-      selectionToolbar.classList.add('arrow-top');
-    } else {
-      selectionToolbar.style.top = (caretY - toolbarHeight - 8) + 'px';
-      selectionToolbar.classList.remove('arrow-top');
-      selectionToolbar.classList.add('arrow-bottom');
-    }
-
-    selectionToolbar.classList.add('visible');
-  }
-
-  editorContent.addEventListener('keyup', updateToolbarPosition);
-  editorContent.addEventListener('mouseup', updateToolbarPosition);
-  editorContent.addEventListener('click', updateToolbarPosition);
-
-  document.addEventListener('mousedown', (e) => {
-    if (!selectionToolbar.contains(e.target) && !editorContent.contains(e.target)) {
-      selectionToolbar.style.display = 'none';
-      selectionToolbar.classList.remove('visible');
-    }
-  });
-
-  function getClosestBlockElement() {
-    const sel = window.getSelection();
-    if (!sel || !sel.rangeCount) return null;
-    let node = sel.anchorNode;
-    if (node.nodeType === 3) node = node.parentElement;
-    while (node && node !== editorContent) {
-      if (['DIV','P','BLOCKQUOTE','LI'].includes(node.tagName) || node.classList.contains('paper-quote') || node.classList.contains('notepad-task-item')) {
-        return node;
-      }
-      node = node.parentElement;
-    }
-    return null;
-  }
-
-  function formatBlockPreset(className) {
-    restoreSelection();
-    let block = getClosestBlockElement();
-    if (!block || block === editorContent) {
-      document.execCommand('formatBlock', false, '<div>');
-      block = getClosestBlockElement();
-    }
-    if (!block || block.classList.contains('notepad-task-item')) return;
-
-    block.classList.remove('paper-title', 'paper-subtitle', 'paper-body', 'paper-quote');
-    block.classList.add(className);
-    updateToolbarPosition();
-  }
-
-  function toggleQuoteBlock() {
-    restoreSelection();
-    let block = getClosestBlockElement();
-    if (!block || block === editorContent) {
-      document.execCommand('formatBlock', false, '<div>');
-      block = getClosestBlockElement();
-    }
-    if (!block || block.classList.contains('notepad-task-item')) return;
-
-    if (block.classList.contains('paper-quote')) {
-      block.classList.remove('paper-quote');
-      block.classList.add('paper-body');
-    } else {
-      block.classList.remove('paper-title', 'paper-subtitle', 'paper-body');
-      block.classList.add('paper-quote');
-    }
-    updateToolbarPosition();
-  }
-
-  function setTextAlign(alignment) {
-    restoreSelection();
-    const block = getClosestBlockElement();
-    if (block && (block.classList.contains('notepad-task-item') || block.closest('.notepad-task-item'))) {
-      return;
-    }
-
-    if (block) {
-      block.style.textAlign = alignment;
-    } else {
-      document.execCommand('justify' + alignment.charAt(0).toUpperCase() + alignment.slice(1), false, null);
-    }
-    updateToolbarPosition();
-  }
-
-  function handleFontFamilyChange(font) {
-    restoreSelection();
-    applyInlineStyle({ fontFamily: font });
-    const block = getClosestBlockElement();
-    if (block && (!savedRange || savedRange.collapsed)) {
-      block.style.fontFamily = font;
-    }
-    updateToolbarPosition();
-  }
-
-  function setSelectionInk(color) {
-    restoreSelection();
-    applyInlineStyle({ color: color });
-    document.documentElement.style.setProperty('--ink-color', color);
-    updateToolbarPosition();
-  }
-
-  function applyInlineStyle(styleObj) {
-    const sel = window.getSelection();
-    if (!sel || !sel.rangeCount || sel.isCollapsed) return;
-    const range = sel.getRangeAt(0);
-    const span = document.createElement('span');
-    Object.assign(span.style, styleObj);
-    try {
-      span.appendChild(range.extractContents());
-      range.insertNode(span);
-      sel.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      sel.addRange(newRange);
-      preserveSelection();
-    } catch(e) {}
-  }
-
-  function insertBulletedList() {
-    document.execCommand('insertUnorderedList', false, null);
-    updateWordCharCount();
-  }
-
-  function insertNumberedList() {
-    document.execCommand('insertOrderedList', false, null);
-    updateWordCharCount();
-  }
+  editorContent.addEventListener('input', updateWordCharCount);
 
   function insertChecklist() {
     const task = document.createElement('div');
@@ -1325,7 +619,6 @@
       <div class="task-label" contenteditable="true"></div>
     `;
     insertNodeAtCursor(task);
-    updateWordCharCount();
   }
 
   function insertTable() {
@@ -1340,22 +633,15 @@
           <tr><td contenteditable="true"></td><td contenteditable="true"></td></tr>
         </tbody>
       </table>
-      <div class="table-controls-overlay">
-        <button class="table-axis-btn btn-del-table" onclick="deleteEntireTable('${id}')" title="Delete Table">✕</button>
-        <button class="table-axis-btn btn-add-col" onclick="addCol('${id}')" title="Add Column">+</button>
-        <button class="table-axis-btn btn-del-col" onclick="delCol('${id}')" title="Remove Column">-</button>
+      <div class="table-controls-overlay" contenteditable="false">
+        <button class="table-axis-btn btn-del-table" onclick="document.getElementById('${id}').remove()" title="Delete Table">✕</button>
+        <button class="table-axis-btn btn-add-col" onclick="addCol('${id}')" title="Add Col">+</button>
+        <button class="table-axis-btn btn-del-col" onclick="delCol('${id}')" title="Remove Col">-</button>
         <button class="table-axis-btn btn-add-row" onclick="addRow('${id}')" title="Add Row">+</button>
         <button class="table-axis-btn btn-del-row" onclick="delRow('${id}')" title="Remove Row">-</button>
       </div>
     `;
     insertNodeAtCursor(wrapper);
-    updateWordCharCount();
-  }
-
-  function deleteEntireTable(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-    updateWordCharCount();
   }
 
   function addRow(id) {
@@ -1402,8 +688,10 @@
     } else {
       editorContent.appendChild(node);
     }
+    updateWordCharCount();
   }
 
+  /* Strike Pen */
   const strikeLayer = document.getElementById('strikeLayer');
   let isStriking = false;
   let strikeStartX = 0, strikeStartY = 0;
@@ -1415,23 +703,19 @@
     const text = document.getElementById('strikeBtnText');
     if (isStrikePenMode) {
       btn.classList.add('active');
-      text.innerText = 'Strike Pen: On';
+      text.innerText = 'Strike: On';
       strikeLayer.classList.add('active-strike-mode');
       editorContent.classList.add('strike-mode-on');
-      selectionToolbar.style.display = 'none';
-      selectionToolbar.classList.remove('visible');
     } else {
       btn.classList.remove('active');
-      text.innerText = 'Strike Pen: Off';
+      text.innerText = 'Strike: Off';
       strikeLayer.classList.remove('active-strike-mode');
       editorContent.classList.remove('strike-mode-on');
     }
   }
 
-  paperWrapper.addEventListener('mousedown', (e) => {
-    if (!isStrikePenMode && e.button !== 2) return;
-    if (e.target.classList.contains('strike-line')) return;
-
+  strikeLayer.addEventListener('mousedown', (e) => {
+    if (!isStrikePenMode) return;
     isStriking = true;
     const rect = strikeLayer.getBoundingClientRect();
     strikeStartX = e.clientX - rect.left;
@@ -1446,19 +730,16 @@
 
     currentStrikeLine.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      ev.preventDefault();
       currentStrikeLine.remove();
     });
 
     strikeLayer.appendChild(currentStrikeLine);
-    e.preventDefault();
   });
 
   window.addEventListener('mousemove', (e) => {
     if (!isStriking || !currentStrikeLine) return;
     const rect = strikeLayer.getBoundingClientRect();
-    const curX = e.clientX - rect.left;
-    currentStrikeLine.setAttribute('x2', curX);
+    currentStrikeLine.setAttribute('x2', e.clientX - rect.left);
   });
 
   window.addEventListener('mouseup', () => {
@@ -1466,191 +747,27 @@
     currentStrikeLine = null;
   });
 
-  let calDate = new Date();
-  const calendarCard = document.getElementById('calendarCard');
-
-  function initCalendarSelectors() {
-    const mSelect = document.getElementById('calMonthSelect');
-    const ySelect = document.getElementById('calYearSelect');
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    
-    mSelect.innerHTML = '';
-    months.forEach((m, idx) => {
-      const opt = document.createElement('option');
-      opt.value = idx;
-      opt.innerText = m;
-      if (idx === calDate.getMonth()) opt.selected = true;
-      mSelect.appendChild(opt);
-    });
-
-    ySelect.innerHTML = '';
-    const currentYear = calDate.getFullYear();
-    for(let y = currentYear - 20; y <= currentYear + 20; y++) {
-      const opt = document.createElement('option');
-      opt.value = y;
-      opt.innerText = y;
-      if (y === currentYear) opt.selected = true;
-      ySelect.appendChild(opt);
-    }
-  }
-
-  function onCalSelectChange() {
-    const m = parseInt(document.getElementById('calMonthSelect').value);
-    const y = parseInt(document.getElementById('calYearSelect').value);
-    calDate = new Date(y, m, 1);
-    renderCalendarGrid();
-  }
-
-  function renderCalendarGrid() {
-    const y = calDate.getFullYear();
-    const m = calDate.getMonth();
-    const cells = document.getElementById('compactCalCells');
-    cells.innerHTML = '';
-
-    const firstDay = new Date(y, m, 1).getDay();
-    const totalDays = new Date(y, m + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      cells.appendChild(document.createElement('div'));
-    }
-
-    const today = new Date();
-    for (let d = 1; d <= totalDays; d++) {
-      const cell = document.createElement('div');
-      cell.className = 'compact-cal-day';
-      cell.innerText = d;
-      if (d === today.getDate() && m === today.getMonth() && y === today.getFullYear()) {
-        cell.classList.add('today');
-      }
-      cell.onclick = () => {
-        const stamped = new Date(y, m, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        document.getElementById('dateStampText').innerText = stamped;
-        pages[currentPageIndex].dateStamp = stamped;
-        closeCalendarCard();
-      };
-      cells.appendChild(cell);
-    }
-  }
-
-  function toggleCalendarCard(e) {
-    e.stopPropagation();
-    calendarCard.classList.toggle('visible');
-    closeLinksCard();
-    if (calendarCard.classList.contains('visible')) {
-      initCalendarSelectors();
-      renderCalendarGrid();
-    }
-  }
-  function closeCalendarCard() {
-    calendarCard.classList.remove('visible');
-  }
-
   function stampTodayDate() {
-    const formatted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const formatted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     document.getElementById('dateStampText').innerText = formatted;
-    pages[currentPageIndex].dateStamp = formatted;
   }
-
-  const linksCard = document.getElementById('linksCard');
-
-  function toggleLinksCard(e) {
-    e.stopPropagation();
-    linksCard.classList.toggle('visible');
-    closeCalendarCard();
-    if (linksCard.classList.contains('visible')) {
-      renderBookmarks();
-    }
-  }
-  function closeLinksCard() {
-    linksCard.classList.remove('visible');
-  }
-
-  function saveBookmarkEntry() {
-    const title = document.getElementById('bmTitleInput').value.trim();
-    const url = document.getElementById('bmUrlInput').value.trim();
-    if (!url) return;
-    bookmarks.push({
-      id: Date.now(),
-      title: title || url,
-      url: url.startsWith('http') ? url : 'https://' + url
-    });
-    document.getElementById('bmTitleInput').value = '';
-    document.getElementById('bmUrlInput').value = '';
-    renderBookmarks();
-  }
-
-  function renderBookmarks() {
-    const list = document.getElementById('bookmarksContainer');
-    document.getElementById('bmCount').innerText = bookmarks.length;
-    list.innerHTML = '';
-    bookmarks.forEach(bm => {
-      const card = document.createElement('div');
-      card.className = 'bookmark-card';
-      card.innerHTML = `
-        <div class="bm-title">${escapeHtml(bm.title)}</div>
-        <a class="bm-url" href="${bm.url}" target="_blank">${escapeHtml(bm.url)}</a>
-        <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:4px;">
-          <button class="dock-btn" style="padding:2px 6px;font-size:10px" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
-          <button class="dock-btn" style="padding:2px 6px;font-size:10px;color:#A83232" onclick="deleteBookmark(${bm.id})">Delete</button>
-        </div>
-      `;
-      list.appendChild(card);
-    });
-  }
-
-  function deleteBookmark(id) {
-    bookmarks = bookmarks.filter(b => b.id !== id);
-    renderBookmarks();
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  const perfCrease = document.getElementById('perforationCrease');
-  const tearFill = document.getElementById('tearFill');
-  let isTearing = false;
-
-  perfCrease.addEventListener('mousedown', () => isTearing = true);
-  window.addEventListener('mousemove', (e) => {
-    if (!isTearing) return;
-    const rect = perfCrease.getBoundingClientRect();
-    const pct = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
-    tearFill.style.width = pct + '%';
-    if (pct > 92) {
-      isTearing = false;
-      tearFill.style.width = '0%';
-      executeTear();
-    }
-  });
-  window.addEventListener('mouseup', () => {
-    if (isTearing) {
-      isTearing = false;
-      tearFill.style.width = '0%';
-    }
-  });
 
   function executeTear() {
-    playPaperRipSound();
-    confetti({ particleCount: 38, spread: 65, origin: { y: 0.35 } });
-    const sheet = document.getElementById('activeSheet');
-    sheet.classList.add('tearing-page');
-
-    setTimeout(() => {
-      sheet.classList.remove('tearing-page');
-      pages.splice(currentPageIndex, 1);
-      if (pages.length === 0) {
-        pages.push({ content: '', color: '#FFFDF4', dateStamp: null, strikes: [] });
-      }
-      if (currentPageIndex >= pages.length) currentPageIndex = pages.length - 1;
-      loadPage(currentPageIndex);
-    }, 600);
+    try {
+      confetti({ particleCount: 25, spread: 60, origin: { y: 0.3 } });
+    } catch(e) {}
+    pages.splice(currentPageIndex, 1);
+    if (pages.length === 0) {
+      pages.push({ content: '', color: '#FFFDF4', dateStamp: null });
+    }
+    if (currentPageIndex >= pages.length) currentPageIndex = pages.length - 1;
+    loadPage(currentPageIndex);
   }
 
   function advancePage() {
-    saveCurrentPageState();
+    pages[currentPageIndex].content = editorContent.innerHTML;
     if (currentPageIndex === pages.length - 1) {
-      pages.push({ content: '', color: pages[currentPageIndex].color, dateStamp: null, strikes: [] });
+      pages.push({ content: '', color: pages[currentPageIndex].color, dateStamp: null });
     }
     currentPageIndex++;
     loadPage(currentPageIndex);
@@ -1658,14 +775,10 @@
 
   function previousPage() {
     if (currentPageIndex > 0) {
-      saveCurrentPageState();
+      pages[currentPageIndex].content = editorContent.innerHTML;
       currentPageIndex--;
       loadPage(currentPageIndex);
     }
-  }
-
-  function saveCurrentPageState() {
-    pages[currentPageIndex].content = editorContent.innerHTML;
   }
 
   function loadPage(idx) {
@@ -1673,10 +786,8 @@
     const p = pages[idx];
     editorContent.innerHTML = p.content || '';
     changePageColor(p.color || '#FFFDF4');
-    document.getElementById('dateStampText').innerText = p.dateStamp || 'Stamp Date';
     document.getElementById('curPageNum').innerText = idx + 1;
     document.getElementById('totalPageNum').innerText = pages.length;
-    selectionToolbar.style.display = 'none';
     strikeLayer.innerHTML = '';
     updateWordCharCount();
   }
@@ -1686,24 +797,9 @@
     document.documentElement.style.setProperty('--bg-page', hex);
   }
 
-  function toggleFoldPad() {
-    const pad = document.getElementById('notepadWidget');
-    const tab = document.getElementById('unfoldTab');
-    pad.classList.toggle('folded');
-    tab.classList.toggle('visible');
-  }
-
-  document.addEventListener('click', (e) => {
-    if (!calendarCard.contains(e.target) && !e.target.closest('.warm-pill-btn')) {
-      closeCalendarCard();
-    }
-    if (!linksCard.contains(e.target) && !e.target.closest('.warm-pill-btn')) {
-      closeLinksCard();
-    }
-  });
-
   initSpirals();
-  renderBookmarks();
+  stampTodayDate();
+  setupDragging();
   loadPage(0);
 </script>
 </body>
