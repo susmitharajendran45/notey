@@ -15,7 +15,7 @@
       --ink-color: #2D241E;
       --binding-wood: #784724;
       --binding-shadow: rgba(0,0,0,0.18);
-      --line-height-grid: 34px;
+      --line-height-grid: 32px;
       --table-border-color: #8C532B;
       --box-warm-brown: #3D2616;
       --box-inner-bg: #FAF5EE;
@@ -23,7 +23,6 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Clean transparent base that adapts to window resizing */
     html, body {
       width: 100%;
       height: 100%;
@@ -35,8 +34,8 @@
     }
 
     .icon {
-      width: 13px;
-      height: 13px;
+      width: 12px;
+      height: 12px;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
@@ -44,59 +43,59 @@
       fill: none;
       display: inline-block;
       vertical-align: middle;
+      flex-shrink: 0;
     }
 
-    /* Outer Container stretches with native window resizing */
+    /* Outer wrapper adapts to any window dimension */
     .notepad-container {
       width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 6px 8px 10px 8px;
-      filter: drop-shadow(0 10px 20px rgba(60, 45, 30, 0.2));
+      padding: 4px 6px 8px 6px;
+      filter: drop-shadow(0 8px 18px rgba(60, 45, 30, 0.22));
     }
 
-    /* Top Spiral Ring Header - Primary Drag Area */
+    /* Dynamic Spiral Rings */
     .spiral-binding-header {
-      height: 32px;
-      min-height: 32px;
+      height: 28px;
+      min-height: 28px;
       position: relative;
       z-index: 30;
       display: flex;
       justify-content: space-evenly;
-      padding: 0 16px;
+      padding: 0 12px;
       cursor: grab;
       -webkit-app-region: drag;
+      overflow: hidden;
     }
-    .spiral-binding-header:active {
-      cursor: grabbing;
-    }
+    .spiral-binding-header:active { cursor: grabbing; }
 
     .ring-pair {
-      width: 12px;
-      height: 40px;
+      width: 11px;
+      height: 36px;
       position: relative;
       top: -4px;
       pointer-events: none;
+      flex-shrink: 0;
     }
-
     .ring-wire {
       position: absolute;
-      width: 5px;
+      width: 4.5px;
       height: 100%;
-      border-radius: 6px;
+      border-radius: 5px;
       background: linear-gradient(135deg, #B5845C 0%, #6E3F1E 45%, #3B200F 85%, #8C532B 100%);
-      box-shadow: 1px 2px 4px var(--binding-shadow), inset 1px 1px 1px rgba(255,255,255,0.4);
+      box-shadow: 1px 2px 3px var(--binding-shadow), inset 1px 1px 1px rgba(255,255,255,0.4);
     }
     .ring-wire.left { left: 0px; }
-    .ring-wire.right { left: 6px; }
+    .ring-wire.right { left: 5.5px; }
 
     .punch-hole {
       position: absolute;
-      bottom: -4px;
+      bottom: -3px;
       left: 1px;
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       background: #4A3A2F;
       border-radius: 50%;
       box-shadow: inset 1px 1px 3px #000;
@@ -107,15 +106,15 @@
     .notepad-sheet {
       flex: 1;
       background: var(--bg-page);
-      border-radius: 12px 12px 16px 16px;
+      border-radius: 10px 10px 14px 14px;
       position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       box-shadow: 
         0 1px 3px rgba(0,0,0,0.04),
-        0 6px 16px -2px rgba(70,50,30,0.12),
-        inset 0 0 35px rgba(180, 140, 90, 0.04);
+        0 6px 14px -2px rgba(70,50,30,0.12),
+        inset 0 0 30px rgba(180, 140, 90, 0.04);
       transition: background-color 0.2s ease;
     }
 
@@ -124,31 +123,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 12px 4px 12px;
+      padding: 6px 10px 4px 10px;
       font-size: 11px;
       color: #7B6F64;
       position: relative;
       z-index: 20;
       cursor: grab;
       -webkit-app-region: drag;
+      gap: 6px;
     }
-    .pad-topbar:active {
-      cursor: grabbing;
-    }
+    .pad-topbar:active { cursor: grabbing; }
 
     .top-actions {
       display: flex;
       align-items: center;
       gap: 4px;
-      cursor: default;
       -webkit-app-region: no-drag;
+      flex-wrap: nowrap;
     }
 
     .warm-pill-btn {
       background: rgba(61, 38, 22, 0.08);
       border: 1px solid rgba(61, 38, 22, 0.16);
       color: #4A3222;
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: 999px;
       cursor: pointer;
       font-size: 11px;
@@ -156,30 +154,27 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
       transition: all 0.15s ease;
       -webkit-app-region: no-drag;
     }
-    .warm-pill-btn:hover {
-      background: #3D2616;
-      color: #FFF;
-      border-color: #3D2616;
-    }
-    .warm-pill-btn.active {
-      background: #C93B2B;
-      color: #FFF;
-      border-color: #C93B2B;
-    }
+    .warm-pill-btn:hover { background: #3D2616; color: #FFF; border-color: #3D2616; }
+    .warm-pill-btn.active { background: #C93B2B; color: #FFF; border-color: #C93B2B; }
 
+    /* Direct Close Button */
     .btn-close-app {
       background: rgba(201, 59, 43, 0.12);
       color: #C93B2B;
       border-color: rgba(201, 59, 43, 0.25);
       padding: 2px 7px;
       font-weight: bold;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
     }
     .btn-close-app:hover {
       background: #C93B2B !important;
       color: #FFF !important;
+      border-color: #C93B2B !important;
     }
 
     .date-stamp-badge {
@@ -189,22 +184,23 @@
       background: rgba(255,255,255,0.75);
       border: 1px dashed rgba(132, 83, 43, 0.35);
       border-radius: 999px;
-      padding: 2px 8px;
+      padding: 2px 7px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
+      white-space: nowrap;
       -webkit-app-region: no-drag;
     }
 
     /* Perforated Crease */
     .perforation-strip {
       position: relative;
-      height: 14px;
+      height: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 2px 14px;
+      margin: 2px 10px;
       -webkit-app-region: no-drag;
     }
     .perforation-dots {
@@ -220,13 +216,14 @@
       background: #84532B;
       color: #FFF;
       border-radius: 999px;
-      padding: 2px 8px;
+      padding: 1px 7px;
       font-size: 10px;
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
+      white-space: nowrap;
     }
     .tear-indicator:hover { transform: translateY(-50%) scale(1.05); }
 
@@ -245,11 +242,12 @@
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      padding: 6px 18px 45px 18px;
+      overflow-x: hidden;
+      padding: 4px 16px 52px 16px;
       outline: none;
       line-height: var(--line-height-grid);
       font-family: 'Caveat', cursive;
-      font-size: 24px;
+      font-size: 22px;
       color: var(--ink-color);
       position: relative;
       background-image: repeating-linear-gradient(
@@ -271,89 +269,30 @@
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
       position: absolute;
-      left: 18px;
-      top: 6px;
+      left: 16px;
+      top: 4px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
-      font-size: 24px;
+      font-size: 22px;
     }
 
-    .paper-canvas p, .paper-canvas div {
+    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper) {
       min-height: var(--line-height-grid);
       line-height: var(--line-height-grid);
       margin: 0;
     }
 
-    /* Isolated, non-bleeding table */
-    .notepad-table-wrapper {
-      margin: 8px 0;
-      position: relative;
-      padding: 18px 24px 22px 0;
-      display: block;
-      width: 100%;
-    }
-    .notepad-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: 10px;
-      border: 2px solid var(--table-border-color);
-      overflow: hidden;
-    }
-    .notepad-table td {
-      border: 1px solid rgba(140, 83, 43, 0.35);
-      padding: 4px 8px;
-      min-height: var(--line-height-grid);
-      font-size: 20px;
-      font-family: 'Caveat', cursive;
-      color: var(--ink-color);
-      outline: none;
-    }
-
-    .table-controls-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      user-select: none;
-    }
-    .notepad-table-wrapper:hover .table-controls-overlay { pointer-events: auto; }
-
-    .table-axis-btn {
-      position: absolute;
-      background: #FFF;
-      border: 1px solid var(--table-border-color);
-      color: #5A4739;
-      width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: bold;
+    /* Fixed Task Checkbox Logic & Style */
+    .notepad-task-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      z-index: 10;
-    }
-    .notepad-table-wrapper:hover .table-axis-btn { opacity: 1; }
-    .table-axis-btn:hover { background: #84532B; color: #FFF; }
-    .btn-add-col { right: 4px; top: 38%; transform: translateY(-50%); }
-    .btn-del-col { right: 4px; top: 62%; transform: translateY(-50%); }
-    .btn-add-row { bottom: 2px; left: 45%; transform: translateX(-50%); }
-    .btn-del-row { bottom: 2px; left: 55%; transform: translateX(-50%); }
-    .btn-del-table { top: 0; right: 4px; background: #FFF0F0; color: #A83232; border-color: #E29B9B; }
-
-    /* Task Checkbox */
-    .notepad-task-item {
-      display: flex !important;
-      align-items: center !important;
       gap: 8px;
       min-height: var(--line-height-grid);
       line-height: var(--line-height-grid);
-      margin: 2px 0;
+      margin: 1px 0;
+      user-select: text;
     }
-    .notepad-task-item input[type="checkbox"] {
+    .task-check {
       appearance: none;
       width: 16px;
       height: 16px;
@@ -361,12 +300,119 @@
       border-radius: 4px;
       cursor: pointer;
       flex-shrink: 0;
+      background: transparent;
+      user-select: none;
     }
-    .notepad-task-item input[type="checkbox"]:checked { background: #84532B; }
-    .task-label { outline: none; flex: 1; font-size: 24px; font-family: inherit; color: inherit; }
-    .task-label.checked { text-decoration: line-through; opacity: 0.55; }
+    .task-check:checked {
+      background: #84532B;
+      position: relative;
+    }
+    .task-check:checked::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .task-label {
+      outline: none;
+      flex: 1;
+      font-size: 22px;
+      font-family: inherit;
+      color: inherit;
+      min-height: var(--line-height-grid);
+    }
+    .task-label:empty::before {
+      content: "Task...";
+      color: rgba(140, 120, 100, 0.35);
+    }
+    .task-label.checked {
+      text-decoration: line-through;
+      opacity: 0.55;
+    }
 
-    /* Strike Pen SVG Layer - Strictly non-blocking by default */
+    /* Resizable, Typing-Friendly Table */
+    .notepad-table-wrapper {
+      margin: 10px 0;
+      position: relative;
+      display: block;
+      width: 100%;
+      user-select: text;
+      overflow-x: auto;
+    }
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+    .tbl-btn {
+      background: #F4EFEB;
+      border: 1px solid #DFD6CC;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-family: 'Inter', sans-serif;
+      color: #5A4739;
+      cursor: pointer;
+    }
+    .tbl-btn:hover { background: #84532B; color: #FFF; }
+    .tbl-btn.del-tbl { color: #A83232; margin-left: auto; }
+    .tbl-btn.del-tbl:hover { background: #A83232; color: #FFF; }
+
+    .notepad-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 6px;
+      border: 2px solid var(--table-border-color);
+      overflow: hidden;
+    }
+    .notepad-table th {
+      background: rgba(132, 83, 43, 0.12);
+      border: 1px solid var(--table-border-color);
+      padding: 4px 6px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Caveat', cursive;
+      color: #3D2616;
+      text-align: left;
+      outline: none;
+      position: relative;
+    }
+    .notepad-table td {
+      border: 1px solid rgba(140, 83, 43, 0.3);
+      padding: 4px 6px;
+      min-height: var(--line-height-grid);
+      font-size: 20px;
+      font-family: 'Caveat', cursive;
+      color: var(--ink-color);
+      outline: none;
+    }
+    .notepad-table th:focus, .notepad-table td:focus {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: inset 0 0 0 1px #84532B;
+    }
+
+    /* Col Resize Gripper */
+    .col-resizer {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      cursor: col-resize;
+      user-select: none;
+    }
+    .col-resizer:hover { background: #84532B; }
+
+    /* Strike Pen SVG Layer */
     .strike-svg-layer {
       position: absolute;
       inset: 0;
@@ -378,16 +424,16 @@
     }
     .strike-line {
       stroke: #C93B2B;
-      stroke-width: 3.5;
+      stroke-width: 3;
       stroke-linecap: round;
       opacity: 0.88;
       cursor: pointer;
       pointer-events: auto;
     }
 
-    /* Bottom Info & Floating Dock */
+    /* Clean Auto-Hiding Responsive Dock */
     .pad-bottom-info {
-      padding: 4px 14px 6px 14px;
+      padding: 3px 12px 4px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -402,76 +448,59 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 44px;
+      height: 48px;
       z-index: 40;
       display: flex;
       justify-content: center;
       align-items: flex-end;
     }
     .floating-bottom-dock {
-      width: calc(100% - 16px);
-      background: rgba(255, 255, 255, 0.95);
+      width: calc(100% - 14px);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(220, 210, 200, 0.85);
-      border-radius: 10px;
-      padding: 6px 10px;
+      border-radius: 8px;
+      padding: 4px 8px;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 4px;
       transform: translateY(120%);
-      transition: transform 0.2s ease;
+      transition: transform 0.18s ease;
+      overflow-x: auto;
     }
     .bottom-dock-hitbox:hover .floating-bottom-dock,
     .floating-bottom-dock:focus-within {
       transform: translateY(0);
     }
 
-    .dock-group { display: flex; align-items: center; gap: 4px; }
+    .dock-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
     .dock-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
-      border-radius: 6px;
-      padding: 3px 6px;
+      border-radius: 5px;
+      padding: 2px 6px;
       font-size: 10px;
       color: #4A3A2F;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
+      white-space: nowrap;
     }
     .dock-btn:hover { background: #E8DFD5; }
 
-    .color-swatches { display: flex; gap: 4px; }
+    .color-swatches { display: flex; gap: 3px; }
     .swatch-dot {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       cursor: pointer;
       border: 1px solid rgba(0,0,0,0.12);
-    }
-
-    /* Popover Cards */
-    .warm-brown-card {
-      position: absolute;
-      top: 40px;
-      left: 10px;
-      width: calc(100% - 20px);
-      background: var(--box-warm-brown);
-      color: #FAF5EE;
-      border-radius: 12px;
-      box-shadow: 0 10px 24px rgba(40, 25, 12, 0.35);
-      padding: 10px;
-      z-index: 140;
-      display: none;
-    }
-    .warm-brown-card.visible { display: block; }
-    .card-inner-box {
-      background: var(--box-inner-bg);
-      border-radius: 8px;
-      padding: 8px;
-      color: #332B25;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -479,7 +508,7 @@
 
   <div class="notepad-container" id="notepadWidget">
     
-    <!-- Top Wooden Spiral Binding (Direct Window Drag Area) -->
+    <!-- Top Wooden Spiral Binding (Window Drag) -->
     <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
     <!-- Paper Pad Sheet -->
@@ -490,15 +519,16 @@
         <div class="top-actions">
           <button class="warm-pill-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Toggle Strike Pen">
             <svg class="icon"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
-            <span id="strikeBtnText">Strike: Off</span>
+            <span id="strikeBtnText">Strike</span>
           </button>
           <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp date">
-            <span id="dateStampText">Today</span>
+            <span id="dateStampText">Date</span>
           </div>
         </div>
 
         <div class="top-actions">
-          <button class="warm-pill-btn btn-close-app" onclick="closeDesktopApp()" title="Close Widget (Alt+F4)">
+          <!-- Real Native App Closer -->
+          <button class="warm-pill-btn btn-close-app" onclick="closeDesktopApp(event)" title="Quit App">
             ✕
           </button>
         </div>
@@ -508,7 +538,7 @@
       <div class="perforation-strip">
         <div class="perforation-dots"></div>
         <div class="tear-indicator" onclick="executeTear()" title="Tear off current sheet">
-          <svg class="icon" style="width:10px;height:10px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+          <svg class="icon" style="width:9px;height:9px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
           Tear
         </div>
       </div>
@@ -534,12 +564,12 @@
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Auto-Hiding Dock -->
+        <!-- Responsive Bottom Dock -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
             <div class="dock-group">
-              <button class="dock-btn" onclick="insertChecklist()">Task</button>
-              <button class="dock-btn" onclick="insertTable()">Table</button>
+              <button class="dock-btn" onclick="insertChecklist()">+ Task</button>
+              <button class="dock-btn" onclick="insertTable()">+ Table</button>
               <button class="dock-btn" onclick="previousPage()">← Prev</button>
               <button class="dock-btn" onclick="advancePage()">Next →</button>
             </div>
@@ -564,13 +594,13 @@
   let currentPageIndex = 0;
   let isStrikePenMode = false;
 
-  // Dedicated window dragging listener
+  // Window drag handler
   function setupDragging() {
     const dragElements = [document.getElementById('spiralHeader'), document.querySelector('.pad-topbar')];
     dragElements.forEach(el => {
       if (!el) return;
       el.addEventListener('mousedown', (e) => {
-        if (e.target.closest('button') || e.target.closest('.date-stamp-badge')) return;
+        if (e.target.closest('button') || e.target.closest('.date-stamp-badge') || e.target.closest('.tear-indicator')) return;
         if (window.__TAURI__ && window.__TAURI__.window) {
           window.__TAURI__.window.getCurrentWindow().startDragging();
         }
@@ -578,18 +608,46 @@
     });
   }
 
-  function closeDesktopApp() {
-    if (window.__TAURI__ && window.__TAURI__.window) {
-      window.__TAURI__.window.getCurrentWindow().close();
-    } else {
-      window.close();
+  // Proper Native Process Exit (Kills the process, removes transparent frame)
+  async function closeDesktopApp(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    try {
+      if (window.__TAURI__) {
+        // Tauri v2 process exit
+        if (window.__TAURI__.process && window.__TAURI__.process.exit) {
+          await window.__TAURI__.process.exit(0);
+          return;
+        }
+        // Tauri v2 destroy window
+        if (window.__TAURI__.window && window.__TAURI__.window.getCurrentWindow) {
+          const appWin = window.__TAURI__.window.getCurrentWindow();
+          await appWin.destroy();
+          return;
+        }
+        // Tauri core invoke fallback
+        if (window.__TAURI__.core && window.__TAURI__.core.invoke) {
+          await window.__TAURI__.core.invoke('tauri', { __tauri_pattern: 'exit' });
+          return;
+        }
+      }
+    } catch(err) {
+      console.error('Error closing native window:', err);
+    }
+    // Fallback if not inside Tauri runtime
+    window.close();
   }
 
-  function initSpirals() {
+  // Render spiral rings dynamically based on width
+  function renderSpirals() {
     const header = document.getElementById('spiralHeader');
+    if (!header) return;
+    const width = header.offsetWidth || 340;
+    const count = Math.max(5, Math.floor(width / 38));
     header.innerHTML = '';
-    for(let i=0; i<8; i++) {
+    for(let i = 0; i < count; i++) {
       const ring = document.createElement('div');
       ring.className = 'ring-pair';
       ring.innerHTML = `
@@ -600,6 +658,7 @@
       header.appendChild(ring);
     }
   }
+  window.addEventListener('resize', renderSpirals);
 
   const editorContent = document.getElementById('editorContent');
   const wordCharStats = document.getElementById('wordCharStats');
@@ -611,71 +670,160 @@
   }
   editorContent.addEventListener('input', updateWordCharCount);
 
+  /* Task Keyboard Handler: Clean Enter & Backspace Handlers */
+  editorContent.addEventListener('keydown', (e) => {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
+
+    if (taskItem) {
+      const label = taskItem.querySelector('.task-label');
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const newTask = document.createElement('div');
+        newTask.className = 'notepad-task-item';
+        newTask.innerHTML = `
+          <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
+          <div class="task-label" contenteditable="true"></div>
+        `;
+        taskItem.after(newTask);
+        const newLabel = newTask.querySelector('.task-label');
+        newLabel.focus();
+        return;
+      }
+
+      if (e.key === 'Backspace' && (!label.innerText || label.innerText.trim() === '')) {
+        e.preventDefault();
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        taskItem.replaceWith(p);
+        const range = document.createRange();
+        range.setStart(p, 0);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        return;
+      }
+    }
+  });
+
   function insertChecklist() {
     const task = document.createElement('div');
     task.className = 'notepad-task-item';
     task.innerHTML = `
-      <input type="checkbox" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
+      <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
       <div class="task-label" contenteditable="true"></div>
     `;
     insertNodeAtCursor(task);
+    const label = task.querySelector('.task-label');
+    if (label) label.focus();
   }
 
+  /* Interactive, Resizable Table with Editable Headers */
   function insertTable() {
     const id = 'tbl_' + Date.now();
     const wrapper = document.createElement('div');
     wrapper.className = 'notepad-table-wrapper';
     wrapper.id = id;
+    wrapper.contentEditable = "false";
     wrapper.innerHTML = `
+      <div class="table-toolbar">
+        <button class="tbl-btn" onclick="addTableRow('${id}')">+ Row</button>
+        <button class="tbl-btn" onclick="addTableCol('${id}')">+ Col</button>
+        <button class="tbl-btn" onclick="delTableRow('${id}')">- Row</button>
+        <button class="tbl-btn" onclick="delTableCol('${id}')">- Col</button>
+        <button class="tbl-btn del-tbl" onclick="document.getElementById('${id}').remove()">✕ Delete</button>
+      </div>
       <table class="notepad-table">
+        <thead>
+          <tr>
+            <th contenteditable="true">Header 1<div class="col-resizer"></div></th>
+            <th contenteditable="true">Header 2<div class="col-resizer"></div></th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-          <tr><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+          </tr>
         </tbody>
       </table>
-      <div class="table-controls-overlay" contenteditable="false">
-        <button class="table-axis-btn btn-del-table" onclick="document.getElementById('${id}').remove()" title="Delete Table">✕</button>
-        <button class="table-axis-btn btn-add-col" onclick="addCol('${id}')" title="Add Col">+</button>
-        <button class="table-axis-btn btn-del-col" onclick="delCol('${id}')" title="Remove Col">-</button>
-        <button class="table-axis-btn btn-add-row" onclick="addRow('${id}')" title="Add Row">+</button>
-        <button class="table-axis-btn btn-del-row" onclick="delRow('${id}')" title="Remove Row">-</button>
-      </div>
     `;
     insertNodeAtCursor(wrapper);
+    attachColumnResizers(wrapper);
   }
 
-  function addRow(id) {
-    const table = document.querySelector('#' + id + ' table');
+  function addTableRow(id) {
+    const table = document.querySelector('#' + id + ' .notepad-table');
     if (!table) return;
-    const cols = table.rows[0] ? table.rows[0].cells.length : 2;
-    const r = table.insertRow();
-    for(let i=0; i<cols; i++) {
-      const c = r.insertCell();
-      c.contentEditable = "true";
+    const cols = table.querySelectorAll('thead th').length || 2;
+    const row = table.querySelector('tbody').insertRow();
+    for (let i = 0; i < cols; i++) {
+      const cell = row.insertCell();
+      cell.contentEditable = "true";
     }
   }
 
-  function delRow(id) {
-    const table = document.querySelector('#' + id + ' table');
-    if (!table || table.rows.length <= 1) return;
-    table.deleteRow(-1);
+  function delTableRow(id) {
+    const tbody = document.querySelector('#' + id + ' .notepad-table tbody');
+    if (tbody && tbody.rows.length > 1) {
+      tbody.deleteRow(-1);
+    }
   }
 
-  function addCol(id) {
-    const table = document.querySelector('#' + id + ' table');
+  function addTableCol(id) {
+    const table = document.querySelector('#' + id + ' .notepad-table');
     if (!table) return;
-    for(let i=0; i<table.rows.length; i++) {
-      const c = table.rows[i].insertCell();
-      c.contentEditable = "true";
-    }
+    const headerRow = table.querySelector('thead tr');
+    const newTh = document.createElement('th');
+    newTh.contentEditable = "true";
+    newTh.innerHTML = `Header ${headerRow.children.length + 1}<div class="col-resizer"></div>`;
+    headerRow.appendChild(newTh);
+
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(r => {
+      const cell = r.insertCell();
+      cell.contentEditable = "true";
+    });
+    attachColumnResizers(document.getElementById(id));
   }
 
-  function delCol(id) {
-    const table = document.querySelector('#' + id + ' table');
-    if (!table || !table.rows[0] || table.rows[0].cells.length <= 1) return;
-    for(let i=0; i<table.rows.length; i++) {
-      table.rows[i].deleteCell(-1);
-    }
+  function delTableCol(id) {
+    const table = document.querySelector('#' + id + ' .notepad-table');
+    if (!table) return;
+    const headerRow = table.querySelector('thead tr');
+    if (headerRow.children.length <= 1) return;
+    headerRow.deleteCell(-1);
+
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(r => {
+      if (r.cells.length > 1) r.deleteCell(-1);
+    });
+  }
+
+  function attachColumnResizers(wrapper) {
+    const resizers = wrapper.querySelectorAll('.col-resizer');
+    resizers.forEach(resizer => {
+      resizer.onmousedown = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const th = resizer.parentElement;
+        const startX = e.pageX;
+        const startWidth = th.offsetWidth;
+
+        function onMouseMove(moveEvent) {
+          const newWidth = Math.max(40, startWidth + (moveEvent.pageX - startX));
+          th.style.width = newWidth + 'px';
+        }
+        function onMouseUp() {
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      };
+    });
   }
 
   function insertNodeAtCursor(node) {
@@ -691,7 +839,7 @@
     updateWordCharCount();
   }
 
-  /* Strike Pen */
+  /* Strike Pen Mode */
   const strikeLayer = document.getElementById('strikeLayer');
   let isStriking = false;
   let strikeStartX = 0, strikeStartY = 0;
@@ -708,7 +856,7 @@
       editorContent.classList.add('strike-mode-on');
     } else {
       btn.classList.remove('active');
-      text.innerText = 'Strike: Off';
+      text.innerText = 'Strike';
       strikeLayer.classList.remove('active-strike-mode');
       editorContent.classList.remove('strike-mode-on');
     }
@@ -754,7 +902,7 @@
 
   function executeTear() {
     try {
-      confetti({ particleCount: 25, spread: 60, origin: { y: 0.3 } });
+      confetti({ particleCount: 22, spread: 55, origin: { y: 0.3 } });
     } catch(e) {}
     pages.splice(currentPageIndex, 1);
     if (pages.length === 0) {
@@ -786,9 +934,12 @@
     const p = pages[idx];
     editorContent.innerHTML = p.content || '';
     changePageColor(p.color || '#FFFDF4');
+    document.getElementById('dateStampText').innerText = p.dateStamp || 'Date';
     document.getElementById('curPageNum').innerText = idx + 1;
     document.getElementById('totalPageNum').innerText = pages.length;
     strikeLayer.innerHTML = '';
+    
+    document.querySelectorAll('.notepad-table-wrapper').forEach(attachColumnResizers);
     updateWordCharCount();
   }
 
@@ -797,7 +948,7 @@
     document.documentElement.style.setProperty('--bg-page', hex);
   }
 
-  initSpirals();
+  renderSpirals();
   stampTodayDate();
   setupDragging();
   loadPage(0);
