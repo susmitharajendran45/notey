@@ -10,13 +10,17 @@
     "windows": [
       {
         "title": "Tear-Off Notepad",
-        "width": 600,
-        "height": 760,
-        "resizable": false,
+        "width": 350,
+        "height": 480,
+        "minWidth": 280,
+        "minHeight": 320,
+        "maxWidth": 800,
+        "maxHeight": 1000,
+        "resizable": true,
         "decorations": false,
         "transparent": true,
-        "alwaysOnTop": true,
-        "shadow": false
+        "alwaysOnTop": false,
+        "shadow": true
       }
     ]
   },
