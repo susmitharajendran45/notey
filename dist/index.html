@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notepad Widget</title>
+  <title>Tear-Off Notepad</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      --bg-surface: #FAFAFA;
-      --bg-accent: #F4F4F5;
-      --border-color: #E4E4E7;
-      --border-focus: #18181B;
-      --text-main: #09090B;
-      --text-muted: #71717A;
-      --line-grid: rgba(24, 24, 27, 0.05);
-      --row-height: 28px;
+      --bg-frame: #F8F7F4;
+      --bg-sheet: #FFFFFF;
+      --border-subtle: #E6E2DA;
+      --border-accent: #7C4A26;
+      --text-main: #241D17;
+      --text-muted: #786C60;
+      --highlight: #7C4A26;
+      --line-grid: rgba(124, 74, 38, 0.08);
+      --row-height: 32px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,7 +28,7 @@
       height: 100%;
       overflow: hidden;
       background: transparent !important;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: var(--text-main);
       user-select: none;
     }
@@ -44,64 +46,89 @@
       flex-shrink: 0;
     }
 
+    /* Outer Container */
     .widget-container {
       width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 6px;
+      padding: 6px 8px;
     }
 
     .widget-frame {
       flex: 1;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
+      background: var(--bg-frame);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 12px 28px -6px rgba(45, 30, 20, 0.16), 0 4px 10px rgba(0, 0, 0, 0.05);
       position: relative;
     }
 
-    /* Executive Clean Titlebar & Drag Region */
-    .titlebar {
-      height: 34px;
-      min-height: 34px;
+    /* Wooden Spiral Titlebar (Window Drag Area) */
+    .spiral-header {
+      height: 32px;
+      min-height: 32px;
+      background: linear-gradient(180deg, #5C381E 0%, #452814 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 0 20px;
+      cursor: grab;
+      -webkit-app-region: drag;
+      position: relative;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+    }
+    .spiral-header:active { cursor: grabbing; }
+
+    .ring-hole {
+      width: 10px;
+      height: 10px;
+      background: #201208;
+      border-radius: 50%;
+      box-shadow: inset 1px 1px 2px #000, 0 1px 1px rgba(255,255,255,0.2);
+      position: relative;
+      pointer-events: none;
+    }
+    .ring-hole::after {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 2px;
+      width: 6px;
+      height: 22px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #D4AF8B 0%, #8C532B 50%, #4A2610 100%);
+      box-shadow: 1px 2px 3px rgba(0,0,0,0.35);
+    }
+
+    /* Top Utility Bar */
+    .top-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border-color);
-      cursor: grab;
-      -webkit-app-region: drag;
-    }
-    .titlebar:active { cursor: grabbing; }
-
-    .titlebar-left, .titlebar-right {
-      display: flex;
-      align-items: center;
+      padding: 8px 12px 6px 12px;
+      background: var(--bg-frame);
+      border-bottom: 1px dashed var(--border-subtle);
       gap: 6px;
       -webkit-app-region: no-drag;
     }
 
-    .app-brand {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      color: var(--text-main);
+    .tool-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      flex-wrap: nowrap;
     }
 
-    .btn-action {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      padding: 3px 6px;
-      border-radius: 5px;
+    .pill-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 4px 8px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
@@ -109,42 +136,69 @@
       align-items: center;
       gap: 4px;
       transition: all 0.12s ease;
-      -webkit-app-region: no-drag;
+      white-space: nowrap;
     }
-    .btn-action:hover {
-      background: var(--bg-accent);
-      color: var(--text-main);
-      border-color: var(--border-color);
-    }
-    .btn-action.active {
-      background: var(--text-main);
-      color: #FFF;
-      border-color: var(--text-main);
+    .pill-btn:hover {
+      background: var(--highlight);
+      color: #FFFFFF;
+      border-color: var(--highlight);
     }
 
     .btn-close {
-      padding: 3px 6px;
-      border-radius: 5px;
+      background: rgba(220, 38, 38, 0.08);
+      color: #DC2626;
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
       font-size: 11px;
-      color: var(--text-muted);
-      border: none;
-      background: transparent;
       cursor: pointer;
-      -webkit-app-region: no-drag;
     }
     .btn-close:hover {
-      background: #EF4444;
-      color: #FFFFFF;
+      background: #DC2626 !important;
+      color: #FFFFFF !important;
     }
 
-    /* Writing Canvas */
-    .content-viewport {
+    /* Perforation Strip */
+    .perforation-bar {
+      height: 18px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    .perforation-dots {
+      flex: 1;
+      height: 1px;
+      border-bottom: 2px dashed rgba(124, 74, 38, 0.25);
+      margin-right: 8px;
+    }
+    .tear-action-btn {
+      background: #84532B;
+      color: #FFF;
+      border: none;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+      transition: transform 0.1s;
+    }
+    .tear-action-btn:hover { transform: scale(1.04); background: #6A3E1D; }
+
+    /* Writing Viewport */
+    .canvas-wrapper {
       flex: 1;
       position: relative;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
-      -webkit-app-region: no-drag;
+      overflow: hidden;
+      background: var(--bg-sheet);
     }
 
     .editor-canvas {
@@ -153,9 +207,9 @@
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 12px 16px 48px 16px;
+      padding: 12px 18px 50px 18px;
       outline: none;
-      font-size: 14px;
+      font-size: 15px;
       line-height: var(--row-height);
       color: var(--text-main);
       cursor: text;
@@ -166,13 +220,17 @@
         var(--line-grid) calc(var(--row-height) - 1px),
         var(--line-grid) var(--row-height)
       );
-      background-position: 0 4px;
+      background-position: 0 6px;
     }
+    .editor-canvas::-webkit-scrollbar { width: 5px; }
+    .editor-canvas::-webkit-scrollbar-thumb { background: rgba(124,74,38,0.2); border-radius: 4px; }
 
     .editor-canvas:empty::before {
-      content: "Type note or click + Task, + Table below...";
-      color: var(--text-muted);
+      content: "Start typing notes here...";
+      color: rgba(120, 108, 96, 0.45);
       pointer-events: none;
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
     }
 
     .editor-canvas p, .editor-canvas div:not(.task-row):not(.table-container) {
@@ -181,11 +239,11 @@
       margin: 0;
     }
 
-    /* Streamlined Task Checklist */
+    /* Checklist Tasks */
     .task-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       min-height: var(--row-height);
       line-height: var(--row-height);
       user-select: text;
@@ -193,9 +251,9 @@
     }
     .task-checkbox {
       appearance: none;
-      width: 15px;
-      height: 15px;
-      border: 1.5px solid #A1A1AA;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #84532B;
       border-radius: 4px;
       cursor: pointer;
       flex-shrink: 0;
@@ -203,8 +261,7 @@
       position: relative;
     }
     .task-checkbox:checked {
-      background: var(--text-main);
-      border-color: var(--text-main);
+      background: #84532B;
     }
     .task-checkbox:checked::after {
       content: "";
@@ -217,78 +274,73 @@
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
-    .task-input {
+    .task-label {
       outline: none;
       flex: 1;
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-main);
     }
-    .task-input.completed {
+    .task-label.completed {
       text-decoration: line-through;
       color: var(--text-muted);
     }
 
-    /* Clean Engineering Table */
+    /* Structured Tables */
     .table-container {
       margin: 12px 0;
       position: relative;
       user-select: text;
       width: 100%;
     }
-    .table-actions {
+    .table-toolbar {
       display: flex;
       align-items: center;
       gap: 4px;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       user-select: none;
-      font-size: 10px;
     }
     .tbl-btn {
-      background: #FFFFFF;
-      border: 1px solid var(--border-color);
+      background: #FAF8F5;
+      border: 1px solid var(--border-subtle);
       border-radius: 4px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       font-size: 10px;
-      color: var(--text-muted);
+      color: #634B38;
       cursor: pointer;
+      font-weight: 500;
     }
-    .tbl-btn:hover {
-      background: var(--bg-accent);
-      color: var(--text-main);
-    }
-    .tbl-btn.tbl-danger { color: #EF4444; margin-left: auto; }
-    .tbl-btn.tbl-danger:hover { background: #FEF2F2; }
+    .tbl-btn:hover { background: #84532B; color: #FFF; }
+    .tbl-btn.tbl-del { color: #DC2626; margin-left: auto; }
+    .tbl-btn.tbl-del:hover { background: #DC2626; color: #FFF; }
 
     .data-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
       background: #FFFFFF;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid #84532B;
       border-radius: 6px;
       overflow: hidden;
     }
     .data-table th {
-      background: var(--bg-accent);
-      border: 1px solid var(--border-color);
+      background: rgba(132, 83, 43, 0.08);
+      border: 1px solid rgba(132, 83, 43, 0.25);
       padding: 6px 8px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--text-main);
       text-align: left;
       outline: none;
       position: relative;
     }
     .data-table td {
-      border: 1px solid var(--border-color);
+      border: 1px solid rgba(132, 83, 43, 0.2);
       padding: 6px 8px;
-      font-size: 13px;
-      color: var(--text-main);
+      font-size: 14px;
       outline: none;
     }
     .data-table th:focus, .data-table td:focus {
-      background: #FAFAFA;
-      box-shadow: inset 0 0 0 1px var(--text-main);
+      background: #FFFDF9;
+      box-shadow: inset 0 0 0 1px #84532B;
     }
 
     .col-resizer {
@@ -296,27 +348,94 @@
       right: 0;
       top: 0;
       bottom: 0;
-      width: 4px;
+      width: 5px;
       cursor: col-resize;
       user-select: none;
     }
-    .col-resizer:hover { background: var(--text-main); }
+    .col-resizer:hover { background: #84532B; }
 
-    /* Calendar Popover */
-    .popover-panel {
+    /* Popover Panels (Archive, Bookmarks, Calendar) */
+    .side-modal {
       position: absolute;
       top: 40px;
       left: 10px;
-      width: 250px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      padding: 10px;
-      z-index: 100;
+      width: calc(100% - 20px);
+      max-height: calc(100% - 50px);
+      background: #FAF7F2;
+      border: 1px solid #D6CBC1;
+      border-radius: 10px;
+      box-shadow: 0 14px 30px rgba(35, 20, 10, 0.25);
+      padding: 12px;
+      z-index: 120;
       display: none;
+      flex-direction: column;
+      overflow-y: auto;
     }
-    .popover-panel.visible { display: block; }
+    .side-modal.visible { display: flex; }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #382516;
+    }
+
+    /* Archive Card Entries */
+    .archive-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .archive-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .archive-date { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+    .archive-snippet {
+      max-height: 48px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-main);
+      white-space: pre-wrap;
+    }
+    .archive-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    /* Bookmarks list */
+    .bm-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+    .bm-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Calendar Grid */
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -330,72 +449,112 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .cal-day:hover { background: var(--bg-accent); }
-    .cal-day.today { background: var(--text-main); color: #FFF; font-weight: 600; }
+    .cal-day:hover { background: #EBE5DC; }
+    .cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Minimalist Footer Bar */
-    .footer-bar {
-      height: 32px;
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-color);
+    /* Bottom Dock Bar */
+    .bottom-dock {
+      height: 36px;
+      background: var(--bg-frame);
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 12px;
       font-size: 11px;
       color: var(--text-muted);
     }
-    .footer-btn-group {
+    .bottom-dock-left {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
-    .footer-btn {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 11px;
-      color: var(--text-main);
-      cursor: pointer;
+
+    @keyframes tearAnim {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(180px) rotate(8deg); opacity: 0; }
     }
-    .footer-btn:hover { background: var(--bg-accent); }
+    .tearing { animation: tearAnim 0.45s ease-in forwards; }
   </style>
 </head>
 <body>
 
   <div class="widget-container">
-    <div class="widget-frame">
+    <div class="widget-frame" id="widgetFrame">
       
-      <!-- Window Titlebar -->
-      <div class="titlebar" data-tauri-drag-region>
-        <div class="titlebar-left">
-          <span class="app-brand">
-            <svg class="icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            Memo
-          </span>
-          <button class="btn-action" onclick="toggleCalendar(event)">
+      <!-- Wooden Spiral Header (Native Drag Region) -->
+      <div class="spiral-header" data-tauri-drag-region>
+        <div class="ring-hole"></div><div class="ring-hole"></div>
+        <div class="ring-hole"></div><div class="ring-hole"></div>
+        <div class="ring-hole"></div><div class="ring-hole"></div>
+        <div class="ring-hole"></div><div class="ring-hole"></div>
+      </div>
+
+      <!-- Top Toolbar Controls -->
+      <div class="top-toolbar">
+        <div class="tool-group">
+          <button class="pill-btn" onclick="toggleCalendar(event)" title="Calendar">
             <svg class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span id="dateBadge">Date</span>
+            <span id="dateBadge">Today</span>
+          </button>
+          <button class="pill-btn" onclick="toggleArchive(event)" title="View Torn Pages">
+            <svg class="icon"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            Archive (<span id="archiveCount">0</span>)
+          </button>
+          <button class="pill-btn" onclick="toggleBookmarks(event)" title="Saved Links">
+            <svg class="icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            Links (<span id="linksCount">1</span>)
           </button>
         </div>
 
-        <div class="titlebar-right">
-          <button class="btn-close" onclick="terminateApp(event)" title="Close Window (Alt+F4)">✕</button>
+        <div class="tool-group">
+          <button class="btn-close" onclick="terminateApp(event)" title="Close App (Alt+F4)">✕</button>
         </div>
       </div>
 
-      <!-- Calendar Panel -->
-      <div class="popover-panel" id="calendarPanel">
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:600;">
-          <span id="calMonthYear">Month Year</span>
+      <!-- Perforated Tear Crease -->
+      <div class="perforation-bar">
+        <div class="perforation-dots"></div>
+        <button class="tear-action-btn" onclick="tearOffCurrentPage()" title="Tear off sheet & save to Archive">
+          <svg class="icon" style="width:10px;height:10px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+          Tear Page
+        </button>
+      </div>
+
+      <!-- Calendar Modal -->
+      <div class="side-modal" id="calModal">
+        <div class="modal-head">
+          <span id="calTitle">Calendar</span>
           <button class="tbl-btn" onclick="toggleCalendar(event)">✕</button>
         </div>
-        <div class="cal-grid" id="calCells"></div>
+        <div class="cal-grid" id="calGridCells"></div>
       </div>
 
-      <!-- Content Viewport -->
-      <div class="content-viewport">
+      <!-- Archive Modal (Holds All Torn Pages) -->
+      <div class="side-modal" id="archiveModal">
+        <div class="modal-head">
+          <span>Torn Pages Archive</span>
+          <button class="tbl-btn" onclick="toggleArchive(event)">✕</button>
+        </div>
+        <div class="archive-list" id="archiveItemsList"></div>
+      </div>
+
+      <!-- Bookmarks Drawer Modal -->
+      <div class="side-modal" id="bookmarksModal">
+        <div class="modal-head">
+          <span>Bookmarks & Links</span>
+          <button class="tbl-btn" onclick="toggleBookmarks(event)">✕</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <input type="text" id="bmTitle" placeholder="Title" style="padding:4px 6px; border:1px solid #D6CBC1; border-radius:4px; font-size:11px;">
+          <input type="text" id="bmUrl" placeholder="https://..." style="padding:4px 6px; border:1px solid #D6CBC1; border-radius:4px; font-size:11px;">
+          <button class="tbl-btn" style="background:#84532B; color:#FFF; padding:4px;" onclick="addBookmark()">Add Bookmark</button>
+        </div>
+        <div class="bm-list" id="bmItemsList"></div>
+      </div>
+
+      <!-- Writing Area -->
+      <div class="canvas-wrapper">
         <div 
           class="editor-canvas" 
           id="editorContent" 
@@ -404,21 +563,46 @@
         ></div>
       </div>
 
-      <!-- Professional Compact Footer -->
-      <div class="footer-bar">
-        <div class="footer-btn-group">
-          <button class="footer-btn" onclick="insertChecklist()">+ Task</button>
-          <button class="footer-btn" onclick="insertTable()">+ Table</button>
-          <button class="footer-btn" onclick="clearSheet()">Clear</button>
+      <!-- Bottom Status & Quick Action Dock -->
+      <div class="bottom-dock">
+        <div class="bottom-dock-left">
+          <button class="tbl-btn" onclick="insertChecklist()">+ Task</button>
+          <button class="tbl-btn" onclick="insertTable()">+ Table</button>
         </div>
-        <span id="statsLabel">0 words</span>
+        <span id="wordStats">0 words</span>
       </div>
 
     </div>
   </div>
 
 <script>
-  // Clean Native Process Termination (Guaranteed No Ghost Overlay)
+  let archive = [];
+  let bookmarks = [{ id: 1, title: 'GitHub', url: 'https://github.com' }];
+
+  // 1. Procedural Realistic Paper Rip Audio Generator
+  function playPaperTearSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioCtx();
+      const dur = 0.22;
+      const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < buf.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (buf.length * 0.4));
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1400;
+      filter.Q.value = 2.2;
+      noise.connect(filter);
+      filter.connect(ctx.destination);
+      noise.start();
+    } catch(e) {}
+  }
+
+  // 2. Guaranteed App Termination
   async function terminateApp(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     try {
@@ -426,14 +610,12 @@
         await window.__TAURI__.core.invoke('exit_app');
         return;
       }
-    } catch(err) {
-      console.error(err);
-    }
+    } catch(err) { console.error(err); }
     window.close();
   }
 
-  // Window drag fallback listener
-  document.querySelector('.titlebar').addEventListener('mousedown', (e) => {
+  // 3. Fallback Drag Listener
+  document.querySelector('.spiral-header').addEventListener('mousedown', (e) => {
     if (e.target.closest('button')) return;
     if (window.__TAURI__ && window.__TAURI__.window) {
       window.__TAURI__.window.getCurrentWindow().startDragging();
@@ -441,33 +623,100 @@
   });
 
   const editor = document.getElementById('editorContent');
-  const stats = document.getElementById('statsLabel');
+  const wordStats = document.getElementById('wordStats');
 
   editor.addEventListener('input', () => {
     const text = editor.innerText.replace(/[\n\r]+/g, ' ').trim();
     const count = text ? text.split(/\s+/).length : 0;
-    stats.innerText = `${count} word${count === 1 ? '' : 's'}`;
+    wordStats.innerText = `${count} word${count === 1 ? '' : 's'}`;
   });
 
-  /* Task Keyboard Shortcuts: Enter for new item, Backspace to remove */
+  // 4. Tear Off Sheet with Sound & Archive Storing
+  function tearOffCurrentPage() {
+    const content = editor.innerHTML;
+    const textSnippet = editor.innerText.trim();
+    if (!textSnippet) return;
+
+    playPaperTearSound();
+    try { confetti({ particleCount: 22, spread: 60, origin: { y: 0.25 } }); } catch(e) {}
+
+    // Save to Archive
+    archive.unshift({
+      id: Date.now(),
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      html: content,
+      snippet: textSnippet
+    });
+    updateArchiveCount();
+
+    // Visual tearing animation
+    const canvas = document.querySelector('.canvas-wrapper');
+    canvas.classList.add('tearing');
+    setTimeout(() => {
+      canvas.classList.remove('tearing');
+      editor.innerHTML = '';
+      wordStats.innerText = '0 words';
+    }, 400);
+  }
+
+  function updateArchiveCount() {
+    document.getElementById('archiveCount').innerText = archive.length;
+  }
+
+  function renderArchive() {
+    const list = document.getElementById('archiveItemsList');
+    list.innerHTML = '';
+    if (archive.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-muted); font-size:11px; padding:8px;">No torn pages yet.</div>';
+      return;
+    }
+    archive.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'archive-item';
+      el.innerHTML = `
+        <div class="archive-date">${item.date}</div>
+        <div class="archive-snippet">${escapeHtml(item.snippet)}</div>
+        <div class="archive-actions">
+          <button class="tbl-btn" onclick="restorePage(${item.id})">Restore</button>
+          <button class="tbl-btn" style="color:#DC2626;" onclick="deleteArchived(${item.id})">Delete</button>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function restorePage(id) {
+    const found = archive.find(a => a.id === id);
+    if (!found) return;
+    editor.innerHTML = found.html;
+    toggleArchive();
+  }
+
+  function deleteArchived(id) {
+    archive = archive.filter(a => a.id !== id);
+    updateArchiveCount();
+    renderArchive();
+  }
+
+  // 5. Checklist Keyboard Handler (Enter = Next Task, Backspace on Empty = Remove)
   editor.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
     const taskRow = sel.anchorNode?.parentElement?.closest('.task-row');
 
     if (taskRow) {
-      const input = taskRow.querySelector('.task-input');
+      const label = taskRow.querySelector('.task-label');
       if (e.key === 'Enter') {
         e.preventDefault();
         const next = document.createElement('div');
         next.className = 'task-row';
         next.innerHTML = `
           <input type="checkbox" class="task-checkbox" onchange="this.nextElementSibling.classList.toggle('completed', this.checked)">
-          <div class="task-input" contenteditable="true"></div>
+          <div class="task-label" contenteditable="true"></div>
         `;
         taskRow.after(next);
-        next.querySelector('.task-input').focus();
-      } else if (e.key === 'Backspace' && (!input.innerText || input.innerText.trim() === '')) {
+        next.querySelector('.task-label').focus();
+      } else if (e.key === 'Backspace' && (!label.innerText || label.innerText.trim() === '')) {
         e.preventDefault();
         taskRow.remove();
       }
@@ -479,13 +728,13 @@
     row.className = 'task-row';
     row.innerHTML = `
       <input type="checkbox" class="task-checkbox" onchange="this.nextElementSibling.classList.toggle('completed', this.checked)">
-      <div class="task-input" contenteditable="true"></div>
+      <div class="task-label" contenteditable="true"></div>
     `;
     insertNode(row);
-    row.querySelector('.task-input').focus();
+    row.querySelector('.task-label').focus();
   }
 
-  /* Robust Engineering Table */
+  // 6. Resizable Tables
   function insertTable() {
     const id = 'tbl_' + Date.now();
     const wrapper = document.createElement('div');
@@ -493,18 +742,17 @@
     wrapper.id = id;
     wrapper.contentEditable = "false";
     wrapper.innerHTML = `
-      <div class="table-actions">
+      <div class="table-toolbar">
         <button class="tbl-btn" onclick="addTableRow('${id}')">+ Row</button>
         <button class="tbl-btn" onclick="addTableCol('${id}')">+ Col</button>
         <button class="tbl-btn" onclick="delTableRow('${id}')">- Row</button>
-        <button class="tbl-btn" onclick="delTableCol('${id}')">- Col</button>
-        <button class="tbl-btn tbl-danger" onclick="document.getElementById('${id}').remove()">✕</button>
+        <button class="tbl-btn tbl-del" onclick="document.getElementById('${id}').remove()">✕</button>
       </div>
       <table class="data-table">
         <thead>
           <tr>
-            <th contenteditable="true">Col 1<div class="col-resizer"></div></th>
-            <th contenteditable="true">Col 2<div class="col-resizer"></div></th>
+            <th contenteditable="true">Item<div class="col-resizer"></div></th>
+            <th contenteditable="true">Notes<div class="col-resizer"></div></th>
           </tr>
         </thead>
         <tbody>
@@ -540,24 +788,12 @@
     th.contentEditable = "true";
     th.innerHTML = `Col ${headerRow.children.length + 1}<div class="col-resizer"></div>`;
     headerRow.appendChild(th);
-
     const rows = document.querySelectorAll('#' + id + ' tbody tr');
     rows.forEach(r => {
       const cell = r.insertCell();
       cell.contentEditable = "true";
     });
     bindResizers(document.getElementById(id));
-  }
-
-  function delTableCol(id) {
-    const headerRow = document.querySelector('#' + id + ' thead tr');
-    if (headerRow.children.length <= 1) return;
-    headerRow.deleteCell(-1);
-
-    const rows = document.querySelectorAll('#' + id + ' tbody tr');
-    rows.forEach(r => {
-      if (r.cells.length > 1) r.deleteCell(-1);
-    });
   }
 
   function bindResizers(wrapper) {
@@ -568,10 +804,7 @@
         const th = resizer.parentElement;
         const startX = e.pageX;
         const startWidth = th.offsetWidth;
-
-        function move(m) {
-          th.style.width = Math.max(50, startWidth + (m.pageX - startX)) + 'px';
-        }
+        function move(m) { th.style.width = Math.max(40, startWidth + (m.pageX - startX)) + 'px'; }
         function stop() {
           window.removeEventListener('mousemove', move);
           window.removeEventListener('mouseup', stop);
@@ -594,50 +827,105 @@
     }
   }
 
-  function clearSheet() {
-    if (confirm('Clear current note?')) {
-      editor.innerHTML = '';
-      stats.innerText = '0 words';
-    }
+  // 7. Modals: Archive, Bookmarks, Calendar
+  const calModal = document.getElementById('calModal');
+  const archiveModal = document.getElementById('archiveModal');
+  const bmModal = document.getElementById('bookmarksModal');
+
+  function closeAllModals() {
+    calModal.classList.remove('visible');
+    archiveModal.classList.remove('visible');
+    bmModal.classList.remove('visible');
   }
 
-  /* Date & Calendar */
-  const calPanel = document.getElementById('calendarPanel');
   function toggleCalendar(e) {
-    e.stopPropagation();
-    calPanel.classList.toggle('visible');
-    if (calPanel.classList.contains('visible')) renderCalendar();
+    if (e) e.stopPropagation();
+    const isVis = calModal.classList.contains('visible');
+    closeAllModals();
+    if (!isVis) { calModal.classList.add('visible'); renderCalendar(); }
+  }
+
+  function toggleArchive(e) {
+    if (e) e.stopPropagation();
+    const isVis = archiveModal.classList.contains('visible');
+    closeAllModals();
+    if (!isVis) { archiveModal.classList.add('visible'); renderArchive(); }
+  }
+
+  function toggleBookmarks(e) {
+    if (e) e.stopPropagation();
+    const isVis = bmModal.classList.contains('visible');
+    closeAllModals();
+    if (!isVis) { bmModal.classList.add('visible'); renderBookmarks(); }
   }
 
   function renderCalendar() {
     const now = new Date();
-    document.getElementById('calMonthYear').innerText = now.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    const cells = document.getElementById('calCells');
+    document.getElementById('calTitle').innerText = now.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    const cells = document.getElementById('calGridCells');
     cells.innerHTML = '';
-
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
     const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-
     for (let i = 0; i < firstDay; i++) cells.appendChild(document.createElement('div'));
-
     for (let d = 1; d <= totalDays; d++) {
       const el = document.createElement('div');
       el.className = 'cal-day' + (d === now.getDate() ? ' today' : '');
       el.innerText = d;
       el.onclick = () => {
         document.getElementById('dateBadge').innerText = `${now.toLocaleDateString('en-US', { month: 'short' })} ${d}`;
-        calPanel.classList.remove('visible');
+        closeAllModals();
       };
       cells.appendChild(el);
     }
   }
 
+  function renderBookmarks() {
+    document.getElementById('linksCount').innerText = bookmarks.length;
+    const list = document.getElementById('bmItemsList');
+    list.innerHTML = '';
+    bookmarks.forEach(bm => {
+      const el = document.createElement('div');
+      el.className = 'bm-item';
+      el.innerHTML = `
+        <span style="font-weight:600;">${escapeHtml(bm.title)}</span>
+        <div style="display:flex; gap:4px;">
+          <button class="tbl-btn" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
+          <button class="tbl-btn" style="color:#DC2626;" onclick="deleteBookmark(${bm.id})">✕</button>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function addBookmark() {
+    const title = document.getElementById('bmTitle').value.trim();
+    const url = document.getElementById('bmUrl').value.trim();
+    if (!url) return;
+    bookmarks.push({ id: Date.now(), title: title || url, url: url.startsWith('http') ? url : 'https://' + url });
+    document.getElementById('bmTitle').value = '';
+    document.getElementById('bmUrl').value = '';
+    renderBookmarks();
+  }
+
+  function deleteBookmark(id) {
+    bookmarks = bookmarks.filter(b => b.id !== id);
+    renderBookmarks();
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
   document.addEventListener('click', (e) => {
-    if (!calPanel.contains(e.target)) calPanel.classList.remove('visible');
+    if (!e.target.closest('.side-modal') && !e.target.closest('.pill-btn')) {
+      closeAllModals();
+    }
   });
 
-  // Stamp current date by default
+  // Stamp current date
   document.getElementById('dateBadge').innerText = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  renderBookmarks();
+  updateArchiveCount();
 </script>
 </body>
 </html>
