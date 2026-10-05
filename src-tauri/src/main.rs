@@ -3,6 +3,7 @@
 
 use std::process;
 use tauri::Manager;
+use tauri_plugin_autostart::MacPreferredLauncher;
 
 #[tauri::command]
 fn exit_app() {
@@ -20,7 +21,7 @@ fn toggle_always_on_top(app_handle: tauri::AppHandle, state: bool) -> Result<(),
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
-            tauri_plugin_autostart::MacPreferredLauncher::LaunchAgent,
+            MacPreferredLauncher::LaunchAgent,
             Some(vec![]),
         ))
         .invoke_handler(tauri::generate_handler![exit_app, toggle_always_on_top])
