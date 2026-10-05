@@ -6,19 +6,19 @@
   <title>Tear-Off Notepad</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      --bg-frame: #F8F7F4;
-      --bg-sheet: #FFFFFF;
-      --border-subtle: #E6E2DA;
-      --border-accent: #7C4A26;
-      --text-main: #241D17;
-      --text-muted: #786C60;
-      --highlight: #7C4A26;
-      --line-grid: rgba(124, 74, 38, 0.08);
-      --row-height: 32px;
+      --bg-page: #FFFDF4;
+      --paper-line: rgba(110, 85, 60, 0.12);
+      --ink-color: #2D241E;
+      --binding-wood: #784724;
+      --binding-shadow: rgba(0,0,0,0.18);
+      --line-height-grid: 32px;
+      --table-border-color: #8C532B;
+      --box-warm-brown: #3D2616;
+      --box-inner-bg: #FAF5EE;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,318 +29,508 @@
       overflow: hidden;
       background: transparent !important;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: var(--text-main);
+      color: #332B25;
       user-select: none;
     }
 
+    /* Crisp, Centered SVG Icons */
     .icon {
       width: 13px;
       height: 13px;
+      min-width: 13px;
+      min-height: 13px;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
       fill: none;
-      display: inline-block;
-      vertical-align: middle;
+      display: block;
       flex-shrink: 0;
     }
 
-    /* Outer Container */
-    .widget-container {
+    .notepad-container {
       width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 6px 8px;
+      padding: 4px 6px 8px 6px;
+      filter: drop-shadow(0 8px 18px rgba(60, 45, 30, 0.22));
     }
 
-    .widget-frame {
+    /* Wooden Spiral Titlebar Drag Area */
+    .spiral-binding-header {
+      height: 30px;
+      min-height: 30px;
+      position: relative;
+      z-index: 30;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 0 14px;
+      cursor: grab;
+      -webkit-app-region: drag;
+      overflow: hidden;
+    }
+    .spiral-binding-header:active { cursor: grabbing; }
+
+    .ring-pair {
+      width: 11px;
+      height: 38px;
+      position: relative;
+      top: -4px;
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+    .ring-wire {
+      position: absolute;
+      width: 5px;
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #B5845C 0%, #6E3F1E 45%, #3B200F 85%, #8C532B 100%);
+      box-shadow: 1px 2px 3px var(--binding-shadow), inset 1px 1px 1px rgba(255,255,255,0.4);
+    }
+    .ring-wire.left { left: 0px; }
+    .ring-wire.right { left: 6px; }
+
+    .punch-hole {
+      position: absolute;
+      bottom: -3px;
+      left: 1px;
+      width: 9px;
+      height: 9px;
+      background: #4A3A2F;
+      border-radius: 50%;
+      box-shadow: inset 1px 1px 3px #000;
+      z-index: -1;
+    }
+
+    /* Paper Pad Sheet */
+    .notepad-sheet {
       flex: 1;
-      background: var(--bg-frame);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+      background: var(--bg-page);
+      border-radius: 12px 12px 16px 16px;
+      position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 12px 28px -6px rgba(45, 30, 20, 0.16), 0 4px 10px rgba(0, 0, 0, 0.05);
-      position: relative;
+      box-shadow: 
+        0 1px 3px rgba(0,0,0,0.04),
+        0 6px 16px -2px rgba(70,50,30,0.12),
+        inset 0 0 35px rgba(180, 140, 90, 0.04);
+      transition: background-color 0.2s ease;
     }
 
-    /* Wooden Spiral Titlebar (Window Drag Area) */
-    .spiral-header {
-      height: 32px;
-      min-height: 32px;
-      background: linear-gradient(180deg, #5C381E 0%, #452814 100%);
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      padding: 0 20px;
-      cursor: grab;
-      -webkit-app-region: drag;
-      position: relative;
-      border-bottom: 1px solid rgba(0,0,0,0.25);
-    }
-    .spiral-header:active { cursor: grabbing; }
-
-    .ring-hole {
-      width: 10px;
-      height: 10px;
-      background: #201208;
-      border-radius: 50%;
-      box-shadow: inset 1px 1px 2px #000, 0 1px 1px rgba(255,255,255,0.2);
-      position: relative;
-      pointer-events: none;
-    }
-    .ring-hole::after {
-      content: "";
-      position: absolute;
-      top: -12px;
-      left: 2px;
-      width: 6px;
-      height: 22px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #D4AF8B 0%, #8C532B 50%, #4A2610 100%);
-      box-shadow: 1px 2px 3px rgba(0,0,0,0.35);
-    }
-
-    /* Top Utility Bar */
-    .top-toolbar {
+    /* Top Action Bar */
+    .pad-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 12px 6px 12px;
-      background: var(--bg-frame);
-      border-bottom: 1px dashed var(--border-subtle);
-      gap: 6px;
-      -webkit-app-region: no-drag;
+      padding: 6px 10px 4px 10px;
+      font-size: 11px;
+      color: #7B6F64;
+      position: relative;
+      z-index: 20;
+      cursor: grab;
+      -webkit-app-region: drag;
+      gap: 4px;
     }
+    .pad-topbar:active { cursor: grabbing; }
 
-    .tool-group {
+    .top-actions {
       display: flex;
       align-items: center;
       gap: 5px;
+      -webkit-app-region: no-drag;
       flex-wrap: nowrap;
     }
 
-    .pill-btn {
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
+    .warm-pill-btn {
+      background: rgba(61, 38, 22, 0.08);
+      border: 1px solid rgba(61, 38, 22, 0.16);
+      color: #4A3222;
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: 999px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
+      line-height: 1;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition: all 0.12s ease;
+      justify-content: center;
+      gap: 5px;
       white-space: nowrap;
+      transition: all 0.15s ease;
+      -webkit-app-region: no-drag !important;
+      pointer-events: auto !important;
     }
-    .pill-btn:hover {
-      background: var(--highlight);
-      color: #FFFFFF;
-      border-color: var(--highlight);
-    }
+    .warm-pill-btn:hover { background: #3D2616; color: #FFF; border-color: #3D2616; }
+    .warm-pill-btn.active { background: #C93B2B; color: #FFF; border-color: #C93B2B; }
 
-    .btn-close {
-      background: rgba(220, 38, 38, 0.08);
-      color: #DC2626;
-      border: 1px solid rgba(220, 38, 38, 0.2);
-      padding: 4px 8px;
-      border-radius: 6px;
+    /* Fully Click-Responsive Exit Button */
+    .btn-close-app {
+      background: rgba(201, 59, 43, 0.12);
+      color: #C93B2B;
+      border: 1px solid rgba(201, 59, 43, 0.25);
+      padding: 3px 8px;
       font-weight: 700;
       font-size: 11px;
+      line-height: 1;
       cursor: pointer;
+      -webkit-app-region: no-drag !important;
+      pointer-events: auto !important;
+      position: relative;
+      z-index: 9999;
     }
-    .btn-close:hover {
-      background: #DC2626 !important;
-      color: #FFFFFF !important;
+    .btn-close-app:hover {
+      background: #C93B2B !important;
+      color: #FFF !important;
+      border-color: #C93B2B !important;
     }
 
-    /* Perforation Strip */
-    .perforation-bar {
-      height: 18px;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-    }
-    .perforation-dots {
-      flex: 1;
-      height: 1px;
-      border-bottom: 2px dashed rgba(124, 74, 38, 0.25);
-      margin-right: 8px;
-    }
-    .tear-action-btn {
-      background: #84532B;
-      color: #FFF;
-      border: none;
-      padding: 2px 8px;
-      border-radius: 999px;
+    .date-stamp-badge {
       font-size: 10px;
-      font-weight: 600;
-      display: flex;
+      font-weight: 500;
+      line-height: 1;
+      color: #84532B;
+      background: rgba(255,255,255,0.75);
+      border: 1px dashed rgba(132, 83, 43, 0.35);
+      border-radius: 999px;
+      padding: 3px 8px;
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
-      transition: transform 0.1s;
+      white-space: nowrap;
+      -webkit-app-region: no-drag !important;
+      pointer-events: auto !important;
     }
-    .tear-action-btn:hover { transform: scale(1.04); background: #6A3E1D; }
 
-    /* Writing Viewport */
-    .canvas-wrapper {
-      flex: 1;
+    /* Perforated Crease */
+    .perforation-strip {
       position: relative;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2px 10px;
+      -webkit-app-region: no-drag;
+    }
+    .perforation-dots {
+      width: 100%;
+      height: 1px;
+      border-bottom: 2px dashed rgba(110, 85, 60, 0.3);
+    }
+    .tear-indicator {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #84532B;
+      color: #FFF;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      -webkit-app-region: no-drag !important;
+      pointer-events: auto !important;
+    }
+    .tear-indicator:hover { transform: translateY(-50%) scale(1.04); background: #6A3E1D; }
+
+    /* Paper Body */
+    .paper-body-wrapper {
+      position: relative;
+      flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--bg-sheet);
+      -webkit-app-region: no-drag;
     }
 
-    .editor-canvas {
+    /* Floating Formatting Toolbar */
+    .selection-float-bar {
+      position: absolute;
+      display: none;
+      align-items: center;
+      gap: 3px;
+      background: #2C221B;
+      color: #FAF6F0;
+      padding: 4px 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 8px 24px rgba(35, 22, 12, 0.38);
+      z-index: 150;
+      user-select: none;
+      width: max-content;
+      max-width: calc(100% - 16px);
+      flex-wrap: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+    .selection-float-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .selection-float-bar.arrow-top::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: var(--arrow-x, 24px);
+      transform: translateX(-50%);
+      border-width: 0 5px 5px 5px;
+      border-style: solid;
+      border-color: transparent transparent #2C221B transparent;
+    }
+    .selection-float-bar.arrow-bottom::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: var(--arrow-x, 24px);
+      transform: translateX(-50%);
+      border-width: 5px 5px 0 5px;
+      border-style: solid;
+      border-color: #2C221B transparent transparent transparent;
+    }
+
+    .float-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 2px;
+    }
+
+    .float-btn {
+      background: transparent;
+      border: none;
+      color: #FAF6F0;
+      padding: 2px 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      transition: background 0.15s;
+    }
+    .float-btn:hover { background: rgba(255, 255, 255, 0.16); }
+
+    .float-select {
+      background: #3B2E25;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      color: #FAF6F0;
+      font-size: 10px;
+      padding: 2px 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Writing Canvas */
+    .paper-canvas {
       flex: 1;
       width: 100%;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 12px 18px 50px 18px;
+      padding: 6px 16px 52px 16px;
       outline: none;
-      font-size: 15px;
-      line-height: var(--row-height);
-      color: var(--text-main);
-      cursor: text;
-      user-select: text;
+      line-height: var(--line-height-grid);
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: var(--ink-color);
+      position: relative;
       background-image: repeating-linear-gradient(
         transparent,
-        transparent calc(var(--row-height) - 1px),
-        var(--line-grid) calc(var(--row-height) - 1px),
-        var(--line-grid) var(--row-height)
+        transparent calc(var(--line-height-grid) - 1px),
+        var(--paper-line) calc(var(--line-height-grid) - 1px),
+        var(--paper-line) var(--line-height-grid)
       );
-      background-position: 0 6px;
+      background-position: 0 4px;
+      cursor: text;
+      user-select: text;
     }
-    .editor-canvas::-webkit-scrollbar { width: 5px; }
-    .editor-canvas::-webkit-scrollbar-thumb { background: rgba(124,74,38,0.2); border-radius: 4px; }
+    .paper-canvas::-webkit-scrollbar { width: 4px; }
+    .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
 
-    .editor-canvas:empty::before {
-      content: "Start typing notes here...";
-      color: rgba(120, 108, 96, 0.45);
+    /* Ghost Placeholder */
+    .paper-canvas:empty::before {
+      content: attr(data-placeholder);
+      color: rgba(140, 120, 100, 0.45);
+      position: absolute;
+      left: 16px;
+      top: 6px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
       font-size: 22px;
     }
 
-    .editor-canvas p, .editor-canvas div:not(.task-row):not(.table-container) {
-      min-height: var(--row-height);
-      line-height: var(--row-height);
+    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper) {
+      min-height: var(--line-height-grid);
+      line-height: var(--line-height-grid);
       margin: 0;
     }
 
-    /* Checklist Tasks */
-    .task-row {
+    /* Preset Styles */
+    .paper-title {
+      font-size: 28px !important;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      margin: 0;
+    }
+    .paper-subtitle {
+      font-size: 24px !important;
+      font-weight: 600;
+      margin: 0;
+    }
+    .paper-body {
+      font-size: 22px !important;
+      font-weight: 500;
+      margin: 0;
+    }
+    .paper-quote {
+      font-size: 22px !important;
+      font-style: italic;
+      background: rgba(140, 83, 43, 0.08);
+      border-radius: 6px;
+      padding: 0 10px;
+      margin: 4px 0;
+      display: block;
+      border-left: 3px solid #84532B;
+    }
+    .paper-quote::before { content: "“ "; font-weight: bold; }
+    .paper-quote::after { content: " ”"; font-weight: bold; }
+
+    /* Tasks Checklist */
+    .notepad-task-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      min-height: var(--row-height);
-      line-height: var(--row-height);
+      gap: 8px;
+      min-height: var(--line-height-grid);
+      line-height: var(--line-height-grid);
+      margin: 1px 0;
       user-select: text;
-      margin: 2px 0;
     }
-    .task-checkbox {
+    .task-check {
       appearance: none;
       width: 16px;
       height: 16px;
-      border: 1.5px solid #84532B;
+      border: 2px solid #84532B;
       border-radius: 4px;
       cursor: pointer;
       flex-shrink: 0;
-      background: #FFFFFF;
+      background: transparent;
+      user-select: none;
+    }
+    .task-check:checked {
+      background: #84532B;
       position: relative;
     }
-    .task-checkbox:checked {
-      background: #84532B;
-    }
-    .task-checkbox:checked::after {
+    .task-check:checked::after {
       content: "";
       position: absolute;
       left: 4px;
       top: 1px;
       width: 4px;
       height: 8px;
-      border: solid #FFFFFF;
+      border: solid white;
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
     .task-label {
       outline: none;
       flex: 1;
-      font-size: 15px;
-      color: var(--text-main);
+      font-size: 22px;
+      font-family: inherit;
+      color: inherit;
+      min-height: var(--line-height-grid);
     }
-    .task-label.completed {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
+    .task-label:empty::before { content: "Task..."; color: rgba(140, 120, 100, 0.35); }
+    .task-label.checked { text-decoration: line-through; opacity: 0.55; }
 
-    /* Structured Tables */
-    .table-container {
-      margin: 12px 0;
+    /* Tables with Ghost Placeholders and Resizers */
+    .notepad-table-wrapper {
+      margin: 8px 0;
       position: relative;
-      user-select: text;
+      display: block;
       width: 100%;
+      user-select: text;
+      overflow-x: auto;
     }
     .table-toolbar {
       display: flex;
       align-items: center;
-      gap: 4px;
-      margin-bottom: 5px;
+      gap: 3px;
+      margin-bottom: 3px;
       user-select: none;
     }
     .tbl-btn {
-      background: #FAF8F5;
-      border: 1px solid var(--border-subtle);
+      background: #F4EFEB;
+      border: 1px solid #DFD6CC;
       border-radius: 4px;
-      padding: 2px 7px;
+      padding: 2px 6px;
       font-size: 10px;
-      color: #634B38;
+      font-family: 'Inter', sans-serif;
+      color: #5A4739;
       cursor: pointer;
-      font-weight: 500;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .tbl-btn:hover { background: #84532B; color: #FFF; }
-    .tbl-btn.tbl-del { color: #DC2626; margin-left: auto; }
-    .tbl-btn.tbl-del:hover { background: #DC2626; color: #FFF; }
+    .tbl-btn.del-tbl { color: #A83232; margin-left: auto; }
+    .tbl-btn.del-tbl:hover { background: #A83232; color: #FFF; }
 
-    .data-table {
+    .notepad-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      background: #FFFFFF;
-      border: 1.5px solid #84532B;
+      background: rgba(255, 255, 255, 0.88);
       border-radius: 6px;
+      border: 1.5px solid var(--table-border-color);
       overflow: hidden;
     }
-    .data-table th {
-      background: rgba(132, 83, 43, 0.08);
-      border: 1px solid rgba(132, 83, 43, 0.25);
-      padding: 6px 8px;
-      font-size: 13px;
-      font-weight: 600;
+    .notepad-table th {
+      background: rgba(132, 83, 43, 0.12);
+      border: 1px solid var(--table-border-color);
+      padding: 4px 6px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Caveat', cursive;
+      color: #3D2616;
       text-align: left;
       outline: none;
       position: relative;
     }
-    .data-table td {
-      border: 1px solid rgba(132, 83, 43, 0.2);
-      padding: 6px 8px;
-      font-size: 14px;
+    .notepad-table th:empty::before {
+      content: "Header...";
+      color: rgba(140, 120, 100, 0.4);
+    }
+    .notepad-table td {
+      border: 1px solid rgba(140, 83, 43, 0.3);
+      padding: 4px 6px;
+      min-height: var(--line-height-grid);
+      font-size: 18px;
+      font-family: 'Caveat', cursive;
+      color: var(--ink-color);
       outline: none;
     }
-    .data-table th:focus, .data-table td:focus {
-      background: #FFFDF9;
-      box-shadow: inset 0 0 0 1px #84532B;
+    .notepad-table td:empty::before {
+      content: "Cell...";
+      color: rgba(140, 120, 100, 0.35);
     }
 
     .col-resizer {
@@ -348,238 +538,457 @@
       right: 0;
       top: 0;
       bottom: 0;
-      width: 5px;
+      width: 6px;
       cursor: col-resize;
       user-select: none;
     }
     .col-resizer:hover { background: #84532B; }
 
-    /* Popover Panels (Archive, Bookmarks, Calendar) */
-    .side-modal {
+    /* Popover Cards (Calendar, Archive, Bookmarks) */
+    .warm-brown-card {
       position: absolute;
-      top: 40px;
-      left: 10px;
-      width: calc(100% - 20px);
-      max-height: calc(100% - 50px);
-      background: #FAF7F2;
-      border: 1px solid #D6CBC1;
+      top: 38px;
+      left: 8px;
+      width: calc(100% - 16px);
+      max-height: calc(100% - 46px);
+      background: var(--box-warm-brown);
+      color: #FAF5EE;
       border-radius: 10px;
-      box-shadow: 0 14px 30px rgba(35, 20, 10, 0.25);
-      padding: 12px;
-      z-index: 120;
+      box-shadow: 0 10px 24px rgba(40, 25, 12, 0.35);
+      padding: 10px;
+      z-index: 140;
       display: none;
-      flex-direction: column;
       overflow-y: auto;
     }
-    .side-modal.visible { display: flex; }
-    .modal-head {
+    .warm-brown-card.visible { display: block; }
+    .card-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #382516;
+      margin-bottom: 6px;
     }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #FAF5EE;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1;
+    }
+    .card-inner-box {
+      background: var(--box-inner-bg);
+      border-radius: 6px;
+      padding: 8px;
+      color: #332B25;
+    }
+
+    .cal-selectors-bar { display: flex; gap: 4px; margin-bottom: 6px; }
+    .cal-brown-select {
+      background: #FFF;
+      border: 1px solid #D6CBC1;
+      border-radius: 4px;
+      padding: 2px 4px;
+      font-size: 10px;
+      color: #4A3A2F;
+      outline: none;
+      cursor: pointer;
+      flex: 1;
+    }
+    .compact-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+      font-size: 10px;
+    }
+    .compact-cal-head { font-weight: 600; color: #9C8C7E; padding: 2px 0; }
+    .compact-cal-day {
+      padding: 4px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .compact-cal-day:hover { background: #E8E0D5; }
+    .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
     /* Archive Card Entries */
     .archive-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      max-height: 260px;
+      gap: 6px;
+      max-height: 220px;
       overflow-y: auto;
     }
     .archive-item {
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
+      background: #FFF;
+      border: 1px solid #E2D9CF;
       border-radius: 6px;
-      padding: 8px;
-      font-size: 12px;
+      padding: 6px;
+      font-size: 11px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
-    .archive-date { font-size: 10px; color: var(--text-muted); font-weight: 500; }
     .archive-snippet {
-      max-height: 48px;
+      max-height: 40px;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--text-main);
       white-space: pre-wrap;
-    }
-    .archive-actions {
-      display: flex;
-      gap: 4px;
-      justify-content: flex-end;
-      margin-top: 4px;
+      color: #2D241E;
     }
 
     /* Bookmarks list */
-    .bm-list {
+    .bookmarks-list {
+      max-height: 180px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 200px;
-      overflow-y: auto;
-      margin-top: 8px;
-    }
-    .bm-item {
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 6px 8px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Calendar Grid */
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      text-align: center;
-      font-size: 11px;
+      gap: 4px;
       margin-top: 6px;
     }
-    .cal-day {
-      padding: 4px 0;
-      border-radius: 4px;
-      cursor: pointer;
+    .bookmark-card {
+      background: #FFF;
+      border: 1px solid #E2D9CF;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    .cal-day:hover { background: #EBE5DC; }
-    .cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
     /* Bottom Dock Bar */
-    .bottom-dock {
-      height: 36px;
-      background: var(--bg-frame);
-      border-top: 1px solid var(--border-subtle);
+    .pad-bottom-info {
+      padding: 3px 12px 4px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .bottom-dock-left {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #9C8C7E;
+      pointer-events: none;
     }
 
-    @keyframes tearAnim {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(180px) rotate(8deg); opacity: 0; }
+    .bottom-dock-hitbox {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      z-index: 40;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
     }
-    .tearing { animation: tearAnim 0.45s ease-in forwards; }
+    .floating-bottom-dock {
+      width: calc(100% - 12px);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220, 210, 200, 0.85);
+      border-radius: 8px;
+      padding: 4px 8px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      transform: translateY(120%);
+      transition: transform 0.18s ease;
+      overflow-x: auto;
+    }
+    .bottom-dock-hitbox:hover .floating-bottom-dock,
+    .floating-bottom-dock:focus-within {
+      transform: translateY(0);
+    }
+
+    .dock-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .dock-btn {
+      background: #F4EFEB;
+      border: 1px solid #DFD6CC;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 10px;
+      line-height: 1;
+      color: #4A3A2F;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .dock-btn:hover { background: #E8DFD5; }
+
+    /* Palette Swatches */
+    .color-swatches { display: flex; gap: 4px; align-items: center; }
+    .swatch-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.15);
+      flex-shrink: 0;
+      transition: transform 0.1s;
+    }
+    .swatch-dot:hover { transform: scale(1.15); }
   </style>
 </head>
 <body>
 
-  <div class="widget-container">
-    <div class="widget-frame" id="widgetFrame">
-      
-      <!-- Wooden Spiral Header (Native Drag Region) -->
-      <div class="spiral-header" data-tauri-drag-region>
-        <div class="ring-hole"></div><div class="ring-hole"></div>
-        <div class="ring-hole"></div><div class="ring-hole"></div>
-        <div class="ring-hole"></div><div class="ring-hole"></div>
-        <div class="ring-hole"></div><div class="ring-hole"></div>
-      </div>
+  <div class="notepad-container" id="notepadWidget">
+    
+    <!-- Top Spiral Binding (Drag Bar) -->
+    <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
-      <!-- Top Toolbar Controls -->
-      <div class="top-toolbar">
-        <div class="tool-group">
-          <button class="pill-btn" onclick="toggleCalendar(event)" title="Calendar">
-            <svg class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span id="dateBadge">Today</span>
+    <!-- Paper Sheet -->
+    <div class="notepad-sheet" id="activeSheet">
+      
+      <!-- Top Action Bar -->
+      <div class="pad-topbar" data-tauri-drag-region>
+        <div class="top-actions">
+          <button class="warm-pill-btn" onclick="toggleCalendarCard(event)" title="Browse Calendar">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Calendar</span>
           </button>
-          <button class="pill-btn" onclick="toggleArchive(event)" title="View Torn Pages">
-            <svg class="icon"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-            Archive (<span id="archiveCount">0</span>)
+          <button class="warm-pill-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            <span>Archive (<span id="archiveCount">0</span>)</span>
           </button>
-          <button class="pill-btn" onclick="toggleBookmarks(event)" title="Saved Links">
-            <svg class="icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            Links (<span id="linksCount">1</span>)
+          <button class="warm-pill-btn" onclick="toggleLinksCard(event)" title="Bookmarks">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            <span>Links (<span id="bmCount">1</span>)</span>
           </button>
         </div>
 
-        <div class="tool-group">
-          <button class="btn-close" onclick="terminateApp(event)" title="Close App (Alt+F4)">✕</button>
+        <div class="top-actions">
+          <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp today's date">
+            <svg class="icon" viewBox="0 0 24 24" style="width:11px;height:11px;min-width:11px;min-height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span id="dateStampText">Today</span>
+          </div>
+          <!-- Robust Native Exit Button -->
+          <button class="warm-pill-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar Modal with Year & Month Pickers -->
+      <div class="warm-brown-card" id="calendarCard">
+        <div class="card-head">
+          <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Desk Calendar</span>
+          </div>
+          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeCalendarCard()">✕</button>
+        </div>
+        <div class="card-inner-box">
+          <div class="cal-selectors-bar">
+            <select class="cal-brown-select" id="calMonthSelect" onchange="onCalSelectChange()"></select>
+            <select class="cal-brown-select" id="calYearSelect" onchange="onCalSelectChange()"></select>
+          </div>
+          <div class="compact-cal-grid">
+            <div class="compact-cal-head">S</div><div class="compact-cal-head">M</div><div class="compact-cal-head">T</div>
+            <div class="compact-cal-head">W</div><div class="compact-cal-head">T</div><div class="compact-cal-head">F</div>
+            <div class="compact-cal-head">S</div>
+          </div>
+          <div class="compact-cal-grid" id="compactCalCells"></div>
+        </div>
+      </div>
+
+      <!-- Torn Pages Archive Modal -->
+      <div class="warm-brown-card" id="archiveCard">
+        <div class="card-head">
+          <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            <span>Torn Pages Archive</span>
+          </div>
+          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
+        </div>
+        <div class="card-inner-box">
+          <div class="archive-list" id="archiveItemsContainer"></div>
+        </div>
+      </div>
+
+      <!-- Bookmarks Popover Card -->
+      <div class="warm-brown-card" id="linksCard">
+        <div class="card-head">
+          <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            <span>Links & Bookmarks</span>
+          </div>
+          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeLinksCard()">✕</button>
+        </div>
+        <div class="card-inner-box">
+          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:6px;">
+            <input type="text" id="bmTitleInput" placeholder="Title / Label" style="padding:5px;border:1px solid #D6CBC1;border-radius:4px;font-size:11px;">
+            <input type="text" id="bmUrlInput" placeholder="https://..." style="padding:5px;border:1px solid #D6CBC1;border-radius:4px;font-size:11px;">
+            <button class="dock-btn" style="justify-content:center;padding:5px;background:#84532B;color:#FFF;border:none;" onclick="saveBookmarkEntry()">Save Link</button>
+          </div>
+          <div class="bookmarks-list" id="bookmarksContainer"></div>
         </div>
       </div>
 
       <!-- Perforated Tear Crease -->
-      <div class="perforation-bar">
+      <div class="perforation-strip">
         <div class="perforation-dots"></div>
-        <button class="tear-action-btn" onclick="tearOffCurrentPage()" title="Tear off sheet & save to Archive">
-          <svg class="icon" style="width:10px;height:10px"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
-          Tear Page
-        </button>
+        <div class="tear-indicator" onclick="executeTear()" title="Tear off sheet & save to Archive">
+          <svg class="icon" viewBox="0 0 24 24" style="width:10px;height:10px;min-width:10px;min-height:10px;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+          <span>Tear Page</span>
+        </div>
       </div>
 
-      <!-- Calendar Modal -->
-      <div class="side-modal" id="calModal">
-        <div class="modal-head">
-          <span id="calTitle">Calendar</span>
-          <button class="tbl-btn" onclick="toggleCalendar(event)">✕</button>
-        </div>
-        <div class="cal-grid" id="calGridCells"></div>
-      </div>
+      <!-- Paper Body Wrapper -->
+      <div class="paper-body-wrapper" id="paperWrapper">
 
-      <!-- Archive Modal (Holds All Torn Pages) -->
-      <div class="side-modal" id="archiveModal">
-        <div class="modal-head">
-          <span>Torn Pages Archive</span>
-          <button class="tbl-btn" onclick="toggleArchive(event)">✕</button>
-        </div>
-        <div class="archive-list" id="archiveItemsList"></div>
-      </div>
+        <!-- Floating Selection Formatting Toolbar -->
+        <div class="selection-float-bar" id="selectionToolbar">
+          <button class="float-btn" onclick="formatBlockPreset('paper-title')" title="Title">Title</button>
+          <button class="float-btn" onclick="formatBlockPreset('paper-subtitle')" title="Sub">Sub</button>
+          <button class="float-btn" onclick="formatBlockPreset('paper-body')" title="Body">Body</button>
+          <button class="float-btn" onclick="toggleQuoteBlock()" title="Quote">Quote</button>
 
-      <!-- Bookmarks Drawer Modal -->
-      <div class="side-modal" id="bookmarksModal">
-        <div class="modal-head">
-          <span>Bookmarks & Links</span>
-          <button class="tbl-btn" onclick="toggleBookmarks(event)">✕</button>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <input type="text" id="bmTitle" placeholder="Title" style="padding:4px 6px; border:1px solid #D6CBC1; border-radius:4px; font-size:11px;">
-          <input type="text" id="bmUrl" placeholder="https://..." style="padding:4px 6px; border:1px solid #D6CBC1; border-radius:4px; font-size:11px;">
-          <button class="tbl-btn" style="background:#84532B; color:#FFF; padding:4px;" onclick="addBookmark()">Add Bookmark</button>
-        </div>
-        <div class="bm-list" id="bmItemsList"></div>
-      </div>
+          <div class="float-divider"></div>
 
-      <!-- Writing Area -->
-      <div class="canvas-wrapper">
+          <button class="float-btn" onclick="document.execCommand('bold', false, null); updateToolbarPosition();" title="Bold"><b>B</b></button>
+          <button class="float-btn" onclick="document.execCommand('italic', false, null); updateToolbarPosition();" title="Italic"><i>I</i></button>
+          <button class="float-btn" onclick="document.execCommand('strikeThrough', false, null); updateToolbarPosition();" title="Strike"><s>S</s></button>
+
+          <div class="float-divider"></div>
+
+          <button class="float-btn" onclick="setTextAlign('left')" title="Align Left">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+          </button>
+          <button class="float-btn" onclick="setTextAlign('center')" title="Align Center">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="6" x2="3" y2="6"></line><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+          </button>
+
+          <div class="float-divider"></div>
+
+          <select class="float-select" id="fontFamilySelect" onchange="handleFontFamilyChange(this.value)">
+            <option value="'Caveat', cursive">Caveat</option>
+            <option value="'Nanum Pen Script', cursive">Nanum</option>
+            <option value="'Shadows Into Light', cursive">Casual</option>
+            <option value="'Inter', sans-serif">Inter</option>
+          </select>
+
+          <input type="color" id="inkColorPicker" value="#2D241E" onchange="setSelectionInk(this.value)" title="Ink Color" style="width:18px;height:18px;border:none;cursor:pointer;background:transparent;">
+        </div>
+
+        <!-- Ruled Writing Canvas with Ghost Placeholder -->
         <div 
-          class="editor-canvas" 
+          class="paper-canvas" 
           id="editorContent" 
           contenteditable="true" 
           spellcheck="false"
+          data-placeholder="Start typing notes here..."
         ></div>
-      </div>
 
-      <!-- Bottom Status & Quick Action Dock -->
-      <div class="bottom-dock">
-        <div class="bottom-dock-left">
-          <button class="tbl-btn" onclick="insertChecklist()">+ Task</button>
-          <button class="tbl-btn" onclick="insertTable()">+ Table</button>
+        <!-- Bottom Stats -->
+        <div class="pad-bottom-info">
+          <span id="wordCharStats">0 words</span>
+          <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
-        <span id="wordStats">0 words</span>
+
+        <!-- Floating Bottom Dock with Action Buttons & Palette -->
+        <div class="bottom-dock-hitbox">
+          <div class="floating-bottom-dock">
+            <div class="dock-group">
+              <button class="dock-btn" onclick="insertChecklist()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <span>Task</span>
+              </button>
+              <button class="dock-btn" onclick="insertTable()">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                <span>Table</span>
+              </button>
+              <button class="dock-btn" onclick="previousPage()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>Prev</span>
+              </button>
+              <button class="dock-btn" onclick="advancePage()">
+                <span>Next</span>
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+            <div class="dock-group">
+              <div class="color-swatches">
+                <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream"></div>
+                <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Sage"></div>
+                <div class="swatch-dot" style="background:#F0F5FA;" onclick="changePageColor('#F0F5FA')" title="Sky"></div>
+                <div class="swatch-dot" style="background:#FAF1F1;" onclick="changePageColor('#FAF1F1')" title="Blush"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </div>
 
 <script>
+  let pages = [{ content: '', color: '#FFFDF4', dateStamp: null }];
+  let currentPageIndex = 0;
   let archive = [];
-  let bookmarks = [{ id: 1, title: 'GitHub', url: 'https://github.com' }];
+  let bookmarks = [{ id: 1, title: 'Inspiration Hub', url: 'https://designnotes.org' }];
+  let savedRange = null;
 
-  // 1. Procedural Realistic Paper Rip Audio Generator
+  // Window drag
+  function setupDragging() {
+    const dragElements = [document.getElementById('spiralHeader'), document.querySelector('.pad-topbar')];
+    dragElements.forEach(el => {
+      if (!el) return;
+      el.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button') || e.target.closest('.date-stamp-badge') || e.target.closest('.tear-indicator') || e.target.closest('select')) return;
+        if (window.__TAURI__ && window.__TAURI__.window) {
+          window.__TAURI__.window.getCurrentWindow().startDragging();
+        }
+      });
+    });
+  }
+
+  // Multi-tier Process Exit Handler
+  async function closeDesktopApp(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+
+    try {
+      if (window.__TAURI__?.core?.invoke) {
+        await window.__TAURI__.core.invoke('exit_app');
+        return;
+      }
+    } catch(err) { console.error('exit_app failed:', err); }
+
+    try {
+      if (window.__TAURI__?.process?.exit) {
+        await window.__TAURI__.process.exit(0);
+        return;
+      }
+    } catch(err) { console.error('process.exit failed:', err); }
+
+    try {
+      if (window.__TAURI__?.window?.getCurrentWindow) {
+        await window.__TAURI__.window.getCurrentWindow().destroy();
+        return;
+      }
+    } catch(err) { console.error('window.destroy failed:', err); }
+
+    window.close();
+  }
+
+  // Explicit event binding for the close button
+  const closeBtn = document.getElementById('appCloseBtn');
+  if (closeBtn) {
+    closeBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); });
+    closeBtn.addEventListener('click', closeDesktopApp);
+  }
+
+  // Realistic Procedural Paper Rip Audio
   function playPaperTearSound() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -602,143 +1011,87 @@
     } catch(e) {}
   }
 
-  // 2. Guaranteed App Termination
-  async function terminateApp(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    try {
-      if (window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke) {
-        await window.__TAURI__.core.invoke('exit_app');
-        return;
-      }
-    } catch(err) { console.error(err); }
-    window.close();
-  }
-
-  // 3. Fallback Drag Listener
-  document.querySelector('.spiral-header').addEventListener('mousedown', (e) => {
-    if (e.target.closest('button')) return;
-    if (window.__TAURI__ && window.__TAURI__.window) {
-      window.__TAURI__.window.getCurrentWindow().startDragging();
-    }
-  });
-
-  const editor = document.getElementById('editorContent');
-  const wordStats = document.getElementById('wordStats');
-
-  editor.addEventListener('input', () => {
-    const text = editor.innerText.replace(/[\n\r]+/g, ' ').trim();
-    const count = text ? text.split(/\s+/).length : 0;
-    wordStats.innerText = `${count} word${count === 1 ? '' : 's'}`;
-  });
-
-  // 4. Tear Off Sheet with Sound & Archive Storing
-  function tearOffCurrentPage() {
-    const content = editor.innerHTML;
-    const textSnippet = editor.innerText.trim();
-    if (!textSnippet) return;
-
-    playPaperTearSound();
-    try { confetti({ particleCount: 22, spread: 60, origin: { y: 0.25 } }); } catch(e) {}
-
-    // Save to Archive
-    archive.unshift({
-      id: Date.now(),
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      html: content,
-      snippet: textSnippet
-    });
-    updateArchiveCount();
-
-    // Visual tearing animation
-    const canvas = document.querySelector('.canvas-wrapper');
-    canvas.classList.add('tearing');
-    setTimeout(() => {
-      canvas.classList.remove('tearing');
-      editor.innerHTML = '';
-      wordStats.innerText = '0 words';
-    }, 400);
-  }
-
-  function updateArchiveCount() {
-    document.getElementById('archiveCount').innerText = archive.length;
-  }
-
-  function renderArchive() {
-    const list = document.getElementById('archiveItemsList');
-    list.innerHTML = '';
-    if (archive.length === 0) {
-      list.innerHTML = '<div style="color:var(--text-muted); font-size:11px; padding:8px;">No torn pages yet.</div>';
-      return;
-    }
-    archive.forEach(item => {
-      const el = document.createElement('div');
-      el.className = 'archive-item';
-      el.innerHTML = `
-        <div class="archive-date">${item.date}</div>
-        <div class="archive-snippet">${escapeHtml(item.snippet)}</div>
-        <div class="archive-actions">
-          <button class="tbl-btn" onclick="restorePage(${item.id})">Restore</button>
-          <button class="tbl-btn" style="color:#DC2626;" onclick="deleteArchived(${item.id})">Delete</button>
-        </div>
+  function renderSpirals() {
+    const header = document.getElementById('spiralHeader');
+    if (!header) return;
+    const width = header.offsetWidth || 340;
+    const count = Math.max(5, Math.floor(width / 38));
+    header.innerHTML = '';
+    for(let i = 0; i < count; i++) {
+      const ring = document.createElement('div');
+      ring.className = 'ring-pair';
+      ring.innerHTML = `
+        <div class="punch-hole"></div>
+        <div class="ring-wire left"></div>
+        <div class="ring-wire right"></div>
       `;
-      list.appendChild(el);
-    });
+      header.appendChild(ring);
+    }
   }
+  window.addEventListener('resize', renderSpirals);
 
-  function restorePage(id) {
-    const found = archive.find(a => a.id === id);
-    if (!found) return;
-    editor.innerHTML = found.html;
-    toggleArchive();
+  const editorContent = document.getElementById('editorContent');
+  const wordCharStats = document.getElementById('wordCharStats');
+
+  function updateWordCharCount() {
+    const text = editorContent.innerText.replace(/[\n\r]+/g, ' ').trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    wordCharStats.innerText = `${words} words`;
   }
+  editorContent.addEventListener('input', updateWordCharCount);
 
-  function deleteArchived(id) {
-    archive = archive.filter(a => a.id !== id);
-    updateArchiveCount();
-    renderArchive();
-  }
-
-  // 5. Checklist Keyboard Handler (Enter = Next Task, Backspace on Empty = Remove)
-  editor.addEventListener('keydown', (e) => {
+  /* Task Keyboard Handler */
+  editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
-    const taskRow = sel.anchorNode?.parentElement?.closest('.task-row');
+    const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
 
-    if (taskRow) {
-      const label = taskRow.querySelector('.task-label');
+    if (taskItem) {
+      const label = taskItem.querySelector('.task-label');
       if (e.key === 'Enter') {
         e.preventDefault();
-        const next = document.createElement('div');
-        next.className = 'task-row';
-        next.innerHTML = `
-          <input type="checkbox" class="task-checkbox" onchange="this.nextElementSibling.classList.toggle('completed', this.checked)">
+        const newTask = document.createElement('div');
+        newTask.className = 'notepad-task-item';
+        newTask.innerHTML = `
+          <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
           <div class="task-label" contenteditable="true"></div>
         `;
-        taskRow.after(next);
-        next.querySelector('.task-label').focus();
-      } else if (e.key === 'Backspace' && (!label.innerText || label.innerText.trim() === '')) {
+        taskItem.after(newTask);
+        newTask.querySelector('.task-label').focus();
+        return;
+      }
+      if (e.key === 'Backspace' && (!label.innerText || label.innerText.trim() === '')) {
         e.preventDefault();
-        taskRow.remove();
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        taskItem.replaceWith(p);
+        const range = document.createRange();
+        range.setStart(p, 0);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        return;
       }
     }
   });
 
   function insertChecklist() {
-    const row = document.createElement('div');
-    row.className = 'task-row';
-    row.innerHTML = `
-      <input type="checkbox" class="task-checkbox" onchange="this.nextElementSibling.classList.toggle('completed', this.checked)">
+    const task = document.createElement('div');
+    task.className = 'notepad-task-item';
+    task.innerHTML = `
+      <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
       <div class="task-label" contenteditable="true"></div>
     `;
-    insertNode(row);
-    row.querySelector('.task-label').focus();
+    insertNodeAtCursor(task);
+    const label = task.querySelector('.task-label');
+    if (label) label.focus();
   }
 
-  // 6. Resizable Tables
+  /* Table Insertion with Resizers and Headers */
   function insertTable() {
     const id = 'tbl_' + Date.now();
     const wrapper = document.createElement('div');
-    wrapper.className = 'table-container';
+    wrapper.className = 'notepad-table-wrapper';
     wrapper.id = id;
     wrapper.contentEditable = "false";
     wrapper.innerHTML = `
@@ -746,13 +1099,14 @@
         <button class="tbl-btn" onclick="addTableRow('${id}')">+ Row</button>
         <button class="tbl-btn" onclick="addTableCol('${id}')">+ Col</button>
         <button class="tbl-btn" onclick="delTableRow('${id}')">- Row</button>
-        <button class="tbl-btn tbl-del" onclick="document.getElementById('${id}').remove()">✕</button>
+        <button class="tbl-btn" onclick="delTableCol('${id}')">- Col</button>
+        <button class="tbl-btn del-tbl" onclick="document.getElementById('${id}').remove()">✕ Delete</button>
       </div>
-      <table class="data-table">
+      <table class="notepad-table">
         <thead>
           <tr>
-            <th contenteditable="true">Item<div class="col-resizer"></div></th>
-            <th contenteditable="true">Notes<div class="col-resizer"></div></th>
+            <th contenteditable="true"><div class="col-resizer"></div></th>
+            <th contenteditable="true"><div class="col-resizer"></div></th>
           </tr>
         </thead>
         <tbody>
@@ -763,14 +1117,15 @@
         </tbody>
       </table>
     `;
-    insertNode(wrapper);
-    bindResizers(wrapper);
+    insertNodeAtCursor(wrapper);
+    attachColumnResizers(wrapper);
   }
 
   function addTableRow(id) {
-    const tbody = document.querySelector('#' + id + ' tbody');
-    const cols = document.querySelectorAll('#' + id + ' thead th').length;
-    const row = tbody.insertRow();
+    const table = document.querySelector('#' + id + ' .notepad-table');
+    if (!table) return;
+    const cols = table.querySelectorAll('thead th').length || 2;
+    const row = table.querySelector('tbody').insertRow();
     for (let i = 0; i < cols; i++) {
       const cell = row.insertCell();
       cell.contentEditable = "true";
@@ -778,133 +1133,403 @@
   }
 
   function delTableRow(id) {
-    const tbody = document.querySelector('#' + id + ' tbody');
-    if (tbody.rows.length > 1) tbody.deleteRow(-1);
+    const tbody = document.querySelector('#' + id + ' .notepad-table tbody');
+    if (tbody && tbody.rows.length > 1) {
+      tbody.deleteRow(-1);
+    }
   }
 
   function addTableCol(id) {
-    const headerRow = document.querySelector('#' + id + ' thead tr');
-    const th = document.createElement('th');
-    th.contentEditable = "true";
-    th.innerHTML = `Col ${headerRow.children.length + 1}<div class="col-resizer"></div>`;
-    headerRow.appendChild(th);
-    const rows = document.querySelectorAll('#' + id + ' tbody tr');
+    const table = document.querySelector('#' + id + ' .notepad-table');
+    if (!table) return;
+    const headerRow = table.querySelector('thead tr');
+    const newTh = document.createElement('th');
+    newTh.contentEditable = "true";
+    newTh.innerHTML = `<div class="col-resizer"></div>`;
+    headerRow.appendChild(newTh);
+
+    const rows = table.querySelectorAll('tbody tr');
     rows.forEach(r => {
       const cell = r.insertCell();
       cell.contentEditable = "true";
     });
-    bindResizers(document.getElementById(id));
+    attachColumnResizers(document.getElementById(id));
   }
 
-  function bindResizers(wrapper) {
-    wrapper.querySelectorAll('.col-resizer').forEach(resizer => {
+  function delTableCol(id) {
+    const table = document.querySelector('#' + id + ' .notepad-table');
+    if (!table) return;
+    const headerRow = table.querySelector('thead tr');
+    if (headerRow.children.length <= 1) return;
+    headerRow.deleteCell(-1);
+
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(r => {
+      if (r.cells.length > 1) r.deleteCell(-1);
+    });
+  }
+
+  function attachColumnResizers(wrapper) {
+    const resizers = wrapper.querySelectorAll('.col-resizer');
+    resizers.forEach(resizer => {
       resizer.onmousedown = function (e) {
         e.preventDefault();
         e.stopPropagation();
         const th = resizer.parentElement;
         const startX = e.pageX;
         const startWidth = th.offsetWidth;
-        function move(m) { th.style.width = Math.max(40, startWidth + (m.pageX - startX)) + 'px'; }
-        function stop() {
-          window.removeEventListener('mousemove', move);
-          window.removeEventListener('mouseup', stop);
+
+        function onMouseMove(moveEvent) {
+          const newWidth = Math.max(40, startWidth + (moveEvent.pageX - startX));
+          th.style.width = newWidth + 'px';
         }
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', stop);
+        function onMouseUp() {
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
       };
     });
   }
 
-  function insertNode(node) {
+  function insertNodeAtCursor(node) {
     const sel = window.getSelection();
-    if (sel && sel.rangeCount && editor.contains(sel.anchorNode)) {
+    if (sel && sel.rangeCount && editorContent.contains(sel.anchorNode)) {
       const range = sel.getRangeAt(0);
       range.deleteContents();
       range.insertNode(node);
       range.collapse(false);
     } else {
-      editor.appendChild(node);
+      editorContent.appendChild(node);
+    }
+    updateWordCharCount();
+  }
+
+  /* Floating Selection Toolbar Positioning */
+  const selectionToolbar = document.getElementById('selectionToolbar');
+  const paperWrapper = document.getElementById('paperWrapper');
+
+  function preserveSelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedRange = sel.getRangeAt(0).cloneRange();
     }
   }
 
-  // 7. Modals: Archive, Bookmarks, Calendar
-  const calModal = document.getElementById('calModal');
-  const archiveModal = document.getElementById('archiveModal');
-  const bmModal = document.getElementById('bookmarksModal');
-
-  function closeAllModals() {
-    calModal.classList.remove('visible');
-    archiveModal.classList.remove('visible');
-    bmModal.classList.remove('visible');
+  function restoreSelection() {
+    if (savedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+    }
   }
 
-  function toggleCalendar(e) {
-    if (e) e.stopPropagation();
-    const isVis = calModal.classList.contains('visible');
-    closeAllModals();
-    if (!isVis) { calModal.classList.add('visible'); renderCalendar(); }
+  selectionToolbar.addEventListener('mousedown', (e) => {
+    if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'INPUT') {
+      e.preventDefault();
+    } else {
+      preserveSelection();
+    }
+  });
+
+  function updateToolbarPosition() {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || sel.isCollapsed || !editorContent.contains(sel.anchorNode)) {
+      selectionToolbar.style.display = 'none';
+      selectionToolbar.classList.remove('visible');
+      return;
+    }
+
+    preserveSelection();
+    const range = sel.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    if (!rect || (rect.width === 0 && rect.height === 0)) {
+      selectionToolbar.style.display = 'none';
+      selectionToolbar.classList.remove('visible');
+      return;
+    }
+
+    const wrapperRect = paperWrapper.getBoundingClientRect();
+    const caretX = rect.left - wrapperRect.left + (rect.width / 2);
+    const caretY = rect.top - wrapperRect.top;
+
+    selectionToolbar.style.display = 'flex';
+    selectionToolbar.style.visibility = 'hidden';
+    const tbWidth = selectionToolbar.offsetWidth || 280;
+    const tbHeight = selectionToolbar.offsetHeight || 34;
+    selectionToolbar.style.visibility = 'visible';
+
+    const clampedLeft = Math.max(8, Math.min(caretX - (tbWidth / 2), wrapperRect.width - tbWidth - 8));
+    selectionToolbar.style.left = clampedLeft + 'px';
+    selectionToolbar.style.setProperty('--arrow-x', Math.max(12, Math.min(caretX - clampedLeft, tbWidth - 12)) + 'px');
+
+    if (caretY - tbHeight - 6 < 10) {
+      selectionToolbar.style.top = (caretY + rect.height + 6) + 'px';
+      selectionToolbar.classList.remove('arrow-bottom');
+      selectionToolbar.classList.add('arrow-top');
+    } else {
+      selectionToolbar.style.top = (caretY - tbHeight - 6) + 'px';
+      selectionToolbar.classList.remove('arrow-top');
+      selectionToolbar.classList.add('arrow-bottom');
+    }
+    selectionToolbar.classList.add('visible');
   }
 
-  function toggleArchive(e) {
-    if (e) e.stopPropagation();
-    const isVis = archiveModal.classList.contains('visible');
-    closeAllModals();
-    if (!isVis) { archiveModal.classList.add('visible'); renderArchive(); }
+  editorContent.addEventListener('mouseup', updateToolbarPosition);
+  editorContent.addEventListener('keyup', updateToolbarPosition);
+
+  document.addEventListener('mousedown', (e) => {
+    if (!selectionToolbar.contains(e.target) && !editorContent.contains(e.target)) {
+      selectionToolbar.style.display = 'none';
+      selectionToolbar.classList.remove('visible');
+    }
+    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.warm-pill-btn')) {
+      closeAllCards();
+    }
+  });
+
+  function getClosestBlockElement() {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return null;
+    let node = sel.anchorNode;
+    if (node.nodeType === 3) node = node.parentElement;
+    while (node && node !== editorContent) {
+      if (['DIV','P','BLOCKQUOTE','LI'].includes(node.tagName) || node.classList.contains('paper-quote') || node.classList.contains('notepad-task-item')) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return null;
   }
 
-  function toggleBookmarks(e) {
-    if (e) e.stopPropagation();
-    const isVis = bmModal.classList.contains('visible');
-    closeAllModals();
-    if (!isVis) { bmModal.classList.add('visible'); renderBookmarks(); }
+  function formatBlockPreset(className) {
+    restoreSelection();
+    let block = getClosestBlockElement();
+    if (!block || block === editorContent) {
+      document.execCommand('formatBlock', false, '<div>');
+      block = getClosestBlockElement();
+    }
+    if (!block || block.classList.contains('notepad-task-item')) return;
+    block.classList.remove('paper-title', 'paper-subtitle', 'paper-body', 'paper-quote');
+    block.classList.add(className);
+    updateToolbarPosition();
   }
 
-  function renderCalendar() {
-    const now = new Date();
-    document.getElementById('calTitle').innerText = now.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    const cells = document.getElementById('calGridCells');
+  function toggleQuoteBlock() {
+    restoreSelection();
+    let block = getClosestBlockElement();
+    if (!block || block === editorContent) {
+      document.execCommand('formatBlock', false, '<div>');
+      block = getClosestBlockElement();
+    }
+    if (!block || block.classList.contains('notepad-task-item')) return;
+    if (block.classList.contains('paper-quote')) {
+      block.classList.remove('paper-quote');
+      block.classList.add('paper-body');
+    } else {
+      block.classList.remove('paper-title', 'paper-subtitle', 'paper-body');
+      block.classList.add('paper-quote');
+    }
+    updateToolbarPosition();
+  }
+
+  function setTextAlign(alignment) {
+    restoreSelection();
+    const block = getClosestBlockElement();
+    if (block) { block.style.textAlign = alignment; }
+    updateToolbarPosition();
+  }
+
+  function handleFontFamilyChange(font) {
+    restoreSelection();
+    document.execCommand('fontName', false, font);
+    const block = getClosestBlockElement();
+    if (block) block.style.fontFamily = font;
+    updateToolbarPosition();
+  }
+
+  function setSelectionInk(color) {
+    restoreSelection();
+    document.execCommand('foreColor', false, color);
+    document.documentElement.style.setProperty('--ink-color', color);
+    updateToolbarPosition();
+  }
+
+  /* Full Desk Calendar Logic */
+  let calDate = new Date();
+  const calendarCard = document.getElementById('calendarCard');
+
+  function initCalendarSelectors() {
+    const mSelect = document.getElementById('calMonthSelect');
+    const ySelect = document.getElementById('calYearSelect');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    
+    mSelect.innerHTML = '';
+    months.forEach((m, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.innerText = m;
+      if (idx === calDate.getMonth()) opt.selected = true;
+      mSelect.appendChild(opt);
+    });
+
+    ySelect.innerHTML = '';
+    const currentYear = calDate.getFullYear();
+    for(let y = currentYear - 15; y <= currentYear + 15; y++) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.innerText = y;
+      if (y === currentYear) opt.selected = true;
+      ySelect.appendChild(opt);
+    }
+  }
+
+  function onCalSelectChange() {
+    const m = parseInt(document.getElementById('calMonthSelect').value);
+    const y = parseInt(document.getElementById('calYearSelect').value);
+    calDate = new Date(y, m, 1);
+    renderCalendarGrid();
+  }
+
+  function renderCalendarGrid() {
+    const y = calDate.getFullYear();
+    const m = calDate.getMonth();
+    const cells = document.getElementById('compactCalCells');
     cells.innerHTML = '';
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-    const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    for (let i = 0; i < firstDay; i++) cells.appendChild(document.createElement('div'));
+
+    const firstDay = new Date(y, m, 1).getDay();
+    const totalDays = new Date(y, m + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+      cells.appendChild(document.createElement('div'));
+    }
+
+    const today = new Date();
     for (let d = 1; d <= totalDays; d++) {
-      const el = document.createElement('div');
-      el.className = 'cal-day' + (d === now.getDate() ? ' today' : '');
-      el.innerText = d;
-      el.onclick = () => {
-        document.getElementById('dateBadge').innerText = `${now.toLocaleDateString('en-US', { month: 'short' })} ${d}`;
-        closeAllModals();
+      const cell = document.createElement('div');
+      cell.className = 'compact-cal-day';
+      cell.innerText = d;
+      if (d === today.getDate() && m === today.getMonth() && y === today.getFullYear()) {
+        cell.classList.add('today');
+      }
+      cell.onclick = () => {
+        const stamped = new Date(y, m, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('dateStampText').innerText = stamped;
+        pages[currentPageIndex].dateStamp = stamped;
+        closeCalendarCard();
       };
-      cells.appendChild(el);
+      cells.appendChild(cell);
     }
   }
 
-  function renderBookmarks() {
-    document.getElementById('linksCount').innerText = bookmarks.length;
-    const list = document.getElementById('bmItemsList');
+  function toggleCalendarCard(e) {
+    e.stopPropagation();
+    const isVis = calendarCard.classList.contains('visible');
+    closeAllCards();
+    if (!isVis) {
+      calendarCard.classList.add('visible');
+      initCalendarSelectors();
+      renderCalendarGrid();
+    }
+  }
+  function closeCalendarCard() { calendarCard.classList.remove('visible'); }
+
+  /* Archive Drawer Logic */
+  const archiveCard = document.getElementById('archiveCard');
+
+  function toggleArchiveCard(e) {
+    e.stopPropagation();
+    const isVis = archiveCard.classList.contains('visible');
+    closeAllCards();
+    if (!isVis) {
+      archiveCard.classList.add('visible');
+      renderArchive();
+    }
+  }
+  function closeArchiveCard() { archiveCard.classList.remove('visible'); }
+
+  function renderArchive() {
+    const list = document.getElementById('archiveItemsContainer');
     list.innerHTML = '';
-    bookmarks.forEach(bm => {
+    if (archive.length === 0) {
+      list.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No torn pages yet.</div>';
+      return;
+    }
+    archive.forEach(item => {
       const el = document.createElement('div');
-      el.className = 'bm-item';
+      el.className = 'archive-item';
       el.innerHTML = `
-        <span style="font-weight:600;">${escapeHtml(bm.title)}</span>
-        <div style="display:flex; gap:4px;">
-          <button class="tbl-btn" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
-          <button class="tbl-btn" style="color:#DC2626;" onclick="deleteBookmark(${bm.id})">✕</button>
+        <div style="font-size:10px; color:#84532B; font-weight:600;">${item.date}</div>
+        <div class="archive-snippet">${escapeHtml(item.snippet)}</div>
+        <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:4px;">
+          <button class="dock-btn" onclick="restoreArchivedPage(${item.id})">Restore</button>
+          <button class="dock-btn" style="color:#C93B2B;" onclick="deleteArchivedPage(${item.id})">Delete</button>
         </div>
       `;
       list.appendChild(el);
     });
   }
 
-  function addBookmark() {
-    const title = document.getElementById('bmTitle').value.trim();
-    const url = document.getElementById('bmUrl').value.trim();
+  function restoreArchivedPage(id) {
+    const found = archive.find(a => a.id === id);
+    if (!found) return;
+    editorContent.innerHTML = found.html;
+    closeArchiveCard();
+    updateWordCharCount();
+  }
+
+  function deleteArchivedPage(id) {
+    archive = archive.filter(a => a.id !== id);
+    document.getElementById('archiveCount').innerText = archive.length;
+    renderArchive();
+  }
+
+  /* Bookmarks / Links Drawer */
+  const linksCard = document.getElementById('linksCard');
+
+  function toggleLinksCard(e) {
+    e.stopPropagation();
+    const isVis = linksCard.classList.contains('visible');
+    closeAllCards();
+    if (!isVis) {
+      linksCard.classList.add('visible');
+      renderBookmarks();
+    }
+  }
+  function closeLinksCard() { linksCard.classList.remove('visible'); }
+
+  function saveBookmarkEntry() {
+    const title = document.getElementById('bmTitleInput').value.trim();
+    const url = document.getElementById('bmUrlInput').value.trim();
     if (!url) return;
-    bookmarks.push({ id: Date.now(), title: title || url, url: url.startsWith('http') ? url : 'https://' + url });
-    document.getElementById('bmTitle').value = '';
-    document.getElementById('bmUrl').value = '';
+    bookmarks.push({
+      id: Date.now(),
+      title: title || url,
+      url: url.startsWith('http') ? url : 'https://' + url
+    });
+    document.getElementById('bmTitleInput').value = '';
+    document.getElementById('bmUrlInput').value = '';
     renderBookmarks();
+  }
+
+  function renderBookmarks() {
+    const list = document.getElementById('bookmarksContainer');
+    document.getElementById('bmCount').innerText = bookmarks.length;
+    list.innerHTML = '';
+    bookmarks.forEach(bm => {
+      const card = document.createElement('div');
+      card.className = 'bookmark-card';
+      card.innerHTML = `
+        <div style="font-weight:600; color:#2D241E;">${escapeHtml(bm.title)}</div>
+        <a href="${bm.url}" target="_blank" style="color:#84532B; text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(bm.url)}</a>
+        <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:2px;">
+          <button class="dock-btn" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
+          <button class="dock-btn" style="color:#C93B2B;" onclick="deleteBookmark(${bm.id})">Delete</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
   }
 
   function deleteBookmark(id) {
@@ -912,20 +1537,85 @@
     renderBookmarks();
   }
 
+  function closeAllCards() {
+    closeCalendarCard();
+    closeArchiveCard();
+    closeLinksCard();
+  }
+
   function escapeHtml(str) {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.side-modal') && !e.target.closest('.pill-btn')) {
-      closeAllModals();
-    }
-  });
+  function stampTodayDate() {
+    const formatted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    document.getElementById('dateStampText').innerText = formatted;
+  }
 
-  // Stamp current date
-  document.getElementById('dateBadge').innerText = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  /* Tear Off Sheet */
+  function executeTear() {
+    const content = editorContent.innerHTML;
+    const textSnippet = editorContent.innerText.trim();
+    if (textSnippet) {
+      archive.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        html: content,
+        snippet: textSnippet
+      });
+      document.getElementById('archiveCount').innerText = archive.length;
+    }
+
+    playPaperTearSound();
+    try { confetti({ particleCount: 25, spread: 60, origin: { y: 0.3 } }); } catch(e) {}
+
+    pages.splice(currentPageIndex, 1);
+    if (pages.length === 0) {
+      pages.push({ content: '', color: '#FFFDF4', dateStamp: null });
+    }
+    if (currentPageIndex >= pages.length) currentPageIndex = pages.length - 1;
+    loadPage(currentPageIndex);
+  }
+
+  function advancePage() {
+    pages[currentPageIndex].content = editorContent.innerHTML;
+    if (currentPageIndex === pages.length - 1) {
+      pages.push({ content: '', color: pages[currentPageIndex].color, dateStamp: null });
+    }
+    currentPageIndex++;
+    loadPage(currentPageIndex);
+  }
+
+  function previousPage() {
+    if (currentPageIndex > 0) {
+      pages[currentPageIndex].content = editorContent.innerHTML;
+      currentPageIndex--;
+      loadPage(currentPageIndex);
+    }
+  }
+
+  function loadPage(idx) {
+    currentPageIndex = idx;
+    const p = pages[idx];
+    editorContent.innerHTML = p.content || '';
+    changePageColor(p.color || '#FFFDF4');
+    document.getElementById('dateStampText').innerText = p.dateStamp || 'Today';
+    document.getElementById('curPageNum').innerText = idx + 1;
+    document.getElementById('totalPageNum').innerText = pages.length;
+    document.querySelectorAll('.notepad-table-wrapper').forEach(attachColumnResizers);
+    updateWordCharCount();
+  }
+
+  function changePageColor(hex) {
+    pages[currentPageIndex].color = hex;
+    document.documentElement.style.setProperty('--bg-page', hex);
+  }
+
+  renderSpirals();
+  stampTodayDate();
+  setupDragging();
+  loadPage(0);
   renderBookmarks();
-  updateArchiveCount();
 </script>
 </body>
 </html>
