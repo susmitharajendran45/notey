@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-page: #FFFDF4;
@@ -33,7 +34,6 @@
       user-select: none;
     }
 
-    /* Crisp, Centered SVG Icons */
     .icon {
       width: 13px;
       height: 13px;
@@ -147,7 +147,7 @@
       background: rgba(61, 38, 22, 0.08);
       border: 1px solid rgba(61, 38, 22, 0.16);
       color: #4A3222;
-      padding: 4px 8px;
+      padding: 4px 7px;
       border-radius: 999px;
       cursor: pointer;
       font-size: 11px;
@@ -156,16 +156,15 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
       white-space: nowrap;
       transition: all 0.15s ease;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
     }
     .warm-pill-btn:hover { background: #3D2616; color: #FFF; border-color: #3D2616; }
-    .warm-pill-btn.active { background: #C93B2B; color: #FFF; border-color: #C93B2B; }
+    .warm-pill-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
 
-    /* Fully Click-Responsive Exit Button */
     .btn-close-app {
       background: rgba(201, 59, 43, 0.12);
       color: #C93B2B;
@@ -194,11 +193,11 @@
       background: rgba(255,255,255,0.75);
       border: 1px dashed rgba(132, 83, 43, 0.35);
       border-radius: 999px;
-      padding: 3px 8px;
+      padding: 3px 7px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
       white-space: nowrap;
       -webkit-app-region: no-drag !important;
@@ -337,7 +336,7 @@
       cursor: pointer;
     }
 
-    /* Writing Canvas */
+    /* Writing Canvas Patterns */
     .paper-canvas {
       flex: 1;
       width: 100%;
@@ -351,6 +350,14 @@
       font-size: 22px;
       color: var(--ink-color);
       position: relative;
+      cursor: text;
+      user-select: text;
+    }
+    .paper-canvas::-webkit-scrollbar { width: 4px; }
+    .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
+
+    /* Patterns */
+    .pattern-ruled {
       background-image: repeating-linear-gradient(
         transparent,
         transparent calc(var(--line-height-grid) - 1px),
@@ -358,11 +365,20 @@
         var(--paper-line) var(--line-height-grid)
       );
       background-position: 0 4px;
-      cursor: text;
-      user-select: text;
     }
-    .paper-canvas::-webkit-scrollbar { width: 4px; }
-    .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
+    .pattern-dots {
+      background-image: radial-gradient(rgba(110, 85, 60, 0.25) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .pattern-grid {
+      background-image: 
+        linear-gradient(to right, rgba(110, 85, 60, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(110, 85, 60, 0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .pattern-blank {
+      background-image: none;
+    }
 
     /* Ghost Placeholder */
     .paper-canvas:empty::before {
@@ -376,7 +392,7 @@
       font-size: 22px;
     }
 
-    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper) {
+    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper):not(.pasted-img-wrapper) {
       min-height: var(--line-height-grid);
       line-height: var(--line-height-grid);
       margin: 0;
@@ -460,7 +476,42 @@
     .task-label:empty::before { content: "Task..."; color: rgba(140, 120, 100, 0.35); }
     .task-label.checked { text-decoration: line-through; opacity: 0.55; }
 
-    /* Tables with Ghost Placeholders and Resizers */
+    /* Pasted Images */
+    .pasted-img-wrapper {
+      position: relative;
+      display: inline-block;
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(132, 83, 43, 0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+    .pasted-img-wrapper img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+    .pasted-img-del {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pasted-img-del:hover { background: #C93B2B; }
+
+    /* Tables */
     .notepad-table-wrapper {
       margin: 8px 0;
       position: relative;
@@ -544,7 +595,7 @@
     }
     .col-resizer:hover { background: #84532B; }
 
-    /* Popover Cards (Calendar, Archive, Bookmarks) */
+    /* Popover Cards */
     .warm-brown-card {
       position: absolute;
       top: 38px;
@@ -612,12 +663,20 @@
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Archive Card Entries */
+    /* Archive Card Entries with Search */
+    .archive-search-input {
+      width: 100%;
+      padding: 4px 6px;
+      border: 1px solid #D6CBC1;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
     .archive-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 220px;
+      max-height: 200px;
       overflow-y: auto;
     }
     .archive-item {
@@ -712,7 +771,7 @@
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
       border-radius: 5px;
-      padding: 3px 7px;
+      padding: 3px 6px;
       font-size: 10px;
       line-height: 1;
       color: #4A3A2F;
@@ -720,7 +779,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       white-space: nowrap;
     }
     .dock-btn:hover { background: #E8DFD5; }
@@ -752,9 +811,12 @@
       <!-- Top Action Bar -->
       <div class="pad-topbar" data-tauri-drag-region>
         <div class="top-actions">
+          <button class="warm-pill-btn" id="pinBtn" onclick="togglePin()" title="Toggle Always on Top">
+            <span id="pinIcon">📌</span>
+          </button>
           <button class="warm-pill-btn" onclick="toggleCalendarCard(event)" title="Browse Calendar">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span>Calendar</span>
+            <span>Cal</span>
           </button>
           <button class="warm-pill-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
             <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
@@ -763,6 +825,9 @@
           <button class="warm-pill-btn" onclick="toggleLinksCard(event)" title="Bookmarks">
             <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
             <span>Links (<span id="bmCount">1</span>)</span>
+          </button>
+          <button class="warm-pill-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Rip Audio">
+            <span id="muteIcon">🔊</span>
           </button>
         </div>
 
@@ -801,7 +866,7 @@
         </div>
       </div>
 
-      <!-- Torn Pages Archive Modal -->
+      <!-- Torn Pages Archive Modal with Filter Search -->
       <div class="warm-brown-card" id="archiveCard">
         <div class="card-head">
           <div class="card-title">
@@ -811,6 +876,7 @@
           <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
         </div>
         <div class="card-inner-box">
+          <input type="text" class="archive-search-input" id="archiveSearch" placeholder="Search torn pages..." oninput="filterArchive(this.value)">
           <div class="archive-list" id="archiveItemsContainer"></div>
         </div>
       </div>
@@ -855,9 +921,9 @@
 
           <div class="float-divider"></div>
 
-          <button class="float-btn" onclick="document.execCommand('bold', false, null); updateToolbarPosition();" title="Bold"><b>B</b></button>
-          <button class="float-btn" onclick="document.execCommand('italic', false, null); updateToolbarPosition();" title="Italic"><i>I</i></button>
-          <button class="float-btn" onclick="document.execCommand('strikeThrough', false, null); updateToolbarPosition();" title="Strike"><s>S</s></button>
+          <button class="float-btn" onclick="document.execCommand('bold', false, null); updateToolbarPosition(); saveNoteState();" title="Bold"><b>B</b></button>
+          <button class="float-btn" onclick="document.execCommand('italic', false, null); updateToolbarPosition(); saveNoteState();" title="Italic"><i>I</i></button>
+          <button class="float-btn" onclick="document.execCommand('strikeThrough', false, null); updateToolbarPosition(); saveNoteState();" title="Strike"><s>S</s></button>
 
           <div class="float-divider"></div>
 
@@ -882,11 +948,11 @@
 
         <!-- Ruled Writing Canvas with Ghost Placeholder -->
         <div 
-          class="paper-canvas" 
+          class="paper-canvas pattern-ruled" 
           id="editorContent" 
           contenteditable="true" 
           spellcheck="false"
-          data-placeholder="Start typing notes here..."
+          data-placeholder="Start typing notes here (Try math: 25 * 4 = )..."
         ></div>
 
         <!-- Bottom Stats -->
@@ -907,13 +973,14 @@
                 <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                 <span>Table</span>
               </button>
-              <button class="dock-btn" onclick="previousPage()">
-                <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                <span>Prev</span>
+              <button class="dock-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
+                <span>Pattern</span>
               </button>
-              <button class="dock-btn" onclick="advancePage()">
-                <span>Next</span>
-                <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <button class="dock-btn" onclick="exportMarkdown()" title="Export Note as Markdown">
+                <span>.md</span>
+              </button>
+              <button class="dock-btn" onclick="exportNoteImage()" title="Export Note as PNG Image">
+                <span>PNG</span>
               </button>
             </div>
             <div class="dock-group">
@@ -938,6 +1005,10 @@
   let archive = [];
   let bookmarks = [{ id: 1, title: 'Inspiration Hub', url: 'https://designnotes.org' }];
   let savedRange = null;
+  let isPinned = false;
+  let isMuted = false;
+  const patterns = ['pattern-ruled', 'pattern-dots', 'pattern-grid', 'pattern-blank'];
+  let currentPatternIndex = 0;
 
   // Window drag
   function setupDragging() {
@@ -956,6 +1027,7 @@
   // Multi-tier Process Exit Handler
   async function closeDesktopApp(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
+    saveNoteState();
 
     try {
       if (window.__TAURI__?.core?.invoke) {
@@ -981,15 +1053,39 @@
     window.close();
   }
 
-  // Explicit event binding for the close button
   const closeBtn = document.getElementById('appCloseBtn');
   if (closeBtn) {
     closeBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); });
     closeBtn.addEventListener('click', closeDesktopApp);
   }
 
-  // Realistic Procedural Paper Rip Audio
+  // Always on Top Native Rust Bridge
+  async function togglePin() {
+    isPinned = !isPinned;
+    const pinIcon = document.getElementById('pinIcon');
+    const pinBtn = document.getElementById('pinBtn');
+    pinBtn.classList.toggle('active', isPinned);
+    pinIcon.innerText = isPinned ? '📍' : '📌';
+
+    try {
+      if (window.__TAURI__?.core?.invoke) {
+        await window.__TAURI__.core.invoke('toggle_always_on_top', { state: isPinned });
+      }
+    } catch(e) {
+      console.error('Failed to set always on top:', e);
+    }
+    localStorage.setItem('tearoff_pinned', JSON.stringify(isPinned));
+  }
+
+  // Sound and Mute Toggle
+  function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('muteIcon').innerText = isMuted ? '🔇' : '🔊';
+    localStorage.setItem('tearoff_muted', JSON.stringify(isMuted));
+  }
+
   function playPaperTearSound() {
+    if (isMuted) return;
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       const ctx = new AudioCtx();
@@ -1009,6 +1105,18 @@
       filter.connect(ctx.destination);
       noise.start();
     } catch(e) {}
+  }
+
+  // Texture Pattern Cycling
+  function cyclePattern() {
+    currentPatternIndex = (currentPatternIndex + 1) % patterns.length;
+    applyPattern(patterns[currentPatternIndex]);
+    localStorage.setItem('tearoff_pattern', patterns[currentPatternIndex]);
+  }
+
+  function applyPattern(cls) {
+    editorContent.classList.remove('pattern-ruled', 'pattern-dots', 'pattern-grid', 'pattern-blank');
+    editorContent.classList.add(cls);
   }
 
   function renderSpirals() {
@@ -1037,15 +1145,39 @@
     const text = editorContent.innerText.replace(/[\n\r]+/g, ' ').trim();
     const words = text ? text.split(/\s+/).length : 0;
     wordCharStats.innerText = `${words} words`;
+    saveNoteState();
   }
   editorContent.addEventListener('input', updateWordCharCount);
 
-  /* Task Keyboard Handler */
+  // Math Evaluation & Task Handling
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
-    const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
 
+    // Inline arithmetic auto-eval on typing '='
+    if (e.key === '=') {
+      const node = sel.anchorNode;
+      if (node && node.nodeType === 3) {
+        const textBefore = node.textContent.substring(0, sel.anchorOffset);
+        const mathMatch = textBefore.match(/([\d\.\s\+\-\*\/\(\)]+)\s*$/);
+        if (mathMatch && mathMatch[1].trim()) {
+          try {
+            const sanitized = mathMatch[1].replace(/[^0-9\+\-\*\/\.\(\)\s]/g, '');
+            if (/[0-9]/.test(sanitized)) {
+              const res = Function(`"use strict"; return (${sanitized})`)();
+              if (typeof res === 'number' && !isNaN(res) && isFinite(res)) {
+                setTimeout(() => {
+                  document.execCommand('insertText', false, ' ' + res);
+                  saveNoteState();
+                }, 10);
+              }
+            }
+          } catch(err) {}
+        }
+      }
+    }
+
+    const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
     if (taskItem) {
       const label = taskItem.querySelector('.task-label');
       if (e.key === 'Enter') {
@@ -1053,11 +1185,12 @@
         const newTask = document.createElement('div');
         newTask.className = 'notepad-task-item';
         newTask.innerHTML = `
-          <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
+          <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked); saveNoteState();">
           <div class="task-label" contenteditable="true"></div>
         `;
         taskItem.after(newTask);
         newTask.querySelector('.task-label').focus();
+        saveNoteState();
         return;
       }
       if (e.key === 'Backspace' && (!label.innerText || label.innerText.trim() === '')) {
@@ -1070,7 +1203,32 @@
         range.collapse(true);
         sel.removeAllRanges();
         sel.addRange(range);
+        saveNoteState();
         return;
+      }
+    }
+  });
+
+  // Direct Clipboard Image Paste (Ctrl+V)
+  editorContent.addEventListener('paste', (e) => {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let index in items) {
+      const item = items[index];
+      if (item.kind === 'file' && item.type.startsWith('image/')) {
+        const blob = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'pasted-img-wrapper';
+          wrapper.contentEditable = "false";
+          wrapper.innerHTML = `
+            <button class="pasted-img-del" onclick="this.parentElement.remove(); saveNoteState();">✕</button>
+            <img src="${event.target.result}" alt="Note image">
+          `;
+          insertNodeAtCursor(wrapper);
+          saveNoteState();
+        };
+        reader.readAsDataURL(blob);
       }
     }
   });
@@ -1079,12 +1237,13 @@
     const task = document.createElement('div');
     task.className = 'notepad-task-item';
     task.innerHTML = `
-      <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked)">
+      <input type="checkbox" class="task-check" onchange="this.nextElementSibling.classList.toggle('checked', this.checked); saveNoteState();">
       <div class="task-label" contenteditable="true"></div>
     `;
     insertNodeAtCursor(task);
     const label = task.querySelector('.task-label');
     if (label) label.focus();
+    saveNoteState();
   }
 
   /* Table Insertion with Resizers and Headers */
@@ -1100,7 +1259,7 @@
         <button class="tbl-btn" onclick="addTableCol('${id}')">+ Col</button>
         <button class="tbl-btn" onclick="delTableRow('${id}')">- Row</button>
         <button class="tbl-btn" onclick="delTableCol('${id}')">- Col</button>
-        <button class="tbl-btn del-tbl" onclick="document.getElementById('${id}').remove()">✕ Delete</button>
+        <button class="tbl-btn del-tbl" onclick="document.getElementById('${id}').remove(); saveNoteState();">✕ Delete</button>
       </div>
       <table class="notepad-table">
         <thead>
@@ -1119,6 +1278,7 @@
     `;
     insertNodeAtCursor(wrapper);
     attachColumnResizers(wrapper);
+    saveNoteState();
   }
 
   function addTableRow(id) {
@@ -1129,13 +1289,16 @@
     for (let i = 0; i < cols; i++) {
       const cell = row.insertCell();
       cell.contentEditable = "true";
+      cell.addEventListener('input', saveNoteState);
     }
+    saveNoteState();
   }
 
   function delTableRow(id) {
     const tbody = document.querySelector('#' + id + ' .notepad-table tbody');
     if (tbody && tbody.rows.length > 1) {
       tbody.deleteRow(-1);
+      saveNoteState();
     }
   }
 
@@ -1152,8 +1315,10 @@
     rows.forEach(r => {
       const cell = r.insertCell();
       cell.contentEditable = "true";
+      cell.addEventListener('input', saveNoteState);
     });
     attachColumnResizers(document.getElementById(id));
+    saveNoteState();
   }
 
   function delTableCol(id) {
@@ -1167,6 +1332,7 @@
     rows.forEach(r => {
       if (r.cells.length > 1) r.deleteCell(-1);
     });
+    saveNoteState();
   }
 
   function attachColumnResizers(wrapper) {
@@ -1186,6 +1352,7 @@
         function onMouseUp() {
           window.removeEventListener('mousemove', onMouseMove);
           window.removeEventListener('mouseup', onMouseUp);
+          saveNoteState();
         }
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
@@ -1314,6 +1481,7 @@
     block.classList.remove('paper-title', 'paper-subtitle', 'paper-body', 'paper-quote');
     block.classList.add(className);
     updateToolbarPosition();
+    saveNoteState();
   }
 
   function toggleQuoteBlock() {
@@ -1332,6 +1500,7 @@
       block.classList.add('paper-quote');
     }
     updateToolbarPosition();
+    saveNoteState();
   }
 
   function setTextAlign(alignment) {
@@ -1339,6 +1508,7 @@
     const block = getClosestBlockElement();
     if (block) { block.style.textAlign = alignment; }
     updateToolbarPosition();
+    saveNoteState();
   }
 
   function handleFontFamilyChange(font) {
@@ -1347,6 +1517,7 @@
     const block = getClosestBlockElement();
     if (block) block.style.fontFamily = font;
     updateToolbarPosition();
+    saveNoteState();
   }
 
   function setSelectionInk(color) {
@@ -1354,6 +1525,7 @@
     document.execCommand('foreColor', false, color);
     document.documentElement.style.setProperty('--ink-color', color);
     updateToolbarPosition();
+    saveNoteState();
   }
 
   /* Full Desk Calendar Logic */
@@ -1417,6 +1589,7 @@
         const stamped = new Date(y, m, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         document.getElementById('dateStampText').innerText = stamped;
         pages[currentPageIndex].dateStamp = stamped;
+        saveNoteState();
         closeCalendarCard();
       };
       cells.appendChild(cell);
@@ -1435,7 +1608,7 @@
   }
   function closeCalendarCard() { calendarCard.classList.remove('visible'); }
 
-  /* Archive Drawer Logic */
+  /* Archive Drawer Logic with Live Search */
   const archiveCard = document.getElementById('archiveCard');
 
   function toggleArchiveCard(e) {
@@ -1444,19 +1617,25 @@
     closeAllCards();
     if (!isVis) {
       archiveCard.classList.add('visible');
-      renderArchive();
+      renderArchive(archive);
     }
   }
   function closeArchiveCard() { archiveCard.classList.remove('visible'); }
 
-  function renderArchive() {
+  function filterArchive(query) {
+    const q = query.toLowerCase();
+    const filtered = archive.filter(a => a.snippet.toLowerCase().includes(q) || a.date.toLowerCase().includes(q));
+    renderArchive(filtered);
+  }
+
+  function renderArchive(listToRender) {
     const list = document.getElementById('archiveItemsContainer');
     list.innerHTML = '';
-    if (archive.length === 0) {
-      list.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No torn pages yet.</div>';
+    if (!listToRender || listToRender.length === 0) {
+      list.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No matching torn pages.</div>';
       return;
     }
-    archive.forEach(item => {
+    listToRender.forEach(item => {
       const el = document.createElement('div');
       el.className = 'archive-item';
       el.innerHTML = `
@@ -1477,12 +1656,14 @@
     editorContent.innerHTML = found.html;
     closeArchiveCard();
     updateWordCharCount();
+    saveNoteState();
   }
 
   function deleteArchivedPage(id) {
     archive = archive.filter(a => a.id !== id);
     document.getElementById('archiveCount').innerText = archive.length;
-    renderArchive();
+    localStorage.setItem('tearoff_archive', JSON.stringify(archive));
+    renderArchive(archive);
   }
 
   /* Bookmarks / Links Drawer */
@@ -1510,6 +1691,7 @@
     });
     document.getElementById('bmTitleInput').value = '';
     document.getElementById('bmUrlInput').value = '';
+    localStorage.setItem('tearoff_bookmarks', JSON.stringify(bookmarks));
     renderBookmarks();
   }
 
@@ -1534,6 +1716,7 @@
 
   function deleteBookmark(id) {
     bookmarks = bookmarks.filter(b => b.id !== id);
+    localStorage.setItem('tearoff_bookmarks', JSON.stringify(bookmarks));
     renderBookmarks();
   }
 
@@ -1550,6 +1733,8 @@
   function stampTodayDate() {
     const formatted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     document.getElementById('dateStampText').innerText = formatted;
+    pages[currentPageIndex].dateStamp = formatted;
+    saveNoteState();
   }
 
   /* Tear Off Sheet */
@@ -1564,10 +1749,13 @@
         snippet: textSnippet
       });
       document.getElementById('archiveCount').innerText = archive.length;
+      localStorage.setItem('tearoff_archive', JSON.stringify(archive));
     }
 
     playPaperTearSound();
-    try { confetti({ particleCount: 25, spread: 60, origin: { y: 0.3 } }); } catch(e) {}
+    if (!isMuted) {
+      try { confetti({ particleCount: 25, spread: 60, origin: { y: 0.3 } }); } catch(e) {}
+    }
 
     pages.splice(currentPageIndex, 1);
     if (pages.length === 0) {
@@ -1575,23 +1763,7 @@
     }
     if (currentPageIndex >= pages.length) currentPageIndex = pages.length - 1;
     loadPage(currentPageIndex);
-  }
-
-  function advancePage() {
-    pages[currentPageIndex].content = editorContent.innerHTML;
-    if (currentPageIndex === pages.length - 1) {
-      pages.push({ content: '', color: pages[currentPageIndex].color, dateStamp: null });
-    }
-    currentPageIndex++;
-    loadPage(currentPageIndex);
-  }
-
-  function previousPage() {
-    if (currentPageIndex > 0) {
-      pages[currentPageIndex].content = editorContent.innerHTML;
-      currentPageIndex--;
-      loadPage(currentPageIndex);
-    }
+    saveNoteState();
   }
 
   function loadPage(idx) {
@@ -1609,10 +1781,77 @@
   function changePageColor(hex) {
     pages[currentPageIndex].color = hex;
     document.documentElement.style.setProperty('--bg-page', hex);
+    saveNoteState();
   }
 
+  /* Export Features */
+  function exportMarkdown() {
+    const raw = editorContent.innerText;
+    const blob = new Blob([raw], { type: 'text/markdown;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Note_${new Date().toISOString().slice(0,10)}.md`;
+    link.click();
+  }
+
+  function exportNoteImage() {
+    const target = document.getElementById('activeSheet');
+    html2canvas(target, { backgroundColor: null, scale: 2 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `Note_Snapshot_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+
+  /* Persistence: LocalStorage Sync */
+  function saveNoteState() {
+    if (pages[currentPageIndex]) {
+      pages[currentPageIndex].content = editorContent.innerHTML;
+    }
+    localStorage.setItem('tearoff_pages', JSON.stringify(pages));
+    localStorage.setItem('tearoff_archive', JSON.stringify(archive));
+  }
+
+  function loadSavedState() {
+    try {
+      const savedPages = localStorage.getItem('tearoff_pages');
+      if (savedPages) pages = JSON.parse(savedPages);
+
+      const savedArchive = localStorage.getItem('tearoff_archive');
+      if (savedArchive) {
+        archive = JSON.parse(savedArchive);
+        document.getElementById('archiveCount').innerText = archive.length;
+      }
+
+      const savedBm = localStorage.getItem('tearoff_bookmarks');
+      if (savedBm) bookmarks = JSON.parse(savedBm);
+
+      const savedPinned = localStorage.getItem('tearoff_pinned');
+      if (savedPinned) {
+        isPinned = JSON.parse(savedPinned);
+        if (isPinned) togglePin();
+      }
+
+      const savedMuted = localStorage.getItem('tearoff_muted');
+      if (savedMuted) {
+        isMuted = JSON.parse(savedMuted);
+        document.getElementById('muteIcon').innerText = isMuted ? '🔇' : '🔊';
+      }
+
+      const savedPattern = localStorage.getItem('tearoff_pattern');
+      if (savedPattern) {
+        currentPatternIndex = patterns.indexOf(savedPattern);
+        if (currentPatternIndex === -1) currentPatternIndex = 0;
+        applyPattern(patterns[currentPatternIndex]);
+      }
+    } catch(e) {
+      console.error('Error loading saved state:', e);
+    }
+  }
+
+  loadSavedState();
   renderSpirals();
-  stampTodayDate();
   setupDragging();
   loadPage(0);
   renderBookmarks();
