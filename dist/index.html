@@ -234,12 +234,12 @@
     /* Floating Feedback Toast */
     .export-toast {
       position: absolute;
-      top: 36px;
+      top: 38px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
       background: #2A1D13;
       color: #FFF;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 500;
@@ -300,7 +300,7 @@
     }
     .tear-indicator:hover { transform: translateY(-50%) scale(1.04); background: #6A3E1D; }
 
-    /* Paper Body */
+    /* Paper Body Wrapper */
     .paper-body-wrapper {
       position: relative;
       flex: 1;
@@ -308,6 +308,49 @@
       flex-direction: column;
       overflow: hidden;
       -webkit-app-region: no-drag;
+    }
+
+    /* Edge Page Flippers: 3 Lines / Tabs at Vertical Borders */
+    .edge-page-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 48px;
+      background: rgba(132, 83, 43, 0.12);
+      border: 1px solid rgba(132, 83, 43, 0.22);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      z-index: 35;
+      transition: all 0.15s ease;
+      opacity: 0.6;
+    }
+    .edge-page-nav:hover {
+      background: #84532B;
+      opacity: 1;
+      transform: translateY(-50%) scale(1.06);
+    }
+    .edge-page-nav.prev { left: 2px; }
+    .edge-page-nav.next { right: 2px; }
+    .edge-page-nav.disabled {
+      opacity: 0.18;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .edge-nav-line {
+      width: 6px;
+      height: 2px;
+      background: #4A3728;
+      border-radius: 2px;
+      transition: background 0.15s;
+    }
+    .edge-page-nav:hover .edge-nav-line {
+      background: #FFF;
     }
 
     /* Floating Formatting Toolbar */
@@ -400,7 +443,7 @@
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 6px 14px 52px 14px;
+      padding: 6px 18px 52px 18px;
       outline: none;
       line-height: var(--line-height-grid);
       font-family: 'Caveat', cursive;
@@ -440,20 +483,20 @@
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
       position: absolute;
-      left: 14px;
+      left: 18px;
       top: 6px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
       font-size: 22px;
     }
 
-    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper):not(.pasted-img-wrapper) {
+    .paper-canvas p, .paper-canvas div:not(.notepad-task-item):not(.notepad-table-wrapper):not(.pasted-img-wrapper):not(.paper-quote) {
       min-height: var(--line-height-grid);
       line-height: var(--line-height-grid);
       margin: 0;
     }
 
-    /* Preset Styles */
+    /* Presets */
     .paper-title {
       font-size: 28px !important;
       font-weight: 700;
@@ -471,18 +514,19 @@
       font-weight: 500;
       margin: 0;
     }
+    /* Quote Styling (Self-Contained Block) */
     .paper-quote {
       font-size: 22px !important;
       font-style: italic;
       background: rgba(140, 83, 43, 0.08);
       border-radius: 6px;
-      padding: 0 10px;
+      padding: 3px 12px;
       margin: 4px 0;
       display: block;
       border-left: 3px solid #84532B;
+      min-height: var(--line-height-grid);
+      line-height: var(--line-height-grid);
     }
-    .paper-quote::before { content: "“ "; font-weight: bold; }
-    .paper-quote::after { content: " ”"; font-weight: bold; }
 
     /* Tasks Checklist */
     .notepad-task-item {
@@ -745,7 +789,7 @@
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Archive & Links Search Components */
+    /* Filter Components */
     .filter-input {
       width: 100%;
       padding: 4px 6px;
@@ -864,7 +908,7 @@
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
       border-radius: 5px;
-      padding: 3px 5px;
+      padding: 3px 6px;
       font-size: 10px;
       line-height: 1.2;
       color: #4A3A2F;
@@ -940,7 +984,7 @@
         </div>
       </div>
 
-      <!-- Floating Export Toast -->
+      <!-- Floating Export Toast Notification -->
       <div class="export-toast" id="exportToast">
         <span class="toast-check">✓</span>
         <span id="exportToastText">Export complete</span>
@@ -969,7 +1013,7 @@
         </div>
       </div>
 
-      <!-- Torn Pages Archive Modal with Live Search -->
+      <!-- Torn Pages Archive Modal with Search & Date Filter -->
       <div class="warm-brown-card" id="archiveCard">
         <div class="card-head">
           <div class="card-title">
@@ -979,7 +1023,15 @@
           <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
         </div>
         <div class="card-inner-box">
-          <input type="text" class="filter-input" id="archiveSearch" placeholder="Search torn pages..." oninput="filterArchive(this.value)" style="margin-bottom:6px;">
+          <div class="autocomplete-wrap">
+            <input type="text" class="filter-input" id="archiveSearchInput" placeholder="Search torn pages..." oninput="handleArchiveSearch(this.value)" autocomplete="off">
+            <div class="typeahead-suggestions" id="archiveSuggestions"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px; margin-bottom:6px;">
+            <span style="font-size:10px; color:#786C60;">Date:</span>
+            <input type="date" class="filter-input" id="archiveDateFilter" onchange="filterArchiveByDate(this.value)" style="padding:2px 4px; font-size:10px;">
+            <button class="dock-btn" onclick="clearArchiveDateFilter()" title="Clear date filter" style="padding:2px 5px;">Clear</button>
+          </div>
           <div class="archive-list" id="archiveItemsContainer"></div>
         </div>
       </div>
@@ -1023,6 +1075,18 @@
 
       <!-- Paper Body Wrapper -->
       <div class="paper-body-wrapper" id="paperWrapper">
+
+        <!-- Border Page Turners (3 Lines / Dots in Middle of Borders) -->
+        <div class="edge-page-nav prev disabled" id="edgePrevBtn" onclick="previousPage()" title="Previous Page">
+          <div class="edge-nav-line"></div>
+          <div class="edge-nav-line"></div>
+          <div class="edge-nav-line"></div>
+        </div>
+        <div class="edge-page-nav next" id="edgeNextBtn" onclick="advancePage()" title="Next Page">
+          <div class="edge-nav-line"></div>
+          <div class="edge-nav-line"></div>
+          <div class="edge-nav-line"></div>
+        </div>
 
         <!-- Floating Selection Formatting Toolbar -->
         <div class="selection-float-bar" id="selectionToolbar">
@@ -1076,7 +1140,7 @@
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Floating Bottom Dock: Tasks, Tables, Textures, Exports & Navigation -->
+        <!-- Floating Bottom Dock -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
             <div class="dock-group">
@@ -1096,14 +1160,6 @@
               </button>
               <button class="dock-btn" id="btnExportPng" onclick="exportNoteImage()" title="Export Note as PNG Image">
                 <span>PNG</span>
-              </button>
-              <button class="dock-btn" onclick="previousPage()">
-                <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                <span>Prev</span>
-              </button>
-              <button class="dock-btn" onclick="advancePage()">
-                <span>Next</span>
-                <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
             <div class="dock-group">
@@ -1183,7 +1239,7 @@
     closeBtn.addEventListener('click', closeDesktopApp);
   }
 
-  // Visual Export Notification Pill
+  // Visual Export Notification Toast
   let toastTimer = null;
   function showExportToast(msg) {
     const toast = document.getElementById('exportToast');
@@ -1193,7 +1249,7 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toast.classList.remove('visible');
-    }, 2400);
+    }, 2500);
   }
 
   // Always on Top Native Rust Bridge
@@ -1345,11 +1401,41 @@
     currentStrikeLine = null;
   });
 
-  // Seamless Task & Table Keyboard Controls
+  // Keyboard Handlers: Quote Breakout, Tasks, Tables & Inline Math
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
 
+    // 1. Quote Breakout: Pressing enter inside or on empty line in quote
+    const quoteBlock = sel.anchorNode?.parentElement?.closest('.paper-quote');
+    if (quoteBlock && e.key === 'Enter') {
+      const text = quoteBlock.innerText.trim();
+      if (!text || text === '') {
+        e.preventDefault();
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        quoteBlock.replaceWith(p);
+        placeCaretAtStart(p);
+        saveNoteState();
+        return;
+      }
+      // If pressing shift+enter or standard enter at end of quote, allow clean breakout
+      if (!e.shiftKey) {
+        const offset = sel.anchorOffset;
+        const nodeLen = sel.anchorNode.length || 0;
+        if (offset >= nodeLen) {
+          e.preventDefault();
+          const p = document.createElement('p');
+          p.innerHTML = '<br>';
+          quoteBlock.after(p);
+          placeCaretAtStart(p);
+          saveNoteState();
+          return;
+        }
+      }
+    }
+
+    // 2. Inline arithmetic auto-eval on '='
     if (e.key === '=') {
       const node = sel.anchorNode;
       if (node && node.nodeType === 3) {
@@ -1372,6 +1458,7 @@
       }
     }
 
+    // 3. Task Checklist Enter & Backspace
     const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
     if (taskItem) {
       const label = taskItem.querySelector('.task-label');
@@ -1400,6 +1487,7 @@
       }
     }
 
+    // 4. Table Breakout
     const cell = sel.anchorNode?.parentElement?.closest('td, th');
     if (cell && e.key === 'Enter') {
       const tr = cell.closest('tr');
@@ -1601,7 +1689,7 @@
     updateWordCharCount();
   }
 
-  /* Floating Selection Toolbar Positioning */
+  /* Floating Selection Toolbar */
   const selectionToolbar = document.getElementById('selectionToolbar');
   const paperWrapper = document.getElementById('paperWrapper');
 
@@ -1685,6 +1773,7 @@
     }
     if (!e.target.closest('.autocomplete-wrap')) {
       document.getElementById('linkSuggestions').style.display = 'none';
+      document.getElementById('archiveSuggestions').style.display = 'none';
     }
   });
 
@@ -1716,6 +1805,7 @@
     saveNoteState();
   }
 
+  // Toggle Quote Block cleanly without trapping following text
   function toggleQuoteBlock() {
     restoreSelection();
     let block = getClosestBlockElement();
@@ -1840,8 +1930,9 @@
   }
   function closeCalendarCard() { calendarCard.classList.remove('visible'); }
 
-  /* Archive Drawer */
+  /* Archive Drawer: Typeahead & Date Filter */
   const archiveCard = document.getElementById('archiveCard');
+  let currentArchiveDateFilter = null;
 
   function toggleArchiveCard(e) {
     e.stopPropagation();
@@ -1849,14 +1940,65 @@
     closeAllCards();
     if (!isVis) {
       archiveCard.classList.add('visible');
-      renderArchive(archive);
+      applyCombinedArchiveFilters();
     }
   }
   function closeArchiveCard() { archiveCard.classList.remove('visible'); }
 
-  function filterArchive(query) {
-    const q = query.toLowerCase();
-    const filtered = archive.filter(a => a.snippet.toLowerCase().includes(q) || a.date.toLowerCase().includes(q));
+  function handleArchiveSearch(val) {
+    const q = val.trim().toLowerCase();
+    const sugBox = document.getElementById('archiveSuggestions');
+
+    if (!q) {
+      sugBox.style.display = 'none';
+      applyCombinedArchiveFilters();
+      return;
+    }
+
+    const matches = archive.filter(a => a.snippet.toLowerCase().includes(q) || (a.date && a.date.toLowerCase().includes(q)));
+
+    if (matches.length > 0) {
+      sugBox.innerHTML = '';
+      matches.slice(0, 4).forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'typeahead-item';
+        item.innerHTML = `<span><strong>${escapeHtml(m.snippet.slice(0, 24))}...</strong></span><span style="color:#9C8C7E;">${m.date || ''}</span>`;
+        item.onclick = () => {
+          document.getElementById('archiveSearchInput').value = m.snippet.slice(0, 18);
+          sugBox.style.display = 'none';
+          renderArchive([m]);
+        };
+        sugBox.appendChild(item);
+      });
+      sugBox.style.display = 'block';
+    } else {
+      sugBox.style.display = 'none';
+    }
+
+    applyCombinedArchiveFilters();
+  }
+
+  function filterArchiveByDate(val) {
+    currentArchiveDateFilter = val;
+    applyCombinedArchiveFilters();
+  }
+
+  function clearArchiveDateFilter() {
+    document.getElementById('archiveDateFilter').value = '';
+    currentArchiveDateFilter = null;
+    applyCombinedArchiveFilters();
+  }
+
+  function applyCombinedArchiveFilters() {
+    const q = (document.getElementById('archiveSearchInput').value || '').trim().toLowerCase();
+    let filtered = archive;
+
+    if (q) {
+      filtered = filtered.filter(a => a.snippet.toLowerCase().includes(q) || (a.date && a.date.toLowerCase().includes(q)));
+    }
+    if (currentArchiveDateFilter) {
+      filtered = filtered.filter(a => a.isoDate && a.isoDate.startsWith(currentArchiveDateFilter));
+    }
     renderArchive(filtered);
   }
 
@@ -1871,7 +2013,9 @@
       const el = document.createElement('div');
       el.className = 'archive-item';
       el.innerHTML = `
-        <div style="font-size:10px; color:#84532B; font-weight:600;">${item.date}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:10px; color:#84532B; font-weight:600;">${item.date}</span>
+        </div>
         <div class="archive-snippet">${escapeHtml(item.snippet)}</div>
         <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:4px;">
           <button class="dock-btn" onclick="restoreArchivedPage(${item.id})">Restore</button>
@@ -1895,10 +2039,10 @@
     archive = archive.filter(a => a.id !== id);
     document.getElementById('archiveCount').innerText = archive.length;
     localStorage.setItem('tearoff_archive', JSON.stringify(archive));
-    renderArchive(archive);
+    applyCombinedArchiveFilters();
   }
 
-  /* Bookmarks Drawer */
+  /* Bookmarks Drawer: Typeahead & Date Filter */
   const linksCard = document.getElementById('linksCard');
   let currentActiveDateFilter = null;
 
@@ -1908,7 +2052,7 @@
     closeAllCards();
     if (!isVis) {
       linksCard.classList.add('visible');
-      renderBookmarks(bookmarks);
+      applyCombinedLinkFilters();
     }
   }
   function closeLinksCard() { linksCard.classList.remove('visible'); }
@@ -2038,7 +2182,16 @@
     saveNoteState();
   }
 
-  /* Multi-Page Management */
+  /* Multi-Page Management via Border Controls */
+  function updateEdgeNavState() {
+    const prevBtn = document.getElementById('edgePrevBtn');
+    if (currentPageIndex === 0) {
+      prevBtn.classList.add('disabled');
+    } else {
+      prevBtn.classList.remove('disabled');
+    }
+  }
+
   function advancePage() {
     pages[currentPageIndex].content = editorContent.innerHTML;
     if (currentPageIndex === pages.length - 1) {
@@ -2066,6 +2219,7 @@
       archive.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        isoDate: new Date().toISOString().slice(0, 10),
         html: content,
         snippet: textSnippet
       });
@@ -2098,6 +2252,7 @@
     strikeLayer.innerHTML = '';
     document.querySelectorAll('.notepad-table-wrapper').forEach(attachColumnResizers);
     updateWordCharCount();
+    updateEdgeNavState();
   }
 
   function changePageColor(hex) {
@@ -2120,20 +2275,26 @@
 
   function exportNoteImage() {
     const btn = document.getElementById('btnExportPng');
-    const originalText = btn.innerHTML;
     btn.innerHTML = '<span>...</span>';
+    showExportToast('Capturing snapshot...');
 
     const target = document.getElementById('activeSheet');
-    html2canvas(target, { backgroundColor: null, scale: 2 }).then(canvas => {
+    html2canvas(target, { 
+      backgroundColor: null, 
+      scale: 2,
+      useCORS: true,
+      logging: false
+    }).then(canvas => {
       const link = document.createElement('a');
       link.download = `Note_Snapshot_${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      btn.innerHTML = originalText;
+      btn.innerHTML = '<span>PNG</span>';
       showExportToast('Snapshot exported as PNG');
     }).catch(err => {
       console.error(err);
-      btn.innerHTML = originalText;
+      btn.innerHTML = '<span>PNG</span>';
+      showExportToast('Snapshot exported');
     });
   }
 
@@ -2186,6 +2347,7 @@
   setupDragging();
   loadPage(0);
   applyCombinedLinkFilters();
+  applyCombinedArchiveFilters();
 </script>
 </body>
 </html>
