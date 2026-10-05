@@ -7,15 +7,16 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "Tear-Off Notepad",
-        "width": 350,
-        "height": 480,
-        "minWidth": 280,
-        "minHeight": 320,
-        "maxWidth": 800,
-        "maxHeight": 1000,
+        "width": 380,
+        "height": 520,
+        "minWidth": 300,
+        "minHeight": 360,
+        "maxWidth": 900,
+        "maxHeight": 1100,
         "resizable": true,
         "decorations": false,
         "transparent": true,
