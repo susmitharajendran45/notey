@@ -57,7 +57,6 @@
       filter: drop-shadow(0 8px 20px rgba(50, 35, 20, 0.25));
     }
 
-    /* Wooden Spiral Titlebar */
     .spiral-binding-header {
       height: 26px;
       min-height: 26px;
@@ -104,7 +103,6 @@
       z-index: -1;
     }
 
-    /* Notepad Sheet */
     .notepad-sheet {
       flex: 1;
       background: var(--bg-page);
@@ -121,7 +119,6 @@
       min-width: 0;
     }
 
-    /* Minimalist Executive Top Bar */
     .pad-topbar {
       display: flex;
       align-items: center;
@@ -149,9 +146,7 @@
       -webkit-app-region: no-drag;
       flex-shrink: 0;
     }
-    .top-cluster.right {
-      margin-left: auto;
-    }
+    .top-cluster.right { margin-left: auto; }
 
     .top-icon-btn {
       background: #FFFFFF;
@@ -170,16 +165,8 @@
       flex-shrink: 0;
       position: relative;
     }
-    .top-icon-btn:hover {
-      background: #4A3222;
-      color: #FFF;
-      border-color: #4A3222;
-    }
-    .top-icon-btn.active {
-      background: #84532B;
-      color: #FFF;
-      border-color: #84532B;
-    }
+    .top-icon-btn:hover { background: #4A3222; color: #FFF; border-color: #4A3222; }
+    .top-icon-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
 
     .top-icon-btn .badge-count {
       position: absolute;
@@ -215,11 +202,7 @@
       z-index: 9999;
       flex-shrink: 0;
     }
-    .btn-close-app:hover {
-      background: #C93B2B !important;
-      color: #FFF !important;
-      border-color: #C93B2B !important;
-    }
+    .btn-close-app:hover { background: #C93B2B !important; color: #FFF !important; border-color: #C93B2B !important; }
 
     .date-stamp-badge {
       font-size: 10px;
@@ -241,7 +224,6 @@
       flex-shrink: 0;
     }
 
-    /* Perforated Tear Crease */
     .perforation-strip {
       position: relative;
       height: 16px;
@@ -278,12 +260,8 @@
       pointer-events: auto !important;
       flex-shrink: 0;
     }
-    .tear-indicator:hover {
-      background: #6A3E1D;
-      transform: scale(1.03);
-    }
+    .tear-indicator:hover { background: #6A3E1D; transform: scale(1.03); }
 
-    /* Paper Body */
     .paper-body-wrapper {
       position: relative;
       flex: 1;
@@ -294,7 +272,6 @@
       min-width: 0;
     }
 
-    /* Edge Page Turners */
     .edge-page-nav {
       position: absolute;
       top: 50%;
@@ -314,28 +291,13 @@
       transition: all 0.15s ease;
       opacity: 0.6;
     }
-    .edge-page-nav:hover {
-      background: #84532B;
-      opacity: 1;
-      transform: translateY(-50%) scale(1.06);
-    }
+    .edge-page-nav:hover { background: #84532B; opacity: 1; transform: translateY(-50%) scale(1.06); }
     .edge-page-nav.prev { left: 1px; }
     .edge-page-nav.next { right: 1px; }
-    .edge-page-nav.disabled {
-      opacity: 0.15;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-    .edge-nav-line {
-      width: 5px;
-      height: 2px;
-      background: #4A3728;
-      border-radius: 2px;
-      transition: background 0.15s;
-    }
+    .edge-page-nav.disabled { opacity: 0.15; cursor: not-allowed; pointer-events: none; }
+    .edge-nav-line { width: 5px; height: 2px; background: #4A3728; border-radius: 2px; transition: background 0.15s; }
     .edge-page-nav:hover .edge-nav-line { background: #FFF; }
 
-    /* Floating Toolbar */
     .selection-float-bar {
       position: absolute;
       display: none;
@@ -356,10 +318,7 @@
       pointer-events: none;
       transition: opacity 0.15s ease;
     }
-    .selection-float-bar.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .selection-float-bar.visible { opacity: 1; pointer-events: auto; }
     .selection-float-bar.arrow-top::before {
       content: "";
       position: absolute;
@@ -381,13 +340,7 @@
       border-color: #2C221B transparent transparent transparent;
     }
 
-    .float-divider {
-      width: 1px;
-      height: 16px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 0 2px;
-    }
-
+    .float-divider { width: 1px; height: 16px; background: rgba(255, 255, 255, 0.2); margin: 0 2px; }
     .float-btn {
       background: transparent;
       border: none;
@@ -406,7 +359,6 @@
       transition: background 0.15s;
     }
     .float-btn:hover { background: rgba(255, 255, 255, 0.16); }
-
     .float-select {
       background: #3B2E25;
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -418,7 +370,6 @@
       cursor: pointer;
     }
 
-    /* Canvas */
     .paper-canvas {
       flex: 1;
       width: 100%;
@@ -438,7 +389,6 @@
     }
     .paper-canvas::-webkit-scrollbar { width: 4px; }
     .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
-
     .paper-canvas.strike-mode-on { cursor: crosshair !important; }
 
     .pattern-ruled {
@@ -479,23 +429,9 @@
       margin: 0;
     }
 
-    .paper-title {
-      font-size: 28px !important;
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      margin: 0;
-    }
-    .paper-subtitle {
-      font-size: 24px !important;
-      font-weight: 600;
-      margin: 0;
-    }
-    .paper-body {
-      font-size: 22px !important;
-      font-weight: 500;
-      margin: 0;
-    }
+    .paper-title { font-size: 28px !important; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; margin: 0; }
+    .paper-subtitle { font-size: 24px !important; font-weight: 600; margin: 0; }
+    .paper-body { font-size: 22px !important; font-weight: 500; margin: 0; }
     .paper-quote {
       font-size: 22px !important;
       font-style: italic;
@@ -509,7 +445,6 @@
       line-height: var(--line-height-grid);
     }
 
-    /* Tasks Checklist */
     .notepad-task-item {
       display: flex;
       align-items: center;
@@ -530,10 +465,7 @@
       background: transparent;
       user-select: none;
     }
-    .task-check:checked {
-      background: #84532B;
-      position: relative;
-    }
+    .task-check:checked { background: #84532B; position: relative; }
     .task-check:checked::after {
       content: "";
       position: absolute;
@@ -556,7 +488,6 @@
     .task-label:empty::before { content: "Task..."; color: rgba(140, 120, 100, 0.35); }
     .task-label.checked { text-decoration: line-through; opacity: 0.55; }
 
-    /* Pasted Images */
     .pasted-img-wrapper {
       position: relative;
       display: inline-block;
@@ -567,12 +498,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       user-select: none;
     }
-    .pasted-img-wrapper img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 4px;
-    }
+    .pasted-img-wrapper img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
     .pasted-img-del {
       position: absolute;
       top: 4px;
@@ -591,7 +517,6 @@
     }
     .pasted-img-del:hover { background: #C93B2B; }
 
-    /* Tables */
     .notepad-table-wrapper {
       margin: 8px 0 12px 0;
       position: relative;
@@ -600,13 +525,7 @@
       user-select: text;
       overflow-x: auto;
     }
-    .table-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      margin-bottom: 3px;
-      user-select: none;
-    }
+    .table-toolbar { display: flex; align-items: center; gap: 3px; margin-bottom: 3px; user-select: none; }
     .tbl-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
@@ -647,16 +566,8 @@
       min-width: 70px;
       box-sizing: border-box;
     }
-    .notepad-table th .th-text {
-      outline: none;
-      display: inline-block;
-      min-width: 30px;
-      white-space: nowrap;
-    }
-    .notepad-table th .th-text:empty::before {
-      content: "Header...";
-      color: rgba(140, 120, 100, 0.45);
-    }
+    .notepad-table th .th-text { outline: none; display: inline-block; min-width: 30px; white-space: nowrap; }
+    .notepad-table th .th-text:empty::before { content: "Header..."; color: rgba(140, 120, 100, 0.45); }
     .notepad-table td {
       border: 1px solid rgba(140, 83, 43, 0.3);
       padding: 4px 8px;
@@ -668,10 +579,7 @@
       min-width: 70px;
       box-sizing: border-box;
     }
-    .notepad-table td:empty::before {
-      content: "Cell...";
-      color: rgba(140, 120, 100, 0.35);
-    }
+    .notepad-table td:empty::before { content: "Cell..."; color: rgba(140, 120, 100, 0.35); }
 
     .col-resizer {
       position: absolute;
@@ -685,7 +593,6 @@
     }
     .col-resizer:hover { background: #84532B; }
 
-    /* Strike Pen SVG Layer */
     .strike-svg-layer {
       position: absolute;
       inset: 0;
@@ -702,7 +609,6 @@
       pointer-events: auto;
     }
 
-    /* Popover Panels */
     .warm-brown-card {
       position: absolute;
       top: 34px;
@@ -719,27 +625,9 @@
       overflow-y: auto;
     }
     .warm-brown-card.visible { display: block; }
-    .card-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .card-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: #FAF5EE;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      line-height: 1;
-    }
-    .card-inner-box {
-      background: var(--box-inner-bg);
-      border-radius: 6px;
-      padding: 6px;
-      color: #332B25;
-    }
+    .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .card-title { font-size: 12px; font-weight: 600; color: #FAF5EE; display: inline-flex; align-items: center; gap: 5px; line-height: 1; }
+    .card-inner-box { background: var(--box-inner-bg); border-radius: 6px; padding: 6px; color: #332B25; }
 
     .cal-selectors-bar { display: flex; gap: 4px; margin-bottom: 6px; }
     .cal-brown-select {
@@ -753,36 +641,14 @@
       cursor: pointer;
       flex: 1;
     }
-    .compact-cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      text-align: center;
-      font-size: 10px;
-    }
+    .compact-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 10px; }
     .compact-cal-head { font-weight: 600; color: #9C8C7E; padding: 2px 0; }
-    .compact-cal-day {
-      padding: 4px 0;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
+    .compact-cal-day { padding: 4px 0; border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif; }
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    .filter-input {
-      width: 100%;
-      padding: 4px 6px;
-      border: 1px solid #D6CBC1;
-      border-radius: 4px;
-      font-size: 11px;
-      outline: none;
-    }
-
-    .autocomplete-wrap {
-      position: relative;
-      margin-bottom: 5px;
-    }
+    .filter-input { width: 100%; padding: 4px 6px; border: 1px solid #D6CBC1; border-radius: 4px; font-size: 11px; outline: none; }
+    .autocomplete-wrap { position: relative; margin-bottom: 5px; }
     .typeahead-suggestions {
       position: absolute;
       top: 100%;
@@ -809,13 +675,7 @@
     .typeahead-item:hover { background: #F5EFE6; }
     .typeahead-item strong { color: #84532B; }
 
-    .archive-list, .bookmarks-list {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      max-height: 180px;
-      overflow-y: auto;
-    }
+    .archive-list, .bookmarks-list { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; }
     .archive-item, .bookmark-card {
       background: #FFF;
       border: 1px solid #E2D9CF;
@@ -826,15 +686,8 @@
       flex-direction: column;
       gap: 2px;
     }
-    .archive-snippet {
-      max-height: 38px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-wrap;
-      color: #2D241E;
-    }
+    .archive-snippet { max-height: 38px; overflow: hidden; text-overflow: ellipsis; white-space: pre-wrap; color: #2D241E; }
 
-    /* Bottom Info Status */
     .pad-bottom-info {
       padding: 2px 8px 3px 8px;
       display: flex;
@@ -847,7 +700,6 @@
       width: 100%;
     }
 
-    /* Floating Export Toast */
     .export-toast {
       position: absolute;
       top: 38px;
@@ -868,16 +720,9 @@
       pointer-events: none;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .export-toast.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .export-toast .toast-check {
-      color: #10B981;
-      font-weight: bold;
-    }
+    .export-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .export-toast .toast-check { color: #10B981; font-weight: bold; }
 
-    /* Ultra-Clean Segmented Micro-Dock */
     .bottom-dock-hitbox {
       position: absolute;
       bottom: 0;
@@ -906,24 +751,10 @@
       min-width: 0;
     }
     .bottom-dock-hitbox:hover .floating-bottom-dock,
-    .floating-bottom-dock:focus-within {
-      transform: translateY(0);
-    }
+    .floating-bottom-dock:focus-within { transform: translateY(0); }
 
-    .dock-cluster {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      flex-shrink: 0;
-    }
-    .dock-divider {
-      width: 1px;
-      height: 14px;
-      background: rgba(132, 83, 43, 0.2);
-      margin: 0 1px;
-      flex-shrink: 0;
-    }
-
+    .dock-cluster { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+    .dock-divider { width: 1px; height: 14px; background: rgba(132, 83, 43, 0.2); margin: 0 1px; flex-shrink: 0; }
     .dock-icon-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
@@ -940,18 +771,9 @@
       position: relative;
     }
     .dock-icon-btn:hover { background: #E8DFD5; }
-    .dock-icon-btn.active {
-      background: #84532B;
-      color: #FFF;
-      border-color: #84532B;
-    }
+    .dock-icon-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
 
-    .color-swatches {
-      display: flex;
-      gap: 3px;
-      align-items: center;
-      flex-shrink: 0;
-    }
+    .color-swatches { display: flex; gap: 3px; align-items: center; flex-shrink: 0; }
     .swatch-dot {
       width: 12px;
       height: 12px;
@@ -967,14 +789,9 @@
 <body>
 
   <div class="notepad-container" id="notepadWidget">
-    
-    <!-- Top Spiral Binding Header -->
     <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
-    <!-- Paper Sheet -->
     <div class="notepad-sheet" id="activeSheet">
-      
-      <!-- Top Action Bar (Icon-First System Controls) -->
       <div class="pad-topbar" data-tauri-drag-region>
         <div class="top-cluster">
           <button class="top-icon-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
@@ -1006,7 +823,6 @@
         </div>
       </div>
 
-      <!-- Floating Export Toast -->
       <div class="export-toast" id="exportToast">
         <span class="toast-check">✓</span>
         <span id="exportToastText">Export complete</span>
@@ -1035,7 +851,7 @@
         </div>
       </div>
 
-      <!-- Torn Pages Archive Modal -->
+      <!-- Archive Modal -->
       <div class="warm-brown-card" id="archiveCard">
         <div class="card-head">
           <div class="card-title">
@@ -1086,7 +902,6 @@
         </div>
       </div>
 
-      <!-- Perforated Tear Crease -->
       <div class="perforation-strip">
         <div class="perforation-dots"></div>
         <div class="tear-indicator" onclick="executeTear()" title="Tear off sheet & save to Archive">
@@ -1095,10 +910,7 @@
         </div>
       </div>
 
-      <!-- Paper Body Wrapper -->
       <div class="paper-body-wrapper" id="paperWrapper">
-
-        <!-- Border Page Turners -->
         <div class="edge-page-nav prev disabled" id="edgePrevBtn" onclick="previousPage()" title="Previous Page">
           <div class="edge-nav-line"></div>
           <div class="edge-nav-line"></div>
@@ -1110,7 +922,6 @@
           <div class="edge-nav-line"></div>
         </div>
 
-        <!-- Floating Selection Toolbar -->
         <div class="selection-float-bar" id="selectionToolbar">
           <button class="float-btn" onclick="formatBlockPreset('paper-title')" title="Title">Title</button>
           <button class="float-btn" onclick="formatBlockPreset('paper-subtitle')" title="Sub">Sub</button>
@@ -1144,7 +955,6 @@
           <input type="color" id="inkColorPicker" value="#2D241E" onchange="setSelectionInk(this.value)" title="Ink Color" style="width:18px;height:18px;border:none;cursor:pointer;background:transparent;">
         </div>
 
-        <!-- Ruled Writing Canvas -->
         <div 
           class="paper-canvas pattern-ruled" 
           id="editorContent" 
@@ -1153,22 +963,16 @@
           data-placeholder="Start typing notes here (Try math: 25 * 4 = )..."
         ></div>
 
-        <!-- Hidden file input for image upload -->
         <input type="file" id="fileImagePicker" accept="image/*" style="display:none;" onchange="handleImageFilePick(event)">
-
-        <!-- Freehand Strike SVG Overlay -->
         <svg class="strike-svg-layer" id="strikeLayer"></svg>
 
-        <!-- Live Word & Character Stats -->
         <div class="pad-bottom-info">
           <span id="wordCharStats">0 words · 0 chars</span>
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Ultra-Clean Segmented Micro-Dock -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
-            <!-- Authoring Segment -->
             <div class="dock-cluster">
               <button class="dock-icon-btn" onclick="insertChecklist()" title="Add Checklist Task">
                 <svg class="icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -1189,7 +993,6 @@
 
             <div class="dock-divider"></div>
 
-            <!-- Export Segment -->
             <div class="dock-cluster">
               <button class="dock-icon-btn" id="btnExportMd" onclick="exportMarkdown()" title="Export Note as Markdown (.md)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -1201,7 +1004,6 @@
 
             <div class="dock-divider"></div>
 
-            <!-- Paper Swatches -->
             <div class="dock-cluster">
               <div class="color-swatches">
                 <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream Paper"></div>
@@ -1214,7 +1016,6 @@
         </div>
 
       </div>
-
     </div>
   </div>
 
@@ -1243,7 +1044,6 @@
     });
   }
 
-  // Remember & Restore Window Coordinates
   async function saveWindowPosition() {
     try {
       if (window.__TAURI__?.window?.getCurrentWindow) {
@@ -1265,7 +1065,6 @@
     } catch(e) {}
   }
 
-  // Register with OS Startup Registry (Windows / macOS)
   async function enableAutoStart() {
     try {
       if (window.__TAURI__?.autostart) {
@@ -1275,7 +1074,7 @@
         }
       }
     } catch(e) {
-      console.error('Autostart initialization:', e);
+      console.error('Autostart initialization error:', e);
     }
   }
 
@@ -1413,7 +1212,6 @@
   }
   editorContent.addEventListener('input', updateWordCharCount);
 
-  // Red Strike Pen
   const strikeLayer = document.getElementById('strikeLayer');
   let isStriking = false;
   let strikeStartX = 0, strikeStartY = 0;
@@ -1464,12 +1262,10 @@
     currentStrikeLine = null;
   });
 
-  // Editor Keyboard Behaviors
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
 
-    // Quote Breakout
     const quoteBlock = sel.anchorNode?.parentElement?.closest('.paper-quote');
     if (quoteBlock && e.key === 'Enter') {
       const text = quoteBlock.innerText.trim();
@@ -1497,7 +1293,6 @@
       }
     }
 
-    // Inline Math
     if (e.key === '=') {
       const node = sel.anchorNode;
       if (node && node.nodeType === 3) {
@@ -1520,7 +1315,6 @@
       }
     }
 
-    // Task Items
     const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
     if (taskItem) {
       const label = taskItem.querySelector('.task-label');
@@ -1549,7 +1343,6 @@
       }
     }
 
-    // Table Breakout
     const cell = sel.anchorNode?.parentElement?.closest('td, th');
     if (cell && e.key === 'Enter') {
       const tr = cell.closest('tr');
@@ -1571,7 +1364,6 @@
     }
   });
 
-  // Handle image files picked via PC dialog
   function handleImageFilePick(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -1591,7 +1383,6 @@
     e.target.value = '';
   }
 
-  // Paste Image via clipboard
   editorContent.addEventListener('paste', (e) => {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -1771,7 +1562,6 @@
     updateWordCharCount();
   }
 
-  /* Formatting Toolbar */
   const selectionToolbar = document.getElementById('selectionToolbar');
   const paperWrapper = document.getElementById('paperWrapper');
 
@@ -1931,7 +1721,6 @@
     saveNoteState();
   }
 
-  /* Calendar */
   let calDate = new Date();
   const calendarCard = document.getElementById('calendarCard');
 
@@ -2011,7 +1800,6 @@
   }
   function closeCalendarCard() { calendarCard.classList.remove('visible'); }
 
-  /* Archive Drawer */
   const archiveCard = document.getElementById('archiveCard');
   let currentArchiveDateFilter = null;
 
@@ -2123,7 +1911,6 @@
     applyCombinedArchiveFilters();
   }
 
-  /* Bookmarks */
   const linksCard = document.getElementById('linksCard');
   let currentActiveDateFilter = null;
 
@@ -2216,7 +2003,6 @@
 
   function renderBookmarks(list) {
     const container = document.getElementById('bookmarksContainer');
-    document.getElementById('bmCount').innerText = bookmarks.length;
     container.innerHTML = '';
     if (!list || list.length === 0) {
       container.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No links match your search.</div>';
@@ -2373,26 +2159,42 @@
   }
 
   function saveNoteState() {
-    if (pages[currentPageIndex]) {
-      pages[currentPageIndex].content = editorContent.innerHTML;
+    try {
+      if (pages[currentPageIndex]) {
+        pages[currentPageIndex].content = editorContent.innerHTML;
+      }
+      localStorage.setItem('tearoff_pages', JSON.stringify(pages));
+      localStorage.setItem('tearoff_archive', JSON.stringify(archive));
+      localStorage.setItem('tearoff_bookmarks', JSON.stringify(bookmarks));
+      localStorage.setItem('tearoff_pinned', JSON.stringify(isPinned));
+      localStorage.setItem('tearoff_muted', JSON.stringify(isMuted));
+    } catch(e) {
+      console.error('Storage write error:', e);
     }
-    localStorage.setItem('tearoff_pages', JSON.stringify(pages));
-    localStorage.setItem('tearoff_archive', JSON.stringify(archive));
   }
 
   function loadSavedState() {
     try {
       const savedPages = localStorage.getItem('tearoff_pages');
-      if (savedPages) pages = JSON.parse(savedPages);
+      if (savedPages) {
+        const parsed = JSON.parse(savedPages);
+        if (Array.isArray(parsed) && parsed.length > 0) pages = parsed;
+      }
 
       const savedArchive = localStorage.getItem('tearoff_archive');
       if (savedArchive) {
-        archive = JSON.parse(savedArchive);
-        document.getElementById('archiveCount').innerText = archive.length;
+        const parsed = JSON.parse(savedArchive);
+        if (Array.isArray(parsed)) {
+          archive = parsed;
+          document.getElementById('archiveCount').innerText = archive.length;
+        }
       }
 
       const savedBm = localStorage.getItem('tearoff_bookmarks');
-      if (savedBm) bookmarks = JSON.parse(savedBm);
+      if (savedBm) {
+        const parsed = JSON.parse(savedBm);
+        if (Array.isArray(parsed)) bookmarks = parsed;
+      }
 
       const savedPinned = localStorage.getItem('tearoff_pinned');
       if (savedPinned) {
@@ -2412,19 +2214,23 @@
         if (currentPatternIndex === -1) currentPatternIndex = 0;
         applyPattern(patterns[currentPatternIndex]);
       }
-    } catch(e) { console.error('Error loading saved state:', e); }
+    } catch(e) {
+      console.error('Storage hydration error:', e);
+    }
   }
 
-  loadSavedState();
-  renderSpirals();
-  setupDragging();
-  loadPage(0);
-  applyCombinedLinkFilters();
-  applyCombinedArchiveFilters();
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSavedState();
+    renderSpirals();
+    setupDragging();
+    loadPage(0);
+    applyCombinedLinkFilters();
+    applyCombinedArchiveFilters();
 
-  // Desktop Coordinate Restoration & Startup Registration
-  restoreWindowPosition();
-  enableAutoStart();
+    restoreWindowPosition();
+    enableAutoStart();
+  });
+
   window.addEventListener('mouseup', saveWindowPosition);
 </script>
 </body>
