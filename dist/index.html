@@ -35,10 +35,10 @@
     }
 
     .icon {
-      width: 12px;
-      height: 12px;
-      min-width: 12px;
-      min-height: 12px;
+      width: 13px;
+      height: 13px;
+      min-width: 13px;
+      min-height: 13px;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
@@ -53,28 +53,29 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 3px 5px 6px 5px;
+      padding: 3px;
       filter: drop-shadow(0 8px 20px rgba(50, 35, 20, 0.25));
     }
 
-    /* Wooden Spiral Titlebar Drag Area */
+    /* Wooden Spiral Titlebar */
     .spiral-binding-header {
-      height: 28px;
-      min-height: 28px;
+      height: 26px;
+      min-height: 26px;
       position: relative;
       z-index: 30;
       display: flex;
       justify-content: space-evenly;
-      padding: 0 10px;
+      padding: 0 8px;
       cursor: grab;
       -webkit-app-region: drag;
       overflow: hidden;
+      flex-shrink: 0;
     }
     .spiral-binding-header:active { cursor: grabbing; }
 
     .ring-pair {
-      width: 11px;
-      height: 36px;
+      width: 10px;
+      height: 34px;
       position: relative;
       top: -4px;
       pointer-events: none;
@@ -82,28 +83,28 @@
     }
     .ring-wire {
       position: absolute;
-      width: 5px;
+      width: 4px;
       height: 100%;
-      border-radius: 5px;
+      border-radius: 4px;
       background: linear-gradient(135deg, #B5845C 0%, #6E3F1E 45%, #3B200F 85%, #8C532B 100%);
       box-shadow: 1px 2px 3px var(--binding-shadow), inset 1px 1px 1px rgba(255,255,255,0.4);
     }
     .ring-wire.left { left: 0px; }
-    .ring-wire.right { left: 6px; }
+    .ring-wire.right { left: 5px; }
 
     .punch-hole {
       position: absolute;
       bottom: -3px;
       left: 1px;
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       background: #4A3A2F;
       border-radius: 50%;
       box-shadow: inset 1px 1px 3px #000;
       z-index: -1;
     }
 
-    /* Paper Pad Sheet */
+    /* Notepad Sheet */
     .notepad-sheet {
       flex: 1;
       background: var(--bg-page);
@@ -117,14 +118,15 @@
         0 6px 16px -2px rgba(70,50,30,0.12),
         inset 0 0 35px rgba(180, 140, 90, 0.04);
       transition: background-color 0.2s ease;
+      min-width: 0;
     }
 
-    /* Calibrated Top Navigation Bar */
+    /* Minimalist Executive Top Bar */
     .pad-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 5px 8px;
+      padding: 4px 6px;
       font-size: 11px;
       background: rgba(255, 255, 255, 0.65);
       backdrop-filter: blur(8px);
@@ -134,7 +136,8 @@
       z-index: 20;
       cursor: grab;
       -webkit-app-region: drag;
-      gap: 4px;
+      gap: 3px;
+      width: 100%;
       min-width: 0;
     }
     .pad-topbar:active { cursor: grabbing; }
@@ -146,50 +149,71 @@
       -webkit-app-region: no-drag;
       flex-shrink: 0;
     }
+    .top-cluster.right {
+      margin-left: auto;
+    }
 
-    .top-btn {
+    .top-icon-btn {
       background: #FFFFFF;
       border: 1px solid rgba(110, 85, 60, 0.22);
       color: #4A3728;
-      padding: 3px 6px;
+      width: 24px;
+      height: 22px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      white-space: nowrap;
       transition: all 0.12s ease;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
+      flex-shrink: 0;
+      position: relative;
     }
-    .top-btn:hover {
+    .top-icon-btn:hover {
       background: #4A3222;
       color: #FFF;
       border-color: #4A3222;
     }
-    .top-btn.active {
+    .top-icon-btn.active {
       background: #84532B;
       color: #FFF;
       border-color: #84532B;
     }
 
+    .top-icon-btn .badge-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #84532B;
+      color: #FFF;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 1px 3px;
+      border-radius: 6px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
     .btn-close-app {
       background: rgba(220, 38, 38, 0.1);
       color: #C93B2B;
-      border: 1px solid rgba(201, 59, 43, 0.3);
-      padding: 3px 8px;
+      border: 1px solid rgba(201, 59, 43, 0.35);
+      width: 24px;
+      height: 22px;
+      border-radius: 5px;
       font-weight: 700;
       font-size: 11px;
       line-height: 1;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
       position: relative;
       z-index: 9999;
+      flex-shrink: 0;
     }
     .btn-close-app:hover {
       background: #C93B2B !important;
@@ -214,62 +238,32 @@
       white-space: nowrap;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
+      flex-shrink: 0;
     }
 
-    /* Floating Feedback Toast */
-    .export-toast {
-      position: absolute;
-      top: 38px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      background: #2A1D13;
-      color: #FFF;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      z-index: 300;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .export-toast.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .export-toast .toast-check {
-      color: #10B981;
-      font-weight: bold;
-    }
-
-    /* Perforated Crease */
+    /* Perforated Tear Crease */
     .perforation-strip {
       position: relative;
-      height: 14px;
+      height: 16px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin: 1px 8px;
+      justify-content: space-between;
+      padding: 0 6px;
+      margin: 1px 0;
       -webkit-app-region: no-drag;
+      gap: 6px;
+      width: 100%;
     }
     .perforation-dots {
-      width: 100%;
+      flex: 1;
       height: 1px;
       border-bottom: 2px dashed rgba(110, 85, 60, 0.3);
     }
     .tear-indicator {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
       background: #84532B;
       color: #FFF;
       border-radius: 999px;
-      padding: 2px 7px;
+      padding: 2px 8px;
       font-size: 10px;
       font-weight: 600;
       line-height: 1;
@@ -282,10 +276,14 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.15);
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
+      flex-shrink: 0;
     }
-    .tear-indicator:hover { transform: translateY(-50%) scale(1.04); background: #6A3E1D; }
+    .tear-indicator:hover {
+      background: #6A3E1D;
+      transform: scale(1.03);
+    }
 
-    /* Paper Body Wrapper */
+    /* Paper Body */
     .paper-body-wrapper {
       position: relative;
       flex: 1;
@@ -293,23 +291,24 @@
       flex-direction: column;
       overflow: hidden;
       -webkit-app-region: no-drag;
+      min-width: 0;
     }
 
-    /* Edge Page Flippers: 3 Lines in Middle of Left/Right Borders */
+    /* Edge Page Turners */
     .edge-page-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 14px;
-      height: 48px;
+      width: 12px;
+      height: 42px;
       background: rgba(132, 83, 43, 0.12);
       border: 1px solid rgba(132, 83, 43, 0.22);
-      border-radius: 4px;
+      border-radius: 3px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
       z-index: 35;
       transition: all 0.15s ease;
@@ -320,15 +319,15 @@
       opacity: 1;
       transform: translateY(-50%) scale(1.06);
     }
-    .edge-page-nav.prev { left: 2px; }
-    .edge-page-nav.next { right: 2px; }
+    .edge-page-nav.prev { left: 1px; }
+    .edge-page-nav.next { right: 1px; }
     .edge-page-nav.disabled {
       opacity: 0.15;
       cursor: not-allowed;
       pointer-events: none;
     }
     .edge-nav-line {
-      width: 6px;
+      width: 5px;
       height: 2px;
       background: #4A3728;
       border-radius: 2px;
@@ -336,7 +335,7 @@
     }
     .edge-page-nav:hover .edge-nav-line { background: #FFF; }
 
-    /* Floating Formatting Toolbar */
+    /* Floating Toolbar */
     .selection-float-bar {
       position: absolute;
       display: none;
@@ -419,14 +418,14 @@
       cursor: pointer;
     }
 
-    /* Canvas Styles & Patterns */
+    /* Canvas */
     .paper-canvas {
       flex: 1;
       width: 100%;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 6px 18px 52px 18px;
+      padding: 6px 16px 52px 16px;
       outline: none;
       line-height: var(--line-height-grid);
       font-family: 'Caveat', cursive;
@@ -435,6 +434,7 @@
       position: relative;
       cursor: text;
       user-select: text;
+      min-width: 0;
     }
     .paper-canvas::-webkit-scrollbar { width: 4px; }
     .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
@@ -466,7 +466,7 @@
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
       position: absolute;
-      left: 18px;
+      left: 16px;
       top: 6px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
@@ -479,7 +479,6 @@
       margin: 0;
     }
 
-    /* Text Presets */
     .paper-title {
       font-size: 28px !important;
       font-weight: 700;
@@ -592,7 +591,7 @@
     }
     .pasted-img-del:hover { background: #C93B2B; }
 
-    /* Horizontal Tables */
+    /* Tables */
     .notepad-table-wrapper {
       margin: 8px 0 12px 0;
       position: relative;
@@ -645,7 +644,7 @@
       color: #3D2616;
       text-align: left;
       position: relative;
-      min-width: 80px;
+      min-width: 70px;
       box-sizing: border-box;
     }
     .notepad-table th .th-text {
@@ -666,7 +665,7 @@
       font-family: 'Caveat', cursive;
       color: var(--ink-color);
       outline: none;
-      min-width: 80px;
+      min-width: 70px;
       box-sizing: border-box;
     }
     .notepad-table td:empty::before {
@@ -706,13 +705,13 @@
     /* Popover Panels */
     .warm-brown-card {
       position: absolute;
-      top: 36px;
-      left: 6px;
-      width: calc(100% - 12px);
-      max-height: calc(100% - 44px);
+      top: 34px;
+      left: 4px;
+      width: calc(100% - 8px);
+      max-height: calc(100% - 42px);
       background: var(--box-warm-brown);
       color: #FAF5EE;
-      border-radius: 10px;
+      border-radius: 8px;
       box-shadow: 0 10px 24px rgba(40, 25, 12, 0.38);
       padding: 8px;
       z-index: 140;
@@ -738,7 +737,7 @@
     .card-inner-box {
       background: var(--box-inner-bg);
       border-radius: 6px;
-      padding: 7px;
+      padding: 6px;
       color: #332B25;
     }
 
@@ -771,7 +770,6 @@
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Filter Components */
     .filter-input {
       width: 100%;
       padding: 4px 6px;
@@ -836,9 +834,9 @@
       color: #2D241E;
     }
 
-    /* Bottom Status & Dock Bar Architecture */
+    /* Bottom Info Status */
     .pad-bottom-info {
-      padding: 3px 10px 4px 10px;
+      padding: 2px 8px 3px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -846,41 +844,73 @@
       font-weight: 500;
       color: #9C8C7E;
       pointer-events: none;
+      width: 100%;
     }
 
+    /* Floating Export Toast */
+    .export-toast {
+      position: absolute;
+      top: 38px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #2A1D13;
+      color: #FFF;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .export-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .export-toast .toast-check {
+      color: #10B981;
+      font-weight: bold;
+    }
+
+    /* Ultra-Clean Segmented Micro-Dock */
     .bottom-dock-hitbox {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 48px;
+      height: 44px;
       z-index: 40;
       display: flex;
       justify-content: center;
       align-items: flex-end;
+      padding: 0 4px 3px 4px;
     }
     .floating-bottom-dock {
-      width: calc(100% - 10px);
-      background: rgba(255, 255, 255, 0.96);
+      width: 100%;
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(220, 210, 200, 0.85);
-      border-radius: 8px;
-      padding: 4px 6px;
-      margin-bottom: 3px;
+      border: 1px solid rgba(220, 210, 200, 0.9);
+      border-radius: 7px;
+      padding: 3px 5px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
-      transform: translateY(120%);
+      gap: 3px;
+      transform: translateY(125%);
       transition: transform 0.18s ease;
-      overflow-x: auto;
+      min-width: 0;
     }
     .bottom-dock-hitbox:hover .floating-bottom-dock,
     .floating-bottom-dock:focus-within {
       transform: translateY(0);
     }
 
-    .dock-segment {
+    .dock-cluster {
       display: flex;
       align-items: center;
       gap: 3px;
@@ -894,98 +924,102 @@
       flex-shrink: 0;
     }
 
-    .dock-btn {
+    .dock-icon-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
       border-radius: 5px;
-      padding: 3px 6px;
-      font-size: 10px;
-      line-height: 1.2;
-      color: #4A3A2F;
+      width: 24px;
+      height: 22px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      white-space: nowrap;
+      color: #4A3A2F;
+      transition: all 0.12s ease;
+      flex-shrink: 0;
+      position: relative;
     }
-    .dock-btn:hover { background: #E8DFD5; }
-    .dock-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
+    .dock-icon-btn:hover { background: #E8DFD5; }
+    .dock-icon-btn.active {
+      background: #84532B;
+      color: #FFF;
+      border-color: #84532B;
+    }
 
-    /* Palette Swatches */
-    .color-swatches { display: flex; gap: 3px; align-items: center; }
+    .color-swatches {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      flex-shrink: 0;
+    }
     .swatch-dot {
-      width: 13px;
-      height: 13px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       cursor: pointer;
-      border: 1px solid rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.18);
       flex-shrink: 0;
       transition: transform 0.1s;
     }
-    .swatch-dot:hover { transform: scale(1.15); }
+    .swatch-dot:hover { transform: scale(1.2); }
   </style>
 </head>
 <body>
 
   <div class="notepad-container" id="notepadWidget">
     
-    <!-- Top Spiral Binding (Drag Bar) -->
+    <!-- Top Spiral Binding Header -->
     <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
     <!-- Paper Sheet -->
     <div class="notepad-sheet" id="activeSheet">
       
-      <!-- Top Action Bar (Clean Environment & System Controls) -->
+      <!-- Top Action Bar (Icon-First System Controls) -->
       <div class="pad-topbar" data-tauri-drag-region>
-        <!-- Left: Environment & Window Controls -->
         <div class="top-cluster">
-          <button class="top-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
-            <span id="pinIcon">📌</span>
+          <button class="top-icon-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
+            <span id="pinIcon" style="font-size:11px;">📌</span>
           </button>
-          <button class="top-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
+          <button class="top-icon-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
-            <span id="patternLabel">Ruled</span>
           </button>
-          <button class="top-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Tear Sound">
-            <span id="muteIcon">🔊</span>
+          <button class="top-icon-btn" id="muteBtn" onclick="toggleMute()" title="Mute / Unmute Tear Audio">
+            <span id="muteIcon" style="font-size:11px;">🔊</span>
           </button>
         </div>
 
-        <!-- Right: Status, Calendar, Archive & Close -->
-        <div class="top-cluster">
+        <div class="top-cluster right">
           <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp today's date">
             <svg class="icon" viewBox="0 0 24 24" style="width:11px;height:11px;min-width:11px;min-height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             <span id="dateStampText">Today</span>
           </div>
-          <button class="top-btn" onclick="toggleCalendarCard(event)" title="Desk Calendar">
+          <button class="top-icon-btn" onclick="toggleCalendarCard(event)" title="Desk Calendar">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span>Cal</span>
           </button>
-          <button class="top-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
+          <button class="top-icon-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
             <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-            <span>Archive (<span id="archiveCount">0</span>)</span>
+            <span class="badge-count" id="archiveCount">0</span>
           </button>
-          <button class="top-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
+          <button class="btn-close-app" id="appCloseBtn" title="Quit Notepad (Alt+F4)">
             ✕
           </button>
         </div>
       </div>
 
-      <!-- Floating Export Toast Notification -->
+      <!-- Floating Export Toast -->
       <div class="export-toast" id="exportToast">
         <span class="toast-check">✓</span>
         <span id="exportToastText">Export complete</span>
       </div>
 
-      <!-- Calendar Modal with Year & Month Pickers -->
+      <!-- Calendar Modal -->
       <div class="warm-brown-card" id="calendarCard">
         <div class="card-head">
           <div class="card-title">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             <span>Desk Calendar</span>
           </div>
-          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeCalendarCard()">✕</button>
+          <button class="dock-icon-btn" style="width:20px;height:18px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeCalendarCard()">✕</button>
         </div>
         <div class="card-inner-box">
           <div class="cal-selectors-bar">
@@ -1001,14 +1035,14 @@
         </div>
       </div>
 
-      <!-- Torn Pages Archive Modal with Search & Date Filter -->
+      <!-- Torn Pages Archive Modal -->
       <div class="warm-brown-card" id="archiveCard">
         <div class="card-head">
           <div class="card-title">
             <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
             <span>Torn Pages Archive</span>
           </div>
-          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
+          <button class="dock-icon-btn" style="width:20px;height:18px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
         </div>
         <div class="card-inner-box">
           <div class="autocomplete-wrap">
@@ -1018,20 +1052,20 @@
           <div style="display:flex; align-items:center; gap:4px; margin-bottom:6px;">
             <span style="font-size:10px; color:#786C60;">Date:</span>
             <input type="date" class="filter-input" id="archiveDateFilter" onchange="filterArchiveByDate(this.value)" style="padding:2px 4px; font-size:10px;">
-            <button class="dock-btn" onclick="clearArchiveDateFilter()" title="Clear date filter" style="padding:2px 5px;">Clear</button>
+            <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;" onclick="clearArchiveDateFilter()" title="Clear date filter">Clear</button>
           </div>
           <div class="archive-list" id="archiveItemsContainer"></div>
         </div>
       </div>
 
-      <!-- Bookmarks Popover Card with Live Typeahead & Date Filter -->
+      <!-- Bookmarks Modal -->
       <div class="warm-brown-card" id="linksCard">
         <div class="card-head">
           <div class="card-title">
             <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
             <span>Links & Bookmarks</span>
           </div>
-          <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeLinksCard()">✕</button>
+          <button class="dock-icon-btn" style="width:20px;height:18px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeLinksCard()">✕</button>
         </div>
         <div class="card-inner-box">
           <div class="autocomplete-wrap">
@@ -1041,12 +1075,12 @@
           <div style="display:flex; align-items:center; gap:4px; margin-bottom:6px;">
             <span style="font-size:10px; color:#786C60;">Date:</span>
             <input type="date" class="filter-input" id="linkDateFilter" onchange="filterLinksByDate(this.value)" style="padding:2px 4px; font-size:10px;">
-            <button class="dock-btn" onclick="clearLinkDateFilter()" title="Clear date filter" style="padding:2px 5px;">Clear</button>
+            <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;" onclick="clearLinkDateFilter()" title="Clear date filter">Clear</button>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:6px; border-top:1px dashed #D6CBC1; padding-top:6px;">
             <input type="text" id="bmTitleInput" placeholder="Label / Title" class="filter-input">
             <input type="text" id="bmUrlInput" placeholder="https://..." class="filter-input">
-            <button class="dock-btn" style="justify-content:center; padding:4px; background:#84532B; color:#FFF; border:none;" onclick="saveBookmarkEntry()">Save Link</button>
+            <button class="dock-icon-btn" style="width:100%;background:#84532B;color:#FFF;border:none;font-size:10px;" onclick="saveBookmarkEntry()">Save Link</button>
           </div>
           <div class="bookmarks-list" id="bookmarksContainer"></div>
         </div>
@@ -1057,14 +1091,14 @@
         <div class="perforation-dots"></div>
         <div class="tear-indicator" onclick="executeTear()" title="Tear off sheet & save to Archive">
           <svg class="icon" viewBox="0 0 24 24" style="width:10px;height:10px;min-width:10px;min-height:10px;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
-          <span>Tear Page</span>
+          <span>Tear</span>
         </div>
       </div>
 
       <!-- Paper Body Wrapper -->
       <div class="paper-body-wrapper" id="paperWrapper">
 
-        <!-- Border Page Turners (3 Lines at Vertical Borders) -->
+        <!-- Border Page Turners -->
         <div class="edge-page-nav prev disabled" id="edgePrevBtn" onclick="previousPage()" title="Previous Page">
           <div class="edge-nav-line"></div>
           <div class="edge-nav-line"></div>
@@ -1076,7 +1110,7 @@
           <div class="edge-nav-line"></div>
         </div>
 
-        <!-- Floating Selection Formatting Toolbar -->
+        <!-- Floating Selection Toolbar -->
         <div class="selection-float-bar" id="selectionToolbar">
           <button class="float-btn" onclick="formatBlockPreset('paper-title')" title="Title">Title</button>
           <button class="float-btn" onclick="formatBlockPreset('paper-subtitle')" title="Sub">Sub</button>
@@ -1110,7 +1144,7 @@
           <input type="color" id="inkColorPicker" value="#2D241E" onchange="setSelectionInk(this.value)" title="Ink Color" style="width:18px;height:18px;border:none;cursor:pointer;background:transparent;">
         </div>
 
-        <!-- Ruled Writing Canvas with Ghost Placeholder -->
+        <!-- Ruled Writing Canvas -->
         <div 
           class="paper-canvas pattern-ruled" 
           id="editorContent" 
@@ -1118,6 +1152,9 @@
           spellcheck="false"
           data-placeholder="Start typing notes here (Try math: 25 * 4 = )..."
         ></div>
+
+        <!-- Hidden file input for image upload -->
+        <input type="file" id="fileImagePicker" accept="image/*" style="display:none;" onchange="handleImageFilePick(event)">
 
         <!-- Freehand Strike SVG Overlay -->
         <svg class="strike-svg-layer" id="strikeLayer"></svg>
@@ -1128,50 +1165,49 @@
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Clean Segmented Bottom Dock -->
+        <!-- Ultra-Clean Segmented Micro-Dock -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
-            <!-- Segment 1: Authoring Tools -->
-            <div class="dock-segment">
-              <button class="dock-btn" onclick="insertChecklist()" title="Add Task Checklist">
+            <!-- Authoring Segment -->
+            <div class="dock-cluster">
+              <button class="dock-icon-btn" onclick="insertChecklist()" title="Add Checklist Task">
                 <svg class="icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                <span>Task</span>
               </button>
-              <button class="dock-btn" onclick="insertTable()" title="Insert Resizable Table">
+              <button class="dock-icon-btn" onclick="insertTable()" title="Insert Resizable Table">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
-                <span>Table</span>
               </button>
-              <button class="dock-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strikeout Pen">
+              <button class="dock-icon-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strikeout Pen">
                 <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
-                <span id="strikeBtnText">Strike</span>
               </button>
-              <button class="dock-btn" onclick="toggleLinksCard(event)" title="Bookmarks & Links">
+              <button class="dock-icon-btn" onclick="document.getElementById('fileImagePicker').click()" title="Insert Image from PC (or Ctrl+V)">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              </button>
+              <button class="dock-icon-btn" onclick="toggleLinksCard(event)" title="Bookmarks & Links">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                <span>Links (<span id="bmCount">1</span>)</span>
               </button>
             </div>
 
             <div class="dock-divider"></div>
 
-            <!-- Segment 2: Export Tools -->
-            <div class="dock-segment">
-              <button class="dock-btn" id="btnExportMd" onclick="exportMarkdown()" title="Export Note as Markdown">
-                <span>.md</span>
+            <!-- Export Segment -->
+            <div class="dock-cluster">
+              <button class="dock-icon-btn" id="btnExportMd" onclick="exportMarkdown()" title="Export Note as Markdown (.md)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
               </button>
-              <button class="dock-btn" id="btnExportPng" onclick="exportNoteImage()" title="Export Note as PNG Image">
-                <span>PNG</span>
+              <button class="dock-icon-btn" id="btnExportPng" onclick="exportNoteImage()" title="Export Note as PNG Snapshot">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
               </button>
             </div>
 
             <div class="dock-divider"></div>
 
-            <!-- Segment 3: Paper Palette -->
-            <div class="dock-segment">
+            <!-- Paper Swatches -->
+            <div class="dock-cluster">
               <div class="color-swatches">
-                <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream"></div>
-                <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Sage"></div>
-                <div class="swatch-dot" style="background:#F0F5FA;" onclick="changePageColor('#F0F5FA')" title="Sky"></div>
-                <div class="swatch-dot" style="background:#FAF1F1;" onclick="changePageColor('#FAF1F1')" title="Blush"></div>
+                <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream Paper"></div>
+                <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Sage Paper"></div>
+                <div class="swatch-dot" style="background:#F0F5FA;" onclick="changePageColor('#F0F5FA')" title="Sky Paper"></div>
+                <div class="swatch-dot" style="background:#FAF1F1;" onclick="changePageColor('#FAF1F1')" title="Blush Paper"></div>
               </div>
             </div>
           </div>
@@ -1192,10 +1228,8 @@
   let isMuted = false;
   let isStrikePenMode = false;
   const patterns = ['pattern-ruled', 'pattern-dots', 'pattern-grid', 'pattern-blank'];
-  const patternNames = ['Ruled', 'Dots', 'Grid', 'Blank'];
   let currentPatternIndex = 0;
 
-  // Window drag
   function setupDragging() {
     const dragElements = [document.getElementById('spiralHeader'), document.querySelector('.pad-topbar')];
     dragElements.forEach(el => {
@@ -1209,7 +1243,6 @@
     });
   }
 
-  // Multi-tier Process Exit Handler
   async function closeDesktopApp(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     saveNoteState();
@@ -1244,7 +1277,6 @@
     closeBtn.addEventListener('click', closeDesktopApp);
   }
 
-  // Toast Notification
   let toastTimer = null;
   function showExportToast(msg) {
     const toast = document.getElementById('exportToast');
@@ -1257,7 +1289,6 @@
     }, 2400);
   }
 
-  // Always on Top Native Rust Bridge
   async function togglePin() {
     isPinned = !isPinned;
     const pinIcon = document.getElementById('pinIcon');
@@ -1273,7 +1304,6 @@
     localStorage.setItem('tearoff_pinned', JSON.stringify(isPinned));
   }
 
-  // Sound and Mute Toggle
   function toggleMute() {
     isMuted = !isMuted;
     document.getElementById('muteIcon').innerText = isMuted ? '🔇' : '🔊';
@@ -1303,11 +1333,9 @@
     } catch(e) {}
   }
 
-  // Texture Pattern Cycling
   function cyclePattern() {
     currentPatternIndex = (currentPatternIndex + 1) % patterns.length;
     applyPattern(patterns[currentPatternIndex]);
-    document.getElementById('patternLabel').innerText = patternNames[currentPatternIndex];
     localStorage.setItem('tearoff_pattern', patterns[currentPatternIndex]);
   }
 
@@ -1320,7 +1348,7 @@
     const header = document.getElementById('spiralHeader');
     if (!header) return;
     const width = header.offsetWidth || 340;
-    const count = Math.max(5, Math.floor(width / 38));
+    const count = Math.max(5, Math.floor(width / 36));
     header.innerHTML = '';
     for(let i = 0; i < count; i++) {
       const ring = document.createElement('div');
@@ -1338,7 +1366,6 @@
   const editorContent = document.getElementById('editorContent');
   const wordCharStats = document.getElementById('wordCharStats');
 
-  // Live Word & Character Counter
   function updateWordCharCount() {
     const raw = editorContent.innerText || '';
     const clean = raw.replace(/[\n\r]+/g, ' ').trim();
@@ -1349,7 +1376,7 @@
   }
   editorContent.addEventListener('input', updateWordCharCount);
 
-  // Red Strike Pen Freehand Mode
+  // Red Strike Pen
   const strikeLayer = document.getElementById('strikeLayer');
   let isStriking = false;
   let strikeStartX = 0, strikeStartY = 0;
@@ -1358,16 +1385,12 @@
   function toggleStrikePenMode() {
     isStrikePenMode = !isStrikePenMode;
     const btn = document.getElementById('strikePenBtn');
+    btn.classList.toggle('active', isStrikePenMode);
+    strikeLayer.classList.toggle('active-strike-mode', isStrikePenMode);
+    editorContent.classList.toggle('strike-mode-on', isStrikePenMode);
     if (isStrikePenMode) {
-      btn.classList.add('active');
-      strikeLayer.classList.add('active-strike-mode');
-      editorContent.classList.add('strike-mode-on');
       selectionToolbar.style.display = 'none';
       selectionToolbar.classList.remove('visible');
-    } else {
-      btn.classList.remove('active');
-      strikeLayer.classList.remove('active-strike-mode');
-      editorContent.classList.remove('strike-mode-on');
     }
   }
 
@@ -1404,12 +1427,12 @@
     currentStrikeLine = null;
   });
 
-  // Keyboard Handlers: Quote Breakout, Tasks, Tables & Inline Math
+  // Editor Keyboard Behaviors
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
 
-    // Quote Breakout: Pressing enter inside an empty line in a quote exits it cleanly
+    // Quote Breakout
     const quoteBlock = sel.anchorNode?.parentElement?.closest('.paper-quote');
     if (quoteBlock && e.key === 'Enter') {
       const text = quoteBlock.innerText.trim();
@@ -1437,7 +1460,7 @@
       }
     }
 
-    // Inline arithmetic auto-eval on '='
+    // Inline Math
     if (e.key === '=') {
       const node = sel.anchorNode;
       if (node && node.nodeType === 3) {
@@ -1460,7 +1483,7 @@
       }
     }
 
-    // Task Checklist Enter & Backspace
+    // Task Items
     const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
     if (taskItem) {
       const label = taskItem.querySelector('.task-label');
@@ -1489,7 +1512,7 @@
       }
     }
 
-    // Table Breakout on Last Row Enter
+    // Table Breakout
     const cell = sel.anchorNode?.parentElement?.closest('td, th');
     if (cell && e.key === 'Enter') {
       const tr = cell.closest('tr');
@@ -1511,7 +1534,27 @@
     }
   });
 
-  // Direct Clipboard Image Paste
+  // Handle image files picked via PC dialog
+  function handleImageFilePick(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'pasted-img-wrapper';
+      wrapper.contentEditable = "false";
+      wrapper.innerHTML = `
+        <button class="pasted-img-del" onclick="this.parentElement.remove(); saveNoteState();">✕</button>
+        <img src="${evt.target.result}" alt="Note image">
+      `;
+      insertNodeAtCursor(wrapper);
+      saveNoteState();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  // Paste Image via clipboard
   editorContent.addEventListener('paste', (e) => {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -1691,7 +1734,7 @@
     updateWordCharCount();
   }
 
-  /* Floating Selection Toolbar */
+  /* Formatting Toolbar */
   const selectionToolbar = document.getElementById('selectionToolbar');
   const paperWrapper = document.getElementById('paperWrapper');
 
@@ -1770,7 +1813,7 @@
       selectionToolbar.style.display = 'none';
       selectionToolbar.classList.remove('visible');
     }
-    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.top-btn')) {
+    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.top-icon-btn')) {
       closeAllCards();
     }
     if (!e.target.closest('.autocomplete-wrap')) {
@@ -1851,7 +1894,7 @@
     saveNoteState();
   }
 
-  /* Full Desk Calendar */
+  /* Calendar */
   let calDate = new Date();
   const calendarCard = document.getElementById('calendarCard');
 
@@ -1931,7 +1974,7 @@
   }
   function closeCalendarCard() { calendarCard.classList.remove('visible'); }
 
-  /* Archive Drawer: Typeahead & Date Filter */
+  /* Archive Drawer */
   const archiveCard = document.getElementById('archiveCard');
   let currentArchiveDateFilter = null;
 
@@ -2019,8 +2062,8 @@
         </div>
         <div class="archive-snippet">${escapeHtml(item.snippet)}</div>
         <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:4px;">
-          <button class="dock-btn" onclick="restoreArchivedPage(${item.id})">Restore</button>
-          <button class="dock-btn" style="color:#C93B2B;" onclick="deleteArchivedPage(${item.id})">Delete</button>
+          <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;" onclick="restoreArchivedPage(${item.id})">Restore</button>
+          <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;color:#C93B2B;" onclick="deleteArchivedPage(${item.id})">Delete</button>
         </div>
       `;
       list.appendChild(el);
@@ -2043,7 +2086,7 @@
     applyCombinedArchiveFilters();
   }
 
-  /* Bookmarks Drawer: Typeahead & Date Filter */
+  /* Bookmarks */
   const linksCard = document.getElementById('linksCard');
   let currentActiveDateFilter = null;
 
@@ -2136,7 +2179,6 @@
 
   function renderBookmarks(list) {
     const container = document.getElementById('bookmarksContainer');
-    document.getElementById('bmCount').innerText = bookmarks.length;
     container.innerHTML = '';
     if (!list || list.length === 0) {
       container.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No links match your search.</div>';
@@ -2152,8 +2194,8 @@
         </div>
         <a href="${bm.url}" target="_blank" style="color:#84532B; text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(bm.url)}</a>
         <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:2px;">
-          <button class="dock-btn" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
-          <button class="dock-btn" style="color:#C93B2B;" onclick="deleteBookmark(${bm.id})">Delete</button>
+          <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
+          <button class="dock-icon-btn" style="width:auto;padding:0 5px;font-size:9px;color:#C93B2B;" onclick="deleteBookmark(${bm.id})">Delete</button>
         </div>
       `;
       container.appendChild(card);
@@ -2183,7 +2225,6 @@
     saveNoteState();
   }
 
-  /* Multi-Page Management via Border Controls */
   function updateEdgeNavState() {
     const prevBtn = document.getElementById('edgePrevBtn');
     if (currentPageIndex === 0) {
@@ -2212,7 +2253,6 @@
     }
   }
 
-  /* Tear Off Sheet */
   function executeTear() {
     const content = editorContent.innerHTML;
     const textSnippet = editorContent.innerText.trim();
@@ -2262,7 +2302,6 @@
     saveNoteState();
   }
 
-  /* Export Features with Feedback */
   function exportMarkdown() {
     const raw = editorContent.innerText;
     const filename = `Note_${new Date().toISOString().slice(0,10)}.md`;
@@ -2295,7 +2334,6 @@
     });
   }
 
-  /* Persistence: LocalStorage Sync */
   function saveNoteState() {
     if (pages[currentPageIndex]) {
       pages[currentPageIndex].content = editorContent.innerHTML;
@@ -2335,7 +2373,6 @@
         currentPatternIndex = patterns.indexOf(savedPattern);
         if (currentPatternIndex === -1) currentPatternIndex = 0;
         applyPattern(patterns[currentPatternIndex]);
-        document.getElementById('patternLabel').innerText = patternNames[currentPatternIndex];
       }
     } catch(e) { console.error('Error loading saved state:', e); }
   }
