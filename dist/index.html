@@ -1243,9 +1243,46 @@
     });
   }
 
+  // Remember & Restore Window Coordinates
+  async function saveWindowPosition() {
+    try {
+      if (window.__TAURI__?.window?.getCurrentWindow) {
+        const win = window.__TAURI__.window.getCurrentWindow();
+        const pos = await win.outerPosition();
+        localStorage.setItem('tearoff_win_pos', JSON.stringify({ x: pos.x, y: pos.y }));
+      }
+    } catch(e) {}
+  }
+
+  async function restoreWindowPosition() {
+    try {
+      const saved = localStorage.getItem('tearoff_win_pos');
+      if (saved && window.__TAURI__?.window?.getCurrentWindow) {
+        const { x, y } = JSON.parse(saved);
+        const win = window.__TAURI__.window.getCurrentWindow();
+        await win.setPosition(new window.__TAURI__.window.PhysicalPosition(x, y));
+      }
+    } catch(e) {}
+  }
+
+  // Register with OS Startup Registry (Windows / macOS)
+  async function enableAutoStart() {
+    try {
+      if (window.__TAURI__?.autostart) {
+        const isEnabled = await window.__TAURI__.autostart.isEnabled();
+        if (!isEnabled) {
+          await window.__TAURI__.autostart.enable();
+        }
+      }
+    } catch(e) {
+      console.error('Autostart initialization:', e);
+    }
+  }
+
   async function closeDesktopApp(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     saveNoteState();
+    await saveWindowPosition();
 
     try {
       if (window.__TAURI__?.core?.invoke) {
@@ -2179,6 +2216,7 @@
 
   function renderBookmarks(list) {
     const container = document.getElementById('bookmarksContainer');
+    document.getElementById('bmCount').innerText = bookmarks.length;
     container.innerHTML = '';
     if (!list || list.length === 0) {
       container.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No links match your search.</div>';
@@ -2383,6 +2421,11 @@
   loadPage(0);
   applyCombinedLinkFilters();
   applyCombinedArchiveFilters();
+
+  // Desktop Coordinate Restoration & Startup Registration
+  restoreWindowPosition();
+  enableAutoStart();
+  window.addEventListener('mouseup', saveWindowPosition);
 </script>
 </body>
 </html>
