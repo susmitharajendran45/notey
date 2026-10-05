@@ -356,7 +356,8 @@
     .paper-canvas::-webkit-scrollbar { width: 4px; }
     .paper-canvas::-webkit-scrollbar-thumb { background: rgba(132, 83, 43, 0.2); border-radius: 4px; }
 
-    /* Patterns */
+    .paper-canvas.strike-mode-on { cursor: crosshair !important; }
+
     .pattern-ruled {
       background-image: repeating-linear-gradient(
         transparent,
@@ -380,7 +381,6 @@
       background-image: none;
     }
 
-    /* Ghost Placeholder */
     .paper-canvas:empty::before {
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
@@ -595,6 +595,25 @@
     }
     .col-resizer:hover { background: #84532B; }
 
+    /* Strike Pen SVG Layer */
+    .strike-svg-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 15;
+    }
+    .strike-svg-layer.active-strike-mode {
+      pointer-events: auto !important;
+    }
+    .strike-line {
+      stroke: #C93B2B;
+      stroke-width: 3;
+      stroke-linecap: round;
+      opacity: 0.88;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
     /* Popover Cards */
     .warm-brown-card {
       position: absolute;
@@ -663,7 +682,7 @@
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Archive Card Entries with Search */
+    /* Archive Card */
     .archive-search-input {
       width: 100%;
       padding: 4px 6px;
@@ -764,7 +783,7 @@
     .dock-group {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       flex-shrink: 0;
     }
     .dock-btn {
@@ -787,8 +806,8 @@
     /* Palette Swatches */
     .color-swatches { display: flex; gap: 4px; align-items: center; }
     .swatch-dot {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       cursor: pointer;
       border: 1px solid rgba(0,0,0,0.15);
@@ -813,6 +832,10 @@
         <div class="top-actions">
           <button class="warm-pill-btn" id="pinBtn" onclick="togglePin()" title="Toggle Always on Top">
             <span id="pinIcon">📌</span>
+          </button>
+          <button class="warm-pill-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strikeout Pen">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
+            <span id="strikeBtnText">Strike</span>
           </button>
           <button class="warm-pill-btn" onclick="toggleCalendarCard(event)" title="Browse Calendar">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -955,13 +978,16 @@
           data-placeholder="Start typing notes here (Try math: 25 * 4 = )..."
         ></div>
 
+        <!-- Freehand Strike SVG Overlay -->
+        <svg class="strike-svg-layer" id="strikeLayer"></svg>
+
         <!-- Bottom Stats -->
         <div class="pad-bottom-info">
           <span id="wordCharStats">0 words</span>
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Floating Bottom Dock with Action Buttons & Palette -->
+        <!-- Floating Bottom Dock: Full Feature Parity -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
             <div class="dock-group">
@@ -974,13 +1000,22 @@
                 <span>Table</span>
               </button>
               <button class="dock-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
-                <span>Pattern</span>
+                <span>Texture</span>
               </button>
               <button class="dock-btn" onclick="exportMarkdown()" title="Export Note as Markdown">
                 <span>.md</span>
               </button>
               <button class="dock-btn" onclick="exportNoteImage()" title="Export Note as PNG Image">
                 <span>PNG</span>
+              </button>
+              <!-- Preserved Page Navigation -->
+              <button class="dock-btn" onclick="previousPage()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>Prev</span>
+              </button>
+              <button class="dock-btn" onclick="advancePage()">
+                <span>Next</span>
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
             <div class="dock-group">
@@ -1007,6 +1042,7 @@
   let savedRange = null;
   let isPinned = false;
   let isMuted = false;
+  let isStrikePenMode = false;
   const patterns = ['pattern-ruled', 'pattern-dots', 'pattern-grid', 'pattern-blank'];
   let currentPatternIndex = 0;
 
@@ -1149,12 +1185,69 @@
   }
   editorContent.addEventListener('input', updateWordCharCount);
 
-  // Math Evaluation & Task Handling
+  // Red Strike Pen Freehand Mode
+  const strikeLayer = document.getElementById('strikeLayer');
+  let isStriking = false;
+  let strikeStartX = 0, strikeStartY = 0;
+  let currentStrikeLine = null;
+
+  function toggleStrikePenMode() {
+    isStrikePenMode = !isStrikePenMode;
+    const btn = document.getElementById('strikePenBtn');
+    const text = document.getElementById('strikeBtnText');
+    if (isStrikePenMode) {
+      btn.classList.add('active');
+      text.innerText = 'Strike: On';
+      strikeLayer.classList.add('active-strike-mode');
+      editorContent.classList.add('strike-mode-on');
+      selectionToolbar.style.display = 'none';
+      selectionToolbar.classList.remove('visible');
+    } else {
+      btn.classList.remove('active');
+      text.innerText = 'Strike';
+      strikeLayer.classList.remove('active-strike-mode');
+      editorContent.classList.remove('strike-mode-on');
+    }
+  }
+
+  strikeLayer.addEventListener('mousedown', (e) => {
+    if (!isStrikePenMode) return;
+    isStriking = true;
+    const rect = strikeLayer.getBoundingClientRect();
+    strikeStartX = e.clientX - rect.left;
+    strikeStartY = e.clientY - rect.top;
+
+    currentStrikeLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    currentStrikeLine.setAttribute('class', 'strike-line');
+    currentStrikeLine.setAttribute('x1', strikeStartX);
+    currentStrikeLine.setAttribute('y1', strikeStartY);
+    currentStrikeLine.setAttribute('x2', strikeStartX);
+    currentStrikeLine.setAttribute('y2', strikeStartY);
+
+    currentStrikeLine.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      currentStrikeLine.remove();
+    });
+
+    strikeLayer.appendChild(currentStrikeLine);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isStriking || !currentStrikeLine) return;
+    const rect = strikeLayer.getBoundingClientRect();
+    currentStrikeLine.setAttribute('x2', e.clientX - rect.left);
+  });
+
+  window.addEventListener('mouseup', () => {
+    isStriking = false;
+    currentStrikeLine = null;
+  });
+
+  // Math Evaluation & Task Keyboard
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
 
-    // Inline arithmetic auto-eval on typing '='
     if (e.key === '=') {
       const node = sel.anchorNode;
       if (node && node.nodeType === 3) {
@@ -1209,7 +1302,7 @@
     }
   });
 
-  // Direct Clipboard Image Paste (Ctrl+V)
+  // Direct Clipboard Image Paste
   editorContent.addEventListener('paste', (e) => {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -1401,6 +1494,7 @@
   });
 
   function updateToolbarPosition() {
+    if (isStrikePenMode) return;
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount || sel.isCollapsed || !editorContent.contains(sel.anchorNode)) {
       selectionToolbar.style.display = 'none';
@@ -1737,6 +1831,26 @@
     saveNoteState();
   }
 
+  /* Multi-Page Management */
+  function advancePage() {
+    pages[currentPageIndex].content = editorContent.innerHTML;
+    if (currentPageIndex === pages.length - 1) {
+      pages.push({ content: '', color: pages[currentPageIndex].color, dateStamp: null });
+    }
+    currentPageIndex++;
+    loadPage(currentPageIndex);
+    saveNoteState();
+  }
+
+  function previousPage() {
+    if (currentPageIndex > 0) {
+      pages[currentPageIndex].content = editorContent.innerHTML;
+      currentPageIndex--;
+      loadPage(currentPageIndex);
+      saveNoteState();
+    }
+  }
+
   /* Tear Off Sheet */
   function executeTear() {
     const content = editorContent.innerHTML;
@@ -1774,6 +1888,7 @@
     document.getElementById('dateStampText').innerText = p.dateStamp || 'Today';
     document.getElementById('curPageNum').innerText = idx + 1;
     document.getElementById('totalPageNum').innerText = pages.length;
+    strikeLayer.innerHTML = '';
     document.querySelectorAll('.notepad-table-wrapper').forEach(attachColumnResizers);
     updateWordCharCount();
   }
