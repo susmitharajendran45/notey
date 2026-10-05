@@ -18,8 +18,8 @@
       --binding-shadow: rgba(0,0,0,0.18);
       --line-height-grid: 32px;
       --table-border-color: #8C532B;
-      --box-warm-brown: #3D2616;
-      --box-inner-bg: #FAF5EE;
+      --box-warm-brown: #342114;
+      --box-inner-bg: #FAF6F0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,10 +35,10 @@
     }
 
     .icon {
-      width: 13px;
-      height: 13px;
-      min-width: 13px;
-      min-height: 13px;
+      width: 12px;
+      height: 12px;
+      min-width: 12px;
+      min-height: 12px;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
@@ -53,19 +53,19 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 4px 6px 8px 6px;
-      filter: drop-shadow(0 8px 18px rgba(60, 45, 30, 0.22));
+      padding: 3px 5px 6px 5px;
+      filter: drop-shadow(0 8px 20px rgba(50, 35, 20, 0.25));
     }
 
     /* Wooden Spiral Titlebar Drag Area */
     .spiral-binding-header {
-      height: 30px;
-      min-height: 30px;
+      height: 28px;
+      min-height: 28px;
       position: relative;
       z-index: 30;
       display: flex;
       justify-content: space-evenly;
-      padding: 0 14px;
+      padding: 0 10px;
       cursor: grab;
       -webkit-app-region: drag;
       overflow: hidden;
@@ -74,7 +74,7 @@
 
     .ring-pair {
       width: 11px;
-      height: 38px;
+      height: 36px;
       position: relative;
       top: -4px;
       pointer-events: none;
@@ -107,7 +107,7 @@
     .notepad-sheet {
       flex: 1;
       background: var(--bg-page);
-      border-radius: 12px 12px 16px 16px;
+      border-radius: 10px 10px 14px 14px;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -119,36 +119,46 @@
       transition: background-color 0.2s ease;
     }
 
-    /* Top Action Bar */
+    /* Fluid Executive Top Navigation Bar */
     .pad-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 10px 4px 10px;
+      padding: 5px 8px;
       font-size: 11px;
-      color: #7B6F64;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(132, 83, 43, 0.14);
+      color: #61554B;
       position: relative;
       z-index: 20;
       cursor: grab;
       -webkit-app-region: drag;
-      gap: 4px;
+      gap: 3px;
+      min-width: 0;
     }
     .pad-topbar:active { cursor: grabbing; }
 
     .top-actions {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
       -webkit-app-region: no-drag;
-      flex-wrap: nowrap;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .top-actions.right-cluster {
+      flex-shrink: 0;
+      gap: 4px;
+      margin-left: auto;
     }
 
-    .warm-pill-btn {
-      background: rgba(61, 38, 22, 0.08);
-      border: 1px solid rgba(61, 38, 22, 0.16);
-      color: #4A3222;
-      padding: 4px 7px;
-      border-radius: 999px;
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(110, 85, 60, 0.22);
+      color: #4A3728;
+      padding: 3px 6px;
+      border-radius: 5px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
@@ -156,19 +166,28 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       white-space: nowrap;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
+      flex-shrink: 0;
     }
-    .warm-pill-btn:hover { background: #3D2616; color: #FFF; border-color: #3D2616; }
-    .warm-pill-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
+    .nav-btn:hover {
+      background: #4A3222;
+      color: #FFF;
+      border-color: #4A3222;
+    }
+    .nav-btn.active {
+      background: #84532B;
+      color: #FFF;
+      border-color: #84532B;
+    }
 
     .btn-close-app {
-      background: rgba(201, 59, 43, 0.12);
+      background: rgba(220, 38, 38, 0.12);
       color: #C93B2B;
-      border: 1px solid rgba(201, 59, 43, 0.25);
+      border: 1px solid rgba(201, 59, 43, 0.3);
       padding: 3px 8px;
       font-weight: 700;
       font-size: 11px;
@@ -178,6 +197,7 @@
       pointer-events: auto !important;
       position: relative;
       z-index: 9999;
+      flex-shrink: 0;
     }
     .btn-close-app:hover {
       background: #C93B2B !important;
@@ -187,13 +207,13 @@
 
     .date-stamp-badge {
       font-size: 10px;
-      font-weight: 500;
+      font-weight: 600;
       line-height: 1;
-      color: #84532B;
-      background: rgba(255,255,255,0.75);
-      border: 1px dashed rgba(132, 83, 43, 0.35);
-      border-radius: 999px;
-      padding: 3px 7px;
+      color: #7B4B27;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(132, 83, 43, 0.3);
+      border-radius: 5px;
+      padding: 3px 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -202,6 +222,43 @@
       white-space: nowrap;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 375px) {
+      .nav-btn span.label-text { display: none; }
+      .date-stamp-badge span.label-text { font-size: 9px; }
+      .pad-topbar { padding: 4px 6px; }
+    }
+
+    /* Floating Feedback Toast */
+    .export-toast {
+      position: absolute;
+      top: 36px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #2A1D13;
+      color: #FFF;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .export-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .export-toast .toast-check {
+      color: #10B981;
+      font-weight: bold;
     }
 
     /* Perforated Crease */
@@ -211,7 +268,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 2px 10px;
+      margin: 1px 8px;
       -webkit-app-region: no-drag;
     }
     .perforation-dots {
@@ -227,14 +284,14 @@
       background: #84532B;
       color: #FFF;
       border-radius: 999px;
-      padding: 2px 8px;
+      padding: 2px 7px;
       font-size: 10px;
       font-weight: 600;
       line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
       white-space: nowrap;
       box-shadow: 0 1px 3px rgba(0,0,0,0.15);
@@ -261,14 +318,14 @@
       gap: 3px;
       background: #2C221B;
       color: #FAF6F0;
-      padding: 4px 7px;
+      padding: 4px 6px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.16);
       box-shadow: 0 8px 24px rgba(35, 22, 12, 0.38);
       z-index: 150;
       user-select: none;
       width: max-content;
-      max-width: calc(100% - 16px);
+      max-width: calc(100% - 14px);
       flex-wrap: nowrap;
       opacity: 0;
       pointer-events: none;
@@ -310,7 +367,7 @@
       background: transparent;
       border: none;
       color: #FAF6F0;
-      padding: 2px 5px;
+      padding: 2px 4px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 11px;
@@ -319,7 +376,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 20px;
+      min-width: 18px;
       height: 20px;
       transition: background 0.15s;
     }
@@ -336,14 +393,14 @@
       cursor: pointer;
     }
 
-    /* Writing Canvas Patterns */
+    /* Canvas Styles & Patterns */
     .paper-canvas {
       flex: 1;
       width: 100%;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 6px 16px 52px 16px;
+      padding: 6px 14px 52px 14px;
       outline: none;
       line-height: var(--line-height-grid);
       font-family: 'Caveat', cursive;
@@ -377,15 +434,13 @@
         linear-gradient(to bottom, rgba(110, 85, 60, 0.12) 1px, transparent 1px);
       background-size: 20px 20px;
     }
-    .pattern-blank {
-      background-image: none;
-    }
+    .pattern-blank { background-image: none; }
 
     .paper-canvas:empty::before {
       content: attr(data-placeholder);
       color: rgba(140, 120, 100, 0.45);
       position: absolute;
-      left: 16px;
+      left: 14px;
       top: 6px;
       pointer-events: none;
       font-family: 'Caveat', cursive;
@@ -511,9 +566,9 @@
     }
     .pasted-img-del:hover { background: #C93B2B; }
 
-    /* Tables */
+    /* Horizontal Tables */
     .notepad-table-wrapper {
-      margin: 8px 0;
+      margin: 8px 0 12px 0;
       position: relative;
       display: block;
       width: 100%;
@@ -531,12 +586,12 @@
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
       border-radius: 4px;
-      padding: 2px 6px;
+      padding: 2px 5px;
       font-size: 10px;
       font-family: 'Inter', sans-serif;
       color: #5A4739;
       cursor: pointer;
-      line-height: 1;
+      line-height: 1.2;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -549,7 +604,7 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 6px;
       border: 1.5px solid var(--table-border-color);
       overflow: hidden;
@@ -557,27 +612,36 @@
     .notepad-table th {
       background: rgba(132, 83, 43, 0.12);
       border: 1px solid var(--table-border-color);
-      padding: 4px 6px;
+      padding: 5px 8px;
       font-size: 16px;
       font-weight: 700;
       font-family: 'Caveat', cursive;
       color: #3D2616;
       text-align: left;
-      outline: none;
       position: relative;
+      min-width: 80px;
+      box-sizing: border-box;
     }
-    .notepad-table th:empty::before {
+    .notepad-table th .th-text {
+      outline: none;
+      display: inline-block;
+      min-width: 30px;
+      white-space: nowrap;
+    }
+    .notepad-table th .th-text:empty::before {
       content: "Header...";
-      color: rgba(140, 120, 100, 0.4);
+      color: rgba(140, 120, 100, 0.45);
     }
     .notepad-table td {
       border: 1px solid rgba(140, 83, 43, 0.3);
-      padding: 4px 6px;
+      padding: 4px 8px;
       min-height: var(--line-height-grid);
       font-size: 18px;
       font-family: 'Caveat', cursive;
       color: var(--ink-color);
       outline: none;
+      min-width: 80px;
+      box-sizing: border-box;
     }
     .notepad-table td:empty::before {
       content: "Cell...";
@@ -592,6 +656,7 @@
       width: 6px;
       cursor: col-resize;
       user-select: none;
+      z-index: 5;
     }
     .col-resizer:hover { background: #84532B; }
 
@@ -602,9 +667,7 @@
       pointer-events: none !important;
       z-index: 15;
     }
-    .strike-svg-layer.active-strike-mode {
-      pointer-events: auto !important;
-    }
+    .strike-svg-layer.active-strike-mode { pointer-events: auto !important; }
     .strike-line {
       stroke: #C93B2B;
       stroke-width: 3;
@@ -614,18 +677,18 @@
       pointer-events: auto;
     }
 
-    /* Popover Cards */
+    /* Popover Panels */
     .warm-brown-card {
       position: absolute;
-      top: 38px;
-      left: 8px;
-      width: calc(100% - 16px);
-      max-height: calc(100% - 46px);
+      top: 36px;
+      left: 6px;
+      width: calc(100% - 12px);
+      max-height: calc(100% - 44px);
       background: var(--box-warm-brown);
       color: #FAF5EE;
       border-radius: 10px;
-      box-shadow: 0 10px 24px rgba(40, 25, 12, 0.35);
-      padding: 10px;
+      box-shadow: 0 10px 24px rgba(40, 25, 12, 0.38);
+      padding: 8px;
       z-index: 140;
       display: none;
       overflow-y: auto;
@@ -649,7 +712,7 @@
     .card-inner-box {
       background: var(--box-inner-bg);
       border-radius: 6px;
-      padding: 8px;
+      padding: 7px;
       color: #332B25;
     }
 
@@ -682,63 +745,74 @@
     .compact-cal-day:hover { background: #E8E0D5; }
     .compact-cal-day.today { background: #84532B; color: #FFF; font-weight: 600; }
 
-    /* Archive Card */
-    .archive-search-input {
+    /* Archive & Links Search Components */
+    .filter-input {
       width: 100%;
       padding: 4px 6px;
       border: 1px solid #D6CBC1;
       border-radius: 4px;
       font-size: 11px;
-      margin-bottom: 6px;
+      outline: none;
     }
-    .archive-list {
+
+    .autocomplete-wrap {
+      position: relative;
+      margin-bottom: 5px;
+    }
+    .typeahead-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #FFF;
+      border: 1px solid #D6CBC1;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      max-height: 110px;
+      overflow-y: auto;
+      z-index: 50;
+      display: none;
+    }
+    .typeahead-item {
+      padding: 5px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #F0EAE1;
+    }
+    .typeahead-item:hover { background: #F5EFE6; }
+    .typeahead-item strong { color: #84532B; }
+
+    .archive-list, .bookmarks-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 200px;
+      gap: 5px;
+      max-height: 180px;
       overflow-y: auto;
     }
-    .archive-item {
+    .archive-item, .bookmark-card {
       background: #FFF;
       border: 1px solid #E2D9CF;
       border-radius: 6px;
-      padding: 6px;
+      padding: 5px 7px;
       font-size: 11px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .archive-snippet {
-      max-height: 40px;
+      max-height: 38px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: pre-wrap;
       color: #2D241E;
     }
 
-    /* Bookmarks list */
-    .bookmarks-list {
-      max-height: 180px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 6px;
-    }
-    .bookmark-card {
-      background: #FFF;
-      border: 1px solid #E2D9CF;
-      border-radius: 6px;
-      padding: 6px;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
     /* Bottom Dock Bar */
     .pad-bottom-info {
-      padding: 3px 12px 4px 12px;
+      padding: 3px 10px 4px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -760,17 +834,17 @@
       align-items: flex-end;
     }
     .floating-bottom-dock {
-      width: calc(100% - 12px);
+      width: calc(100% - 10px);
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(220, 210, 200, 0.85);
       border-radius: 8px;
-      padding: 4px 8px;
-      margin-bottom: 4px;
+      padding: 4px 6px;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 3px;
       transform: translateY(120%);
       transition: transform 0.18s ease;
       overflow-x: auto;
@@ -790,24 +864,24 @@
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
       border-radius: 5px;
-      padding: 3px 6px;
+      padding: 3px 5px;
       font-size: 10px;
-      line-height: 1;
+      line-height: 1.2;
       color: #4A3A2F;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
       white-space: nowrap;
     }
     .dock-btn:hover { background: #E8DFD5; }
 
     /* Palette Swatches */
-    .color-swatches { display: flex; gap: 4px; align-items: center; }
+    .color-swatches { display: flex; gap: 3px; align-items: center; }
     .swatch-dot {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       cursor: pointer;
       border: 1px solid rgba(0,0,0,0.15);
@@ -827,43 +901,49 @@
     <!-- Paper Sheet -->
     <div class="notepad-sheet" id="activeSheet">
       
-      <!-- Top Action Bar -->
+      <!-- Top Action Bar (Fluid Responsiveness) -->
       <div class="pad-topbar" data-tauri-drag-region>
         <div class="top-actions">
-          <button class="warm-pill-btn" id="pinBtn" onclick="togglePin()" title="Toggle Always on Top">
+          <button class="nav-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
             <span id="pinIcon">📌</span>
           </button>
-          <button class="warm-pill-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strikeout Pen">
+          <button class="nav-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strike Pen">
             <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
-            <span id="strikeBtnText">Strike</span>
+            <span class="label-text" id="strikeBtnText">Strike</span>
           </button>
-          <button class="warm-pill-btn" onclick="toggleCalendarCard(event)" title="Browse Calendar">
+          <button class="nav-btn" onclick="toggleCalendarCard(event)" title="Desk Calendar">
             <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span>Cal</span>
+            <span class="label-text">Cal</span>
           </button>
-          <button class="warm-pill-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
+          <button class="nav-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
             <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-            <span>Archive (<span id="archiveCount">0</span>)</span>
+            <span class="label-text">Archive (<span id="archiveCount">0</span>)</span>
           </button>
-          <button class="warm-pill-btn" onclick="toggleLinksCard(event)" title="Bookmarks">
+          <button class="nav-btn" onclick="toggleLinksCard(event)" title="Bookmarks & Links">
             <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            <span>Links (<span id="bmCount">1</span>)</span>
+            <span class="label-text">Links (<span id="bmCount">1</span>)</span>
           </button>
-          <button class="warm-pill-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Rip Audio">
+          <button class="nav-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Tear Sound">
             <span id="muteIcon">🔊</span>
           </button>
         </div>
 
-        <div class="top-actions">
+        <div class="top-actions right-cluster">
           <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp today's date">
             <svg class="icon" viewBox="0 0 24 24" style="width:11px;height:11px;min-width:11px;min-height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span id="dateStampText">Today</span>
+            <span class="label-text" id="dateStampText">Today</span>
           </div>
           <!-- Robust Native Exit Button -->
-          <button class="warm-pill-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
+          <button class="nav-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
             ✕
           </button>
         </div>
+      </div>
+
+      <!-- Floating Export Toast -->
+      <div class="export-toast" id="exportToast">
+        <span class="toast-check">✓</span>
+        <span id="exportToastText">Export complete</span>
       </div>
 
       <!-- Calendar Modal with Year & Month Pickers -->
@@ -889,7 +969,7 @@
         </div>
       </div>
 
-      <!-- Torn Pages Archive Modal with Filter Search -->
+      <!-- Torn Pages Archive Modal with Live Search -->
       <div class="warm-brown-card" id="archiveCard">
         <div class="card-head">
           <div class="card-title">
@@ -899,12 +979,12 @@
           <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeArchiveCard()">✕</button>
         </div>
         <div class="card-inner-box">
-          <input type="text" class="archive-search-input" id="archiveSearch" placeholder="Search torn pages..." oninput="filterArchive(this.value)">
+          <input type="text" class="filter-input" id="archiveSearch" placeholder="Search torn pages..." oninput="filterArchive(this.value)" style="margin-bottom:6px;">
           <div class="archive-list" id="archiveItemsContainer"></div>
         </div>
       </div>
 
-      <!-- Bookmarks Popover Card -->
+      <!-- Bookmarks Popover Card with Live Typeahead & Date Filter -->
       <div class="warm-brown-card" id="linksCard">
         <div class="card-head">
           <div class="card-title">
@@ -914,10 +994,19 @@
           <button class="dock-btn" style="padding:2px 6px;color:#FAF5EE;background:rgba(255,255,255,0.15);border:none;" onclick="closeLinksCard()">✕</button>
         </div>
         <div class="card-inner-box">
-          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:6px;">
-            <input type="text" id="bmTitleInput" placeholder="Title / Label" style="padding:5px;border:1px solid #D6CBC1;border-radius:4px;font-size:11px;">
-            <input type="text" id="bmUrlInput" placeholder="https://..." style="padding:5px;border:1px solid #D6CBC1;border-radius:4px;font-size:11px;">
-            <button class="dock-btn" style="justify-content:center;padding:5px;background:#84532B;color:#FFF;border:none;" onclick="saveBookmarkEntry()">Save Link</button>
+          <div class="autocomplete-wrap">
+            <input type="text" class="filter-input" id="linkSearchInput" placeholder="Search links by name, URL..." oninput="handleLinkSearch(this.value)" autocomplete="off">
+            <div class="typeahead-suggestions" id="linkSuggestions"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px; margin-bottom:6px;">
+            <span style="font-size:10px; color:#786C60;">Date:</span>
+            <input type="date" class="filter-input" id="linkDateFilter" onchange="filterLinksByDate(this.value)" style="padding:2px 4px; font-size:10px;">
+            <button class="dock-btn" onclick="clearLinkDateFilter()" title="Clear date filter" style="padding:2px 5px;">Clear</button>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:6px; border-top:1px dashed #D6CBC1; padding-top:6px;">
+            <input type="text" id="bmTitleInput" placeholder="Label / Title" class="filter-input">
+            <input type="text" id="bmUrlInput" placeholder="https://..." class="filter-input">
+            <button class="dock-btn" style="justify-content:center; padding:4px; background:#84532B; color:#FFF; border:none;" onclick="saveBookmarkEntry()">Save Link</button>
           </div>
           <div class="bookmarks-list" id="bookmarksContainer"></div>
         </div>
@@ -981,13 +1070,13 @@
         <!-- Freehand Strike SVG Overlay -->
         <svg class="strike-svg-layer" id="strikeLayer"></svg>
 
-        <!-- Bottom Stats -->
+        <!-- Live Word & Character Stats -->
         <div class="pad-bottom-info">
-          <span id="wordCharStats">0 words</span>
+          <span id="wordCharStats">0 words · 0 chars</span>
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Floating Bottom Dock: Full Feature Parity -->
+        <!-- Floating Bottom Dock: Tasks, Tables, Textures, Exports & Navigation -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
             <div class="dock-group">
@@ -1002,13 +1091,12 @@
               <button class="dock-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
                 <span>Texture</span>
               </button>
-              <button class="dock-btn" onclick="exportMarkdown()" title="Export Note as Markdown">
+              <button class="dock-btn" id="btnExportMd" onclick="exportMarkdown()" title="Export Note as Markdown">
                 <span>.md</span>
               </button>
-              <button class="dock-btn" onclick="exportNoteImage()" title="Export Note as PNG Image">
+              <button class="dock-btn" id="btnExportPng" onclick="exportNoteImage()" title="Export Note as PNG Image">
                 <span>PNG</span>
               </button>
-              <!-- Preserved Page Navigation -->
               <button class="dock-btn" onclick="previousPage()">
                 <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 <span>Prev</span>
@@ -1038,7 +1126,7 @@
   let pages = [{ content: '', color: '#FFFDF4', dateStamp: null }];
   let currentPageIndex = 0;
   let archive = [];
-  let bookmarks = [{ id: 1, title: 'Inspiration Hub', url: 'https://designnotes.org' }];
+  let bookmarks = [{ id: 1, title: 'Inspiration Hub', url: 'https://designnotes.org', date: '2026-10-01' }];
   let savedRange = null;
   let isPinned = false;
   let isMuted = false;
@@ -1095,6 +1183,19 @@
     closeBtn.addEventListener('click', closeDesktopApp);
   }
 
+  // Visual Export Notification Pill
+  let toastTimer = null;
+  function showExportToast(msg) {
+    const toast = document.getElementById('exportToast');
+    const toastText = document.getElementById('exportToastText');
+    toastText.innerText = msg;
+    toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('visible');
+    }, 2400);
+  }
+
   // Always on Top Native Rust Bridge
   async function togglePin() {
     isPinned = !isPinned;
@@ -1107,9 +1208,7 @@
       if (window.__TAURI__?.core?.invoke) {
         await window.__TAURI__.core.invoke('toggle_always_on_top', { state: isPinned });
       }
-    } catch(e) {
-      console.error('Failed to set always on top:', e);
-    }
+    } catch(e) { console.error('Failed to set always on top:', e); }
     localStorage.setItem('tearoff_pinned', JSON.stringify(isPinned));
   }
 
@@ -1177,10 +1276,13 @@
   const editorContent = document.getElementById('editorContent');
   const wordCharStats = document.getElementById('wordCharStats');
 
+  // Live Word & Character Counter
   function updateWordCharCount() {
-    const text = editorContent.innerText.replace(/[\n\r]+/g, ' ').trim();
-    const words = text ? text.split(/\s+/).length : 0;
-    wordCharStats.innerText = `${words} words`;
+    const raw = editorContent.innerText || '';
+    const clean = raw.replace(/[\n\r]+/g, ' ').trim();
+    const words = clean ? clean.split(/\s+/).length : 0;
+    const chars = raw.replace(/[\n\r]/g, '').length;
+    wordCharStats.innerText = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'}`;
     saveNoteState();
   }
   editorContent.addEventListener('input', updateWordCharCount);
@@ -1197,7 +1299,7 @@
     const text = document.getElementById('strikeBtnText');
     if (isStrikePenMode) {
       btn.classList.add('active');
-      text.innerText = 'Strike: On';
+      text.innerText = 'On';
       strikeLayer.classList.add('active-strike-mode');
       editorContent.classList.add('strike-mode-on');
       selectionToolbar.style.display = 'none';
@@ -1243,7 +1345,7 @@
     currentStrikeLine = null;
   });
 
-  // Math Evaluation & Task Keyboard
+  // Seamless Task & Table Keyboard Controls
   editorContent.addEventListener('keydown', (e) => {
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
@@ -1282,7 +1384,8 @@
           <div class="task-label" contenteditable="true"></div>
         `;
         taskItem.after(newTask);
-        newTask.querySelector('.task-label').focus();
+        const newLabel = newTask.querySelector('.task-label');
+        placeCaretAtStart(newLabel);
         saveNoteState();
         return;
       }
@@ -1291,12 +1394,28 @@
         const p = document.createElement('p');
         p.innerHTML = '<br>';
         taskItem.replaceWith(p);
-        const range = document.createRange();
-        range.setStart(p, 0);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        placeCaretAtStart(p);
         saveNoteState();
+        return;
+      }
+    }
+
+    const cell = sel.anchorNode?.parentElement?.closest('td, th');
+    if (cell && e.key === 'Enter') {
+      const tr = cell.closest('tr');
+      const table = cell.closest('.notepad-table');
+      const tbody = table.querySelector('tbody');
+      const wrapper = cell.closest('.notepad-table-wrapper');
+      
+      if (tr === tbody.lastElementChild) {
+        e.preventDefault();
+        let nextP = wrapper.nextElementSibling;
+        if (!nextP || nextP.tagName !== 'P') {
+          nextP = document.createElement('p');
+          nextP.innerHTML = '<br>';
+          wrapper.after(nextP);
+        }
+        placeCaretAtStart(nextP);
         return;
       }
     }
@@ -1335,11 +1454,10 @@
     `;
     insertNodeAtCursor(task);
     const label = task.querySelector('.task-label');
-    if (label) label.focus();
+    placeCaretAtStart(label);
     saveNoteState();
   }
 
-  /* Table Insertion with Resizers and Headers */
   function insertTable() {
     const id = 'tbl_' + Date.now();
     const wrapper = document.createElement('div');
@@ -1357,8 +1475,8 @@
       <table class="notepad-table">
         <thead>
           <tr>
-            <th contenteditable="true"><div class="col-resizer"></div></th>
-            <th contenteditable="true"><div class="col-resizer"></div></th>
+            <th><span class="th-text" contenteditable="true"></span><div class="col-resizer"></div></th>
+            <th><span class="th-text" contenteditable="true"></span><div class="col-resizer"></div></th>
           </tr>
         </thead>
         <tbody>
@@ -1370,7 +1488,14 @@
       </table>
     `;
     insertNodeAtCursor(wrapper);
+
+    const trailingP = document.createElement('p');
+    trailingP.innerHTML = '<br>';
+    wrapper.after(trailingP);
+
     attachColumnResizers(wrapper);
+    const firstThText = wrapper.querySelector('.th-text');
+    placeCaretAtStart(firstThText);
     saveNoteState();
   }
 
@@ -1400,8 +1525,7 @@
     if (!table) return;
     const headerRow = table.querySelector('thead tr');
     const newTh = document.createElement('th');
-    newTh.contentEditable = "true";
-    newTh.innerHTML = `<div class="col-resizer"></div>`;
+    newTh.innerHTML = `<span class="th-text" contenteditable="true"></span><div class="col-resizer"></div>`;
     headerRow.appendChild(newTh);
 
     const rows = table.querySelectorAll('tbody tr');
@@ -1439,7 +1563,7 @@
         const startWidth = th.offsetWidth;
 
         function onMouseMove(moveEvent) {
-          const newWidth = Math.max(40, startWidth + (moveEvent.pageX - startX));
+          const newWidth = Math.max(65, startWidth + (moveEvent.pageX - startX));
           th.style.width = newWidth + 'px';
         }
         function onMouseUp() {
@@ -1451,6 +1575,17 @@
         window.addEventListener('mouseup', onMouseUp);
       };
     });
+  }
+
+  function placeCaretAtStart(el) {
+    if (!el) return;
+    el.focus();
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
   function insertNodeAtCursor(node) {
@@ -1521,7 +1656,7 @@
     const tbHeight = selectionToolbar.offsetHeight || 34;
     selectionToolbar.style.visibility = 'visible';
 
-    const clampedLeft = Math.max(8, Math.min(caretX - (tbWidth / 2), wrapperRect.width - tbWidth - 8));
+    const clampedLeft = Math.max(6, Math.min(caretX - (tbWidth / 2), wrapperRect.width - tbWidth - 6));
     selectionToolbar.style.left = clampedLeft + 'px';
     selectionToolbar.style.setProperty('--arrow-x', Math.max(12, Math.min(caretX - clampedLeft, tbWidth - 12)) + 'px');
 
@@ -1545,8 +1680,11 @@
       selectionToolbar.style.display = 'none';
       selectionToolbar.classList.remove('visible');
     }
-    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.warm-pill-btn')) {
+    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.nav-btn')) {
       closeAllCards();
+    }
+    if (!e.target.closest('.autocomplete-wrap')) {
+      document.getElementById('linkSuggestions').style.display = 'none';
     }
   });
 
@@ -1622,7 +1760,7 @@
     saveNoteState();
   }
 
-  /* Full Desk Calendar Logic */
+  /* Full Desk Calendar */
   let calDate = new Date();
   const calendarCard = document.getElementById('calendarCard');
 
@@ -1702,7 +1840,7 @@
   }
   function closeCalendarCard() { calendarCard.classList.remove('visible'); }
 
-  /* Archive Drawer Logic with Live Search */
+  /* Archive Drawer */
   const archiveCard = document.getElementById('archiveCard');
 
   function toggleArchiveCard(e) {
@@ -1760,8 +1898,9 @@
     renderArchive(archive);
   }
 
-  /* Bookmarks / Links Drawer */
+  /* Bookmarks Drawer */
   const linksCard = document.getElementById('linksCard');
+  let currentActiveDateFilter = null;
 
   function toggleLinksCard(e) {
     e.stopPropagation();
@@ -1769,49 +1908,117 @@
     closeAllCards();
     if (!isVis) {
       linksCard.classList.add('visible');
-      renderBookmarks();
+      renderBookmarks(bookmarks);
     }
   }
   function closeLinksCard() { linksCard.classList.remove('visible'); }
+
+  function handleLinkSearch(val) {
+    const q = val.trim().toLowerCase();
+    const sugBox = document.getElementById('linkSuggestions');
+    
+    if (!q) {
+      sugBox.style.display = 'none';
+      applyCombinedLinkFilters();
+      return;
+    }
+
+    const matches = bookmarks.filter(b => b.title.toLowerCase().includes(q) || b.url.toLowerCase().includes(q));
+    
+    if (matches.length > 0) {
+      sugBox.innerHTML = '';
+      matches.slice(0, 4).forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'typeahead-item';
+        let host = '';
+        try { host = new URL(m.url).hostname; } catch(err){}
+        item.innerHTML = `<span><strong>${escapeHtml(m.title)}</strong></span><span style="color:#9C8C7E;">${host}</span>`;
+        item.onclick = () => {
+          document.getElementById('linkSearchInput').value = m.title;
+          sugBox.style.display = 'none';
+          renderBookmarks([m]);
+        };
+        sugBox.appendChild(item);
+      });
+      sugBox.style.display = 'block';
+    } else {
+      sugBox.style.display = 'none';
+    }
+
+    applyCombinedLinkFilters();
+  }
+
+  function filterLinksByDate(dateVal) {
+    currentActiveDateFilter = dateVal;
+    applyCombinedLinkFilters();
+  }
+
+  function clearLinkDateFilter() {
+    document.getElementById('linkDateFilter').value = '';
+    currentActiveDateFilter = null;
+    applyCombinedLinkFilters();
+  }
+
+  function applyCombinedLinkFilters() {
+    const q = (document.getElementById('linkSearchInput').value || '').trim().toLowerCase();
+    let filtered = bookmarks;
+
+    if (q) {
+      filtered = filtered.filter(b => b.title.toLowerCase().includes(q) || b.url.toLowerCase().includes(q));
+    }
+    if (currentActiveDateFilter) {
+      filtered = filtered.filter(b => b.date && b.date.startsWith(currentActiveDateFilter));
+    }
+    renderBookmarks(filtered);
+  }
 
   function saveBookmarkEntry() {
     const title = document.getElementById('bmTitleInput').value.trim();
     const url = document.getElementById('bmUrlInput').value.trim();
     if (!url) return;
+    const nowIso = new Date().toISOString().slice(0, 10);
     bookmarks.push({
       id: Date.now(),
       title: title || url,
-      url: url.startsWith('http') ? url : 'https://' + url
+      url: url.startsWith('http') ? url : 'https://' + url,
+      date: nowIso
     });
     document.getElementById('bmTitleInput').value = '';
     document.getElementById('bmUrlInput').value = '';
     localStorage.setItem('tearoff_bookmarks', JSON.stringify(bookmarks));
-    renderBookmarks();
+    applyCombinedLinkFilters();
   }
 
-  function renderBookmarks() {
-    const list = document.getElementById('bookmarksContainer');
+  function renderBookmarks(list) {
+    const container = document.getElementById('bookmarksContainer');
     document.getElementById('bmCount').innerText = bookmarks.length;
-    list.innerHTML = '';
-    bookmarks.forEach(bm => {
+    container.innerHTML = '';
+    if (!list || list.length === 0) {
+      container.innerHTML = '<div style="color:#786C60; font-size:11px; padding:6px;">No links match your search.</div>';
+      return;
+    }
+    list.forEach(bm => {
       const card = document.createElement('div');
       card.className = 'bookmark-card';
       card.innerHTML = `
-        <div style="font-weight:600; color:#2D241E;">${escapeHtml(bm.title)}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; color:#2D241E;">${escapeHtml(bm.title)}</span>
+          <span style="font-size:9px; color:#9C8C7E;">${bm.date || ''}</span>
+        </div>
         <a href="${bm.url}" target="_blank" style="color:#84532B; text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(bm.url)}</a>
         <div style="display:flex; justify-content:flex-end; gap:4px; margin-top:2px;">
           <button class="dock-btn" onclick="window.open('${bm.url}','_blank')">Visit ↗</button>
           <button class="dock-btn" style="color:#C93B2B;" onclick="deleteBookmark(${bm.id})">Delete</button>
         </div>
       `;
-      list.appendChild(card);
+      container.appendChild(card);
     });
   }
 
   function deleteBookmark(id) {
     bookmarks = bookmarks.filter(b => b.id !== id);
     localStorage.setItem('tearoff_bookmarks', JSON.stringify(bookmarks));
-    renderBookmarks();
+    applyCombinedLinkFilters();
   }
 
   function closeAllCards() {
@@ -1899,23 +2106,34 @@
     saveNoteState();
   }
 
-  /* Export Features */
+  /* Export Features with Feedback */
   function exportMarkdown() {
     const raw = editorContent.innerText;
+    const filename = `Note_${new Date().toISOString().slice(0,10)}.md`;
     const blob = new Blob([raw], { type: 'text/markdown;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `Note_${new Date().toISOString().slice(0,10)}.md`;
+    link.download = filename;
     link.click();
+    showExportToast('Note exported as Markdown (.md)');
   }
 
   function exportNoteImage() {
+    const btn = document.getElementById('btnExportPng');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>...</span>';
+
     const target = document.getElementById('activeSheet');
     html2canvas(target, { backgroundColor: null, scale: 2 }).then(canvas => {
       const link = document.createElement('a');
       link.download = `Note_Snapshot_${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
+      btn.innerHTML = originalText;
+      showExportToast('Snapshot exported as PNG');
+    }).catch(err => {
+      console.error(err);
+      btn.innerHTML = originalText;
     });
   }
 
@@ -1960,16 +2178,14 @@
         if (currentPatternIndex === -1) currentPatternIndex = 0;
         applyPattern(patterns[currentPatternIndex]);
       }
-    } catch(e) {
-      console.error('Error loading saved state:', e);
-    }
+    } catch(e) { console.error('Error loading saved state:', e); }
   }
 
   loadSavedState();
   renderSpirals();
   setupDragging();
   loadPage(0);
-  renderBookmarks();
+  applyCombinedLinkFilters();
 </script>
 </body>
 </html>
