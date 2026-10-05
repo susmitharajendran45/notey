@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "productName": "notey",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "identifier": "com.susmitha.notey",
   "build": {
     "frontendDist": "../dist"
@@ -28,7 +28,7 @@
     "active": true,
     "targets": "all",
     "publisher": "Susmitha Rajendran",
-    "copyright": " © 2026 Susmitha Rajendran",
+    "copyright": "Copyright © 2026 Susmitha Rajendran. All rights reserved.",
     "category": "Productivity",
     "shortDescription": "Tear-off desktop notepad",
     "longDescription": "A persistent desktop tear-off notepad application created by Susmitha Rajendran.",
@@ -40,14 +40,8 @@
       "icons/icon.ico"
     ],
     "windows": {
-      "certificateThumbprint": null,
-      "digestAlgorithm": "sha256",
-      "timestampUrl": null,
       "nsis": {
-        "installerIcon": "icons/icon.ico",
-        "headerImage": null,
-        "sidebarImage": null,
-        "displayLanguageSelector": false
+        "installerIcon": "icons/icon.ico"
       },
       "wix": {
         "language": "en-US"
