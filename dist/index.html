@@ -119,42 +119,36 @@
       transition: background-color 0.2s ease;
     }
 
-    /* Fluid Executive Top Navigation Bar */
+    /* Calibrated Top Navigation Bar */
     .pad-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 5px 8px;
       font-size: 11px;
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.65);
       backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(132, 83, 43, 0.14);
+      border-bottom: 1px solid rgba(132, 83, 43, 0.15);
       color: #61554B;
       position: relative;
       z-index: 20;
       cursor: grab;
       -webkit-app-region: drag;
-      gap: 3px;
+      gap: 4px;
       min-width: 0;
     }
     .pad-topbar:active { cursor: grabbing; }
 
-    .top-actions {
+    .top-cluster {
       display: flex;
       align-items: center;
       gap: 3px;
       -webkit-app-region: no-drag;
-      flex-shrink: 1;
-      min-width: 0;
-    }
-    .top-actions.right-cluster {
       flex-shrink: 0;
-      gap: 4px;
-      margin-left: auto;
     }
 
-    .nav-btn {
-      background: rgba(255, 255, 255, 0.9);
+    .top-btn {
+      background: #FFFFFF;
       border: 1px solid rgba(110, 85, 60, 0.22);
       color: #4A3728;
       padding: 3px 6px;
@@ -171,21 +165,20 @@
       transition: all 0.12s ease;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
-      flex-shrink: 0;
     }
-    .nav-btn:hover {
+    .top-btn:hover {
       background: #4A3222;
       color: #FFF;
       border-color: #4A3222;
     }
-    .nav-btn.active {
+    .top-btn.active {
       background: #84532B;
       color: #FFF;
       border-color: #84532B;
     }
 
     .btn-close-app {
-      background: rgba(220, 38, 38, 0.12);
+      background: rgba(220, 38, 38, 0.1);
       color: #C93B2B;
       border: 1px solid rgba(201, 59, 43, 0.3);
       padding: 3px 8px;
@@ -197,7 +190,6 @@
       pointer-events: auto !important;
       position: relative;
       z-index: 9999;
-      flex-shrink: 0;
     }
     .btn-close-app:hover {
       background: #C93B2B !important;
@@ -210,7 +202,7 @@
       font-weight: 600;
       line-height: 1;
       color: #7B4B27;
-      background: rgba(255,255,255,0.95);
+      background: #FFFFFF;
       border: 1px solid rgba(132, 83, 43, 0.3);
       border-radius: 5px;
       padding: 3px 6px;
@@ -222,13 +214,6 @@
       white-space: nowrap;
       -webkit-app-region: no-drag !important;
       pointer-events: auto !important;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 375px) {
-      .nav-btn span.label-text { display: none; }
-      .date-stamp-badge span.label-text { font-size: 9px; }
-      .pad-topbar { padding: 4px 6px; }
     }
 
     /* Floating Feedback Toast */
@@ -310,7 +295,7 @@
       -webkit-app-region: no-drag;
     }
 
-    /* Edge Page Flippers: 3 Lines / Tabs at Vertical Borders */
+    /* Edge Page Flippers: 3 Lines in Middle of Left/Right Borders */
     .edge-page-nav {
       position: absolute;
       top: 50%;
@@ -338,7 +323,7 @@
     .edge-page-nav.prev { left: 2px; }
     .edge-page-nav.next { right: 2px; }
     .edge-page-nav.disabled {
-      opacity: 0.18;
+      opacity: 0.15;
       cursor: not-allowed;
       pointer-events: none;
     }
@@ -349,9 +334,7 @@
       border-radius: 2px;
       transition: background 0.15s;
     }
-    .edge-page-nav:hover .edge-nav-line {
-      background: #FFF;
-    }
+    .edge-page-nav:hover .edge-nav-line { background: #FFF; }
 
     /* Floating Formatting Toolbar */
     .selection-float-bar {
@@ -496,7 +479,7 @@
       margin: 0;
     }
 
-    /* Presets */
+    /* Text Presets */
     .paper-title {
       font-size: 28px !important;
       font-weight: 700;
@@ -514,7 +497,6 @@
       font-weight: 500;
       margin: 0;
     }
-    /* Quote Styling (Self-Contained Block) */
     .paper-quote {
       font-size: 22px !important;
       font-style: italic;
@@ -854,7 +836,7 @@
       color: #2D241E;
     }
 
-    /* Bottom Dock Bar */
+    /* Bottom Status & Dock Bar Architecture */
     .pad-bottom-info {
       padding: 3px 10px 4px 10px;
       display: flex;
@@ -888,7 +870,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 3px;
+      gap: 4px;
       transform: translateY(120%);
       transition: transform 0.18s ease;
       overflow-x: auto;
@@ -898,12 +880,20 @@
       transform: translateY(0);
     }
 
-    .dock-group {
+    .dock-segment {
       display: flex;
       align-items: center;
       gap: 3px;
       flex-shrink: 0;
     }
+    .dock-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(132, 83, 43, 0.2);
+      margin: 0 1px;
+      flex-shrink: 0;
+    }
+
     .dock-btn {
       background: #F4EFEB;
       border: 1px solid #DFD6CC;
@@ -920,6 +910,7 @@
       white-space: nowrap;
     }
     .dock-btn:hover { background: #E8DFD5; }
+    .dock-btn.active { background: #84532B; color: #FFF; border-color: #84532B; }
 
     /* Palette Swatches */
     .color-swatches { display: flex; gap: 3px; align-items: center; }
@@ -945,40 +936,37 @@
     <!-- Paper Sheet -->
     <div class="notepad-sheet" id="activeSheet">
       
-      <!-- Top Action Bar (Fluid Responsiveness) -->
+      <!-- Top Action Bar (Clean Environment & System Controls) -->
       <div class="pad-topbar" data-tauri-drag-region>
-        <div class="top-actions">
-          <button class="nav-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
+        <!-- Left: Environment & Window Controls -->
+        <div class="top-cluster">
+          <button class="top-btn" id="pinBtn" onclick="togglePin()" title="Pin Always on Top">
             <span id="pinIcon">📌</span>
           </button>
-          <button class="nav-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strike Pen">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
-            <span class="label-text" id="strikeBtnText">Strike</span>
+          <button class="top-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+            <span id="patternLabel">Ruled</span>
           </button>
-          <button class="nav-btn" onclick="toggleCalendarCard(event)" title="Desk Calendar">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span class="label-text">Cal</span>
-          </button>
-          <button class="nav-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
-            <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-            <span class="label-text">Archive (<span id="archiveCount">0</span>)</span>
-          </button>
-          <button class="nav-btn" onclick="toggleLinksCard(event)" title="Bookmarks & Links">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            <span class="label-text">Links (<span id="bmCount">1</span>)</span>
-          </button>
-          <button class="nav-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Tear Sound">
+          <button class="top-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Tear Sound">
             <span id="muteIcon">🔊</span>
           </button>
         </div>
 
-        <div class="top-actions right-cluster">
+        <!-- Right: Status, Calendar, Archive & Close -->
+        <div class="top-cluster">
           <div class="date-stamp-badge" id="topDateBadge" onclick="stampTodayDate()" title="Click to stamp today's date">
             <svg class="icon" viewBox="0 0 24 24" style="width:11px;height:11px;min-width:11px;min-height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span class="label-text" id="dateStampText">Today</span>
+            <span id="dateStampText">Today</span>
           </div>
-          <!-- Robust Native Exit Button -->
-          <button class="nav-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
+          <button class="top-btn" onclick="toggleCalendarCard(event)" title="Desk Calendar">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Cal</span>
+          </button>
+          <button class="top-btn" onclick="toggleArchiveCard(event)" title="Torn Sheets Archive">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            <span>Archive (<span id="archiveCount">0</span>)</span>
+          </button>
+          <button class="top-btn btn-close-app" id="appCloseBtn" title="Quit Widget (Alt+F4)">
             ✕
           </button>
         </div>
@@ -1076,7 +1064,7 @@
       <!-- Paper Body Wrapper -->
       <div class="paper-body-wrapper" id="paperWrapper">
 
-        <!-- Border Page Turners (3 Lines / Dots in Middle of Borders) -->
+        <!-- Border Page Turners (3 Lines at Vertical Borders) -->
         <div class="edge-page-nav prev disabled" id="edgePrevBtn" onclick="previousPage()" title="Previous Page">
           <div class="edge-nav-line"></div>
           <div class="edge-nav-line"></div>
@@ -1140,21 +1128,33 @@
           <span>PAGE <span id="curPageNum">1</span> / <span id="totalPageNum">1</span></span>
         </div>
 
-        <!-- Floating Bottom Dock -->
+        <!-- Clean Segmented Bottom Dock -->
         <div class="bottom-dock-hitbox">
           <div class="floating-bottom-dock">
-            <div class="dock-group">
-              <button class="dock-btn" onclick="insertChecklist()">
+            <!-- Segment 1: Authoring Tools -->
+            <div class="dock-segment">
+              <button class="dock-btn" onclick="insertChecklist()" title="Add Task Checklist">
                 <svg class="icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
                 <span>Task</span>
               </button>
-              <button class="dock-btn" onclick="insertTable()">
-                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+              <button class="dock-btn" onclick="insertTable()" title="Insert Resizable Table">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
                 <span>Table</span>
               </button>
-              <button class="dock-btn" onclick="cyclePattern()" title="Cycle Paper Texture (Ruled / Dots / Grid / Blank)">
-                <span>Texture</span>
+              <button class="dock-btn" id="strikePenBtn" onclick="toggleStrikePenMode()" title="Red Strikeout Pen">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="6" cy="12" r="2" fill="currentColor"></circle></svg>
+                <span id="strikeBtnText">Strike</span>
               </button>
+              <button class="dock-btn" onclick="toggleLinksCard(event)" title="Bookmarks & Links">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                <span>Links (<span id="bmCount">1</span>)</span>
+              </button>
+            </div>
+
+            <div class="dock-divider"></div>
+
+            <!-- Segment 2: Export Tools -->
+            <div class="dock-segment">
               <button class="dock-btn" id="btnExportMd" onclick="exportMarkdown()" title="Export Note as Markdown">
                 <span>.md</span>
               </button>
@@ -1162,7 +1162,11 @@
                 <span>PNG</span>
               </button>
             </div>
-            <div class="dock-group">
+
+            <div class="dock-divider"></div>
+
+            <!-- Segment 3: Paper Palette -->
+            <div class="dock-segment">
               <div class="color-swatches">
                 <div class="swatch-dot" style="background:#FFFDF4;" onclick="changePageColor('#FFFDF4')" title="Cream"></div>
                 <div class="swatch-dot" style="background:#F2F7F2;" onclick="changePageColor('#F2F7F2')" title="Sage"></div>
@@ -1188,6 +1192,7 @@
   let isMuted = false;
   let isStrikePenMode = false;
   const patterns = ['pattern-ruled', 'pattern-dots', 'pattern-grid', 'pattern-blank'];
+  const patternNames = ['Ruled', 'Dots', 'Grid', 'Blank'];
   let currentPatternIndex = 0;
 
   // Window drag
@@ -1239,7 +1244,7 @@
     closeBtn.addEventListener('click', closeDesktopApp);
   }
 
-  // Visual Export Notification Toast
+  // Toast Notification
   let toastTimer = null;
   function showExportToast(msg) {
     const toast = document.getElementById('exportToast');
@@ -1249,7 +1254,7 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toast.classList.remove('visible');
-    }, 2500);
+    }, 2400);
   }
 
   // Always on Top Native Rust Bridge
@@ -1302,6 +1307,7 @@
   function cyclePattern() {
     currentPatternIndex = (currentPatternIndex + 1) % patterns.length;
     applyPattern(patterns[currentPatternIndex]);
+    document.getElementById('patternLabel').innerText = patternNames[currentPatternIndex];
     localStorage.setItem('tearoff_pattern', patterns[currentPatternIndex]);
   }
 
@@ -1352,17 +1358,14 @@
   function toggleStrikePenMode() {
     isStrikePenMode = !isStrikePenMode;
     const btn = document.getElementById('strikePenBtn');
-    const text = document.getElementById('strikeBtnText');
     if (isStrikePenMode) {
       btn.classList.add('active');
-      text.innerText = 'On';
       strikeLayer.classList.add('active-strike-mode');
       editorContent.classList.add('strike-mode-on');
       selectionToolbar.style.display = 'none';
       selectionToolbar.classList.remove('visible');
     } else {
       btn.classList.remove('active');
-      text.innerText = 'Strike';
       strikeLayer.classList.remove('active-strike-mode');
       editorContent.classList.remove('strike-mode-on');
     }
@@ -1406,7 +1409,7 @@
     const sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
 
-    // 1. Quote Breakout: Pressing enter inside or on empty line in quote
+    // Quote Breakout: Pressing enter inside an empty line in a quote exits it cleanly
     const quoteBlock = sel.anchorNode?.parentElement?.closest('.paper-quote');
     if (quoteBlock && e.key === 'Enter') {
       const text = quoteBlock.innerText.trim();
@@ -1419,7 +1422,6 @@
         saveNoteState();
         return;
       }
-      // If pressing shift+enter or standard enter at end of quote, allow clean breakout
       if (!e.shiftKey) {
         const offset = sel.anchorOffset;
         const nodeLen = sel.anchorNode.length || 0;
@@ -1435,7 +1437,7 @@
       }
     }
 
-    // 2. Inline arithmetic auto-eval on '='
+    // Inline arithmetic auto-eval on '='
     if (e.key === '=') {
       const node = sel.anchorNode;
       if (node && node.nodeType === 3) {
@@ -1458,7 +1460,7 @@
       }
     }
 
-    // 3. Task Checklist Enter & Backspace
+    // Task Checklist Enter & Backspace
     const taskItem = sel.anchorNode?.parentElement?.closest('.notepad-task-item');
     if (taskItem) {
       const label = taskItem.querySelector('.task-label');
@@ -1487,7 +1489,7 @@
       }
     }
 
-    // 4. Table Breakout
+    // Table Breakout on Last Row Enter
     const cell = sel.anchorNode?.parentElement?.closest('td, th');
     if (cell && e.key === 'Enter') {
       const tr = cell.closest('tr');
@@ -1768,7 +1770,7 @@
       selectionToolbar.style.display = 'none';
       selectionToolbar.classList.remove('visible');
     }
-    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.nav-btn')) {
+    if (!calendarCard.contains(e.target) && !archiveCard.contains(e.target) && !linksCard.contains(e.target) && !e.target.closest('.top-btn')) {
       closeAllCards();
     }
     if (!e.target.closest('.autocomplete-wrap')) {
@@ -1805,7 +1807,6 @@
     saveNoteState();
   }
 
-  // Toggle Quote Block cleanly without trapping following text
   function toggleQuoteBlock() {
     restoreSelection();
     let block = getClosestBlockElement();
@@ -2274,11 +2275,9 @@
   }
 
   function exportNoteImage() {
-    const btn = document.getElementById('btnExportPng');
-    btn.innerHTML = '<span>...</span>';
     showExportToast('Capturing snapshot...');
-
     const target = document.getElementById('activeSheet');
+    
     html2canvas(target, { 
       backgroundColor: null, 
       scale: 2,
@@ -2289,12 +2288,10 @@
       link.download = `Note_Snapshot_${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      btn.innerHTML = '<span>PNG</span>';
       showExportToast('Snapshot exported as PNG');
     }).catch(err => {
       console.error(err);
-      btn.innerHTML = '<span>PNG</span>';
-      showExportToast('Snapshot exported');
+      showExportToast('Snapshot exported as PNG');
     });
   }
 
@@ -2338,6 +2335,7 @@
         currentPatternIndex = patterns.indexOf(savedPattern);
         if (currentPatternIndex === -1) currentPatternIndex = 0;
         applyPattern(patterns[currentPatternIndex]);
+        document.getElementById('patternLabel').innerText = patternNames[currentPatternIndex];
       }
     } catch(e) { console.error('Error loading saved state:', e); }
   }
