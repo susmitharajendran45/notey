@@ -1,8 +1,8 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
-  "productName": "Tear-Off Notepad",
-  "version": "1.0.33",
-  "identifier": "com.susmitha.tearoffnotepad",
+  "productName": "notey",
+  "version": "1.0.35",
+  "identifier": "com.susmitha.notey",
   "build": {
     "frontendDist": "../dist"
   },
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Tear-Off Notepad",
+        "title": "notey",
         "width": 360,
         "height": 540,
         "decorations": false,
