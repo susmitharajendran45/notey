@@ -2,7 +2,8 @@
 name = "tearoff-notepad"
 version = "0.1.0"
 description = "A physical tear-off spiral notepad desktop widget"
-edition = "2021"
+authors = ["Susmitha Rajendran"]
+edition = "2026"
 
 [build-dependencies]
 tauri-build = { version = "2.0", features = [] }
