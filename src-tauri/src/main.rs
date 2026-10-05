@@ -19,6 +19,10 @@ fn toggle_always_on_top(app_handle: tauri::AppHandle, state: bool) -> Result<(),
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacPreferredLauncher::LaunchAgent,
+            Some(vec![]),
+        ))
         .invoke_handler(tauri::generate_handler![exit_app, toggle_always_on_top])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
