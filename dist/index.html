@@ -55,6 +55,7 @@
       flex-direction: column;
       padding: 3px;
       filter: drop-shadow(0 8px 20px rgba(50, 35, 20, 0.25));
+      position: relative;
     }
 
     .spiral-binding-header {
@@ -700,6 +701,7 @@
       width: 100%;
     }
 
+    /* Isolated Toast Overlay: Excluded from screenshots */
     .export-toast {
       position: absolute;
       top: 38px;
@@ -715,7 +717,7 @@
       align-items: center;
       gap: 5px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      z-index: 300;
+      z-index: 9999;
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -789,8 +791,16 @@
 <body>
 
   <div class="notepad-container" id="notepadWidget">
+    <!-- Top Spiral Header -->
     <div class="spiral-binding-header" id="spiralHeader" data-tauri-drag-region></div>
 
+    <!-- Isolated Floating Toast (Explicitly Ignored by HTML2Canvas) -->
+    <div class="export-toast" id="exportToast" data-html2canvas-ignore="true">
+      <span class="toast-check">✓</span>
+      <span id="exportToastText">Export complete</span>
+    </div>
+
+    <!-- Active Notepad Sheet Target for Snapshot -->
     <div class="notepad-sheet" id="activeSheet">
       <div class="pad-topbar" data-tauri-drag-region>
         <div class="top-cluster">
@@ -821,11 +831,6 @@
             ✕
           </button>
         </div>
-      </div>
-
-      <div class="export-toast" id="exportToast">
-        <span class="toast-check">✓</span>
-        <span id="exportToastText">Export complete</span>
       </div>
 
       <!-- Calendar Modal -->
@@ -2080,13 +2085,14 @@
   function executeTear() {
     const content = editorContent.innerHTML;
     const textSnippet = editorContent.innerText.trim();
-    if (textSnippet) {
+
+    if (textSnippet || content.includes('<img') || content.includes('<table')) {
       archive.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
         isoDate: new Date().toISOString().slice(0, 10),
         html: content,
-        snippet: textSnippet
+        snippet: textSnippet || '[Image or Table]'
       });
       document.getElementById('archiveCount').innerText = archive.length;
       localStorage.setItem('tearoff_archive', JSON.stringify(archive));
@@ -2101,9 +2107,15 @@
     if (pages.length === 0) {
       pages.push({ content: '', color: '#FFFDF4', dateStamp: null });
     }
-    if (currentPageIndex >= pages.length) currentPageIndex = pages.length - 1;
+    if (currentPageIndex >= pages.length) {
+      currentPageIndex = pages.length - 1;
+    }
+
+    editorContent.innerHTML = pages[currentPageIndex].content || '';
+    strikeLayer.innerHTML = '';
+    
+    localStorage.setItem('tearoff_pages', JSON.stringify(pages));
     loadPage(currentPageIndex);
-    saveNoteState();
   }
 
   function loadPage(idx) {
@@ -2116,7 +2128,13 @@
     document.getElementById('totalPageNum').innerText = pages.length;
     strikeLayer.innerHTML = '';
     document.querySelectorAll('.notepad-table-wrapper').forEach(attachColumnResizers);
-    updateWordCharCount();
+
+    const raw = editorContent.innerText || '';
+    const clean = raw.replace(/[\n\r]+/g, ' ').trim();
+    const words = clean ? clean.split(/\s+/).length : 0;
+    const chars = raw.replace(/[\n\r]/g, '').length;
+    wordCharStats.innerText = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'}`;
+
     updateEdgeNavState();
   }
 
@@ -2145,7 +2163,8 @@
       backgroundColor: null, 
       scale: 2,
       useCORS: true,
-      logging: false
+      logging: false,
+      ignoreElements: (element) => element.id === 'exportToast' || element.classList.contains('export-toast')
     }).then(canvas => {
       const link = document.createElement('a');
       link.download = `Note_Snapshot_${Date.now()}.png`;
