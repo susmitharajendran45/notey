@@ -1,8 +1,5 @@
 # notey
-a cute but professional notepad just like the one's on our desks!
-
-
-A cozy, lightweight tear-off notepad for your desktop. Built for quick thoughts without the bloat of complex note apps.
+A floating desktop sticky note. Borderless, draggable, distraction-free, local-first. Open source.
 
 ### Features
 
@@ -26,3 +23,4 @@ npm run tauri dev
 
 Built by **Susmitha Rajendran** ❤
    
+sticky-notes, desktop-app, productivity, open-source
